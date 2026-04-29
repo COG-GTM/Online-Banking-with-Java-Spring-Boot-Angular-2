@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-savings-transaction',
+  standalone: false,
   templateUrl: './savings-transaction.component.html',
   styleUrls: ['./savings-transaction.component.css']
 })

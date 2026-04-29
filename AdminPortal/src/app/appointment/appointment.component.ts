@@ -3,6 +3,7 @@ import { AppointmentService } from '../appointment.service';
 
 @Component({
   selector: 'app-appointment',
+  standalone: false,
   templateUrl: './appointment.component.html',
   styleUrls: ['./appointment.component.css']
 })
