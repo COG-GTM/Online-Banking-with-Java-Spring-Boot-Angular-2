@@ -1,4 +1,4 @@
-import { ModuleWithProviders }  from '@angular/core';
+import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { LoginComponent } from './login/login.component';
@@ -7,9 +7,6 @@ import { PrimaryTransactionComponent } from './primary-transaction/primary-trans
 import { SavingsTransactionComponent } from './savings-transaction/savings-transaction.component';
 import { AppointmentComponent } from './appointment/appointment.component';
 
-
-
-
 const appRoutes: Routes = [
   {
     path: '',
@@ -17,8 +14,8 @@ const appRoutes: Routes = [
     pathMatch: 'full'
   },
   {
-  	path: 'login',
-  	component: LoginComponent
+    path: 'login',
+    component: LoginComponent
   },
   {
     path: 'userAccount',
@@ -38,4 +35,4 @@ const appRoutes: Routes = [
   }
 ];
 
-export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);
+export const routing: ModuleWithProviders<RouterModule> = RouterModule.forRoot(appRoutes);
