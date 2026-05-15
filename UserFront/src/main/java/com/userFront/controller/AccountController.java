@@ -34,11 +34,11 @@ public class AccountController {
 
 	@RequestMapping("/primaryAccount")
 	public String primaryAccount(Model model, Principal principal) {
-		List<PrimaryTransaction> primaryTransactionList = transactionService
+		var primaryTransactionList = transactionService
 				.findPrimaryTransactionList(principal.getName());
 
-		User user = userService.findByUsername(principal.getName());
-		PrimaryAccount primaryAccount = user.getPrimaryAccount();
+		var user = userService.findByUsername(principal.getName());
+		var primaryAccount = user.getPrimaryAccount();
 
 		model.addAttribute("primaryAccount", primaryAccount);
 		model.addAttribute("primaryTransactionList", primaryTransactionList);
@@ -48,10 +48,10 @@ public class AccountController {
 
 	@RequestMapping("/savingsAccount")
 	public String savingsAccount(Model model, Principal principal) {
-		List<SavingsTransaction> savingsTransactionList = transactionService
+		var savingsTransactionList = transactionService
 				.findSavingsTransactionList(principal.getName());
-		User user = userService.findByUsername(principal.getName());
-		SavingsAccount savingsAccount = user.getSavingsAccount();
+		var user = userService.findByUsername(principal.getName());
+		var savingsAccount = user.getSavingsAccount();
 
 		model.addAttribute("savingsAccount", savingsAccount);
 		model.addAttribute("savingsTransactionList", savingsTransactionList);

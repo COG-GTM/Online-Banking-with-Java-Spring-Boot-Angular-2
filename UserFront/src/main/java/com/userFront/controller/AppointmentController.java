@@ -29,7 +29,7 @@ public class AppointmentController {
 
 	@RequestMapping(value = "/create", method = RequestMethod.GET)
 	public String createAppointment(Model model) {
-		Appointment appointment = new Appointment();
+		var appointment = new Appointment();
 		model.addAttribute("appointment", appointment);
 		model.addAttribute("dateString", "");
 
@@ -40,11 +40,11 @@ public class AppointmentController {
 	public String createAppointmentPost(@ModelAttribute("appointment") Appointment appointment,
 			@ModelAttribute("dateString") String date, Model model, Principal principal) throws ParseException {
 
-		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-		Date d1 = format1.parse(date);
+		var format1 = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+		var d1 = format1.parse(date);
 		appointment.setDate(d1);
 
-		User user = userService.findByUsername(principal.getName());
+		var user = userService.findByUsername(principal.getName());
 		appointment.setUser(user);
 
 		appointmentService.createAppointment(appointment);

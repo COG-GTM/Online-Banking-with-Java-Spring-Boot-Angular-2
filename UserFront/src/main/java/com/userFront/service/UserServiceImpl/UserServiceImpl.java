@@ -48,12 +48,12 @@ public class UserServiceImpl implements UserService {
 	}
 
 	public User createUser(User user, Set<UserRole> userRoles) {
-		User localUser = userDao.findByUsername(user.getUsername());
+		var localUser = userDao.findByUsername(user.getUsername());
 
 		if (localUser != null) {
 			LOG.info("User with username {} already exist. Nothing will be done. ", user.getUsername());
 		} else {
-			String encryptedPassword = passwordEncoder.encode(user.getPassword());
+			var encryptedPassword = passwordEncoder.encode(user.getPassword());
 			user.setPassword(encryptedPassword);
 
 			for (UserRole ur : userRoles) {
@@ -100,13 +100,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	public void enableUser(String username) {
-		User user = findByUsername(username);
+		var user = findByUsername(username);
 		user.setEnabled(true);
 		userDao.save(user);
 	}
 
 	public void disableUser(String username) {
-		User user = findByUsername(username);
+		var user = findByUsername(username);
 		user.setEnabled(false);
 		System.out.println(user.isEnabled());
 		userDao.save(user);

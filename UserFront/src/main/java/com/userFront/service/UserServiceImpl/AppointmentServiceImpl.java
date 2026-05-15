@@ -24,11 +24,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     public Appointment findAppointment(Long id) {
-        return appointmentDao.findOne(id);
+        return appointmentDao.findById(id).orElse(null);
     }
 
     public void confirmAppointment(Long id) {
-        Appointment appointment = findAppointment(id);
+        var appointment = findAppointment(id);
         appointment.setConfirmed(true);
         appointmentDao.save(appointment);
     }

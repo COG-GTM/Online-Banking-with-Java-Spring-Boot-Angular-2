@@ -21,7 +21,7 @@ public class AppointmentResource {
 
     @RequestMapping("/all")
     public List<Appointment> findAppointmentList() {
-        List<Appointment> appointmentList = appointmentService.findAll();
+        var appointmentList = appointmentService.findAll();
 
         return appointmentList;
     }

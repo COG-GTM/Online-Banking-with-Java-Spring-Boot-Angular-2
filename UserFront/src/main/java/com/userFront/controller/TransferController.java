@@ -42,9 +42,9 @@ public class TransferController {
 	public String betweenAccountsPost(@ModelAttribute("transferFrom") String transferFrom,
 			@ModelAttribute("transferTo") String transferTo, @ModelAttribute("amount") String amount,
 			Principal principal) throws Exception {
-		User user = userService.findByUsername(principal.getName());
-		PrimaryAccount primaryAccount = user.getPrimaryAccount();
-		SavingsAccount savingsAccount = user.getSavingsAccount();
+		var user = userService.findByUsername(principal.getName());
+		var primaryAccount = user.getPrimaryAccount();
+		var savingsAccount = user.getSavingsAccount();
 		transactionService.betweenAccountsTransfer(transferFrom, transferTo, amount, primaryAccount, savingsAccount);
 
 		return "redirect:/userFront";
@@ -52,9 +52,9 @@ public class TransferController {
 
 	@RequestMapping(value = "/recipient", method = RequestMethod.GET)
 	public String recipient(Model model, Principal principal) {
-		List<Recipient> recipientList = transactionService.findRecipientList(principal);
+		var recipientList = transactionService.findRecipientList(principal);
 
-		Recipient recipient = new Recipient();
+		var recipient = new Recipient();
 
 		model.addAttribute("recipientList", recipientList);
 		model.addAttribute("recipient", recipient);
@@ -65,7 +65,7 @@ public class TransferController {
 	@RequestMapping(value = "/recipient/save", method = RequestMethod.POST)
 	public String recipientPost(@ModelAttribute("recipient") Recipient recipient, Principal principal) {
 
-		User user = userService.findByUsername(principal.getName());
+		var user = userService.findByUsername(principal.getName());
 		recipient.setUser(user);
 		transactionService.saveRecipient(recipient);
 
@@ -76,8 +76,8 @@ public class TransferController {
 	public String recipientEdit(@RequestParam(value = "recipientName") String recipientName, Model model,
 			Principal principal) {
 
-		Recipient recipient = transactionService.findRecipientByName(recipientName);
-		List<Recipient> recipientList = transactionService.findRecipientList(principal);
+		var recipient = transactionService.findRecipientByName(recipientName);
+		var recipientList = transactionService.findRecipientList(principal);
 
 		model.addAttribute("recipientList", recipientList);
 		model.addAttribute("recipient", recipient);
@@ -92,9 +92,9 @@ public class TransferController {
 
 		transactionService.deleteRecipientByName(recipientName);
 
-		List<Recipient> recipientList = transactionService.findRecipientList(principal);
+		var recipientList = transactionService.findRecipientList(principal);
 
-		Recipient recipient = new Recipient();
+		var recipient = new Recipient();
 		model.addAttribute("recipient", recipient);
 		model.addAttribute("recipientList", recipientList);
 
@@ -103,7 +103,7 @@ public class TransferController {
 
 	@RequestMapping(value = "/toSomeoneElse", method = RequestMethod.GET)
 	public String toSomeoneElse(Model model, Principal principal) {
-		List<Recipient> recipientList = transactionService.findRecipientList(principal);
+		var recipientList = transactionService.findRecipientList(principal);
 
 		model.addAttribute("recipientList", recipientList);
 		model.addAttribute("accountType", "");
@@ -115,8 +115,8 @@ public class TransferController {
 	public String toSomeoneElsePost(@ModelAttribute("recipientName") String recipientName,
 			@ModelAttribute("accountType") String accountType, @ModelAttribute("amount") String amount,
 			Principal principal) {
-		User user = userService.findByUsername(principal.getName());
-		Recipient recipient = transactionService.findRecipientByName(recipientName);
+		var user = userService.findByUsername(principal.getName());
+		var recipient = transactionService.findRecipientByName(recipientName);
 		transactionService.toSomeoneElseTransfer(recipient, accountType, amount, user.getPrimaryAccount(),
 				user.getSavingsAccount());
 
