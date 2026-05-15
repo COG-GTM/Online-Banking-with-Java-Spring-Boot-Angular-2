@@ -14,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +24,7 @@ import com.userFront.domain.security.Authority;
 import com.userFront.domain.security.UserRole;
 
 @Entity
+@Table(name = "users")
 public class User implements UserDetails{
 
     @Id

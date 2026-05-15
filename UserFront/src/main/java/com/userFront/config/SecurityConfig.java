@@ -1,6 +1,7 @@
 package com.userFront.config;
 
 import java.security.SecureRandom;
+import java.util.Arrays;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import com.userFront.service.UserServiceImpl.UserSecurityService;
 
@@ -43,9 +45,12 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        var matchers = Arrays.stream(PUBLIC_MATCHERS)
+                .map(AntPathRequestMatcher::new)
+                .toArray(RequestMatcher[]::new);
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(PUBLIC_MATCHERS).permitAll()
+                        .requestMatchers(matchers).permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(csrf -> csrf.disable())
