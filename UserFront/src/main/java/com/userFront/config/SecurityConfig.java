@@ -57,7 +57,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.disable())
                 .formLogin(form -> form
                         .failureUrl("/index?error")
-                        .defaultSuccessUrl("/userFront")
+                        .defaultSuccessUrl("/userFront", true)
                         .loginPage("/index")
                         .permitAll()
                 )
