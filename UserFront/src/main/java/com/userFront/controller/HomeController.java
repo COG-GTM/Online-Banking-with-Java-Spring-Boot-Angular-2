@@ -39,7 +39,7 @@ public class HomeController {
 
 	@RequestMapping(value = "/signup", method = RequestMethod.GET)
 	public String signup(Model model) {
-		User user = new User();
+		var user = new User();
 
 		model.addAttribute("user", user);
 
@@ -61,7 +61,7 @@ public class HomeController {
 
 			return "signup";
 		} else {
-			Set<UserRole> userRoles = new HashSet<>();
+			var userRoles = new HashSet<UserRole>();
 			userRoles.add(new UserRole(user, roleDao.findByName("ROLE_USER")));
 
 			userService.createUser(user, userRoles);
@@ -72,9 +72,9 @@ public class HomeController {
 
 	@RequestMapping("/userFront")
 	public String userFront(Principal principal, Model model) {
-		User user = userService.findByUsername(principal.getName());
-		PrimaryAccount primaryAccount = user.getPrimaryAccount();
-		SavingsAccount savingsAccount = user.getSavingsAccount();
+		var user = userService.findByUsername(principal.getName());
+		var primaryAccount = user.getPrimaryAccount();
+		var savingsAccount = user.getSavingsAccount();
 
 		model.addAttribute("primaryAccount", primaryAccount);
 		model.addAttribute("savingsAccount", savingsAccount);
