@@ -29,6 +29,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     public void confirmAppointment(Long id) {
         var appointment = findAppointment(id);
+        if (appointment == null) {
+            throw new IllegalArgumentException("Appointment not found with id: " + id);
+        }
         appointment.setConfirmed(true);
         appointmentDao.save(appointment);
     }
