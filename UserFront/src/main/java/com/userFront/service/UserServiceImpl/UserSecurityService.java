@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 
 import com.userFront.dao.UserDao;
 import com.userFront.domain.User;
+import com.userFront.security.UserDetailsAdapter;
 
 @Service
 public class UserSecurityService implements UserDetailsService {
 
-	/** The application logger */
 	private static final Logger LOG = LoggerFactory.getLogger(UserSecurityService.class);
 
 	@Autowired
@@ -27,6 +27,6 @@ public class UserSecurityService implements UserDetailsService {
 			LOG.warn("Username {} not found", username);
 			throw new UsernameNotFoundException("Username " + username + " not found");
 		}
-		return user;
+		return new UserDetailsAdapter(user);
 	}
 }
