@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.userFront.domain.User;
-import com.userFront.service.UserService;
+import com.userFront.identity.domain.User;
+import com.userFront.identity.service.UserService;
 import com.userFront.transaction.domain.PrimaryTransaction;
 import com.userFront.transaction.domain.SavingsTransaction;
 import com.userFront.transaction.service.LedgerService;

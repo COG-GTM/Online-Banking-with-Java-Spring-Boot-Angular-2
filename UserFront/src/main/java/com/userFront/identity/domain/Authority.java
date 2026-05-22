@@ -1,8 +1,8 @@
-package com.userFront.domain.security;
+package com.userFront.identity.domain;
 
 import org.springframework.security.core.GrantedAuthority;
 
-public class Authority implements GrantedAuthority{
+public class Authority implements GrantedAuthority {
 
     private final String authority;
 

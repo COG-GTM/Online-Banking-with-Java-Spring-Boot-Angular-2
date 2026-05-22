@@ -1,4 +1,4 @@
-package com.userFront.service.UserServiceImpl;
+package com.userFront.identity.service;
 
 import java.util.HashSet;
 import java.util.List;
@@ -11,15 +11,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.userFront.dao.RoleDao;
-import com.userFront.dao.UserDao;
-import com.userFront.domain.User;
-import com.userFront.domain.security.UserRole;
-import com.userFront.service.UserService;
+import com.userFront.identity.api.UserLookup;
+import com.userFront.identity.dao.RoleDao;
+import com.userFront.identity.dao.UserDao;
+import com.userFront.identity.domain.User;
+import com.userFront.identity.domain.UserRole;
 
 @Service
 @Transactional
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserLookup {
 
 	private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 	
@@ -116,6 +116,16 @@ public class UserServiceImpl implements UserService {
 		userRoles.add(new UserRole(user, roleDao.findByName("ROLE_USER")));
 		return userRoles;
 	}
-	
-	
+
+	@Override
+	public Long resolveUserId(String username) {
+		User user = findByUsername(username);
+		return user != null ? user.getUserId() : null;
+	}
+
+	@Override
+	public boolean isEnabled(String username) {
+		User user = findByUsername(username);
+		return user != null && user.isEnabled();
+	}
 }

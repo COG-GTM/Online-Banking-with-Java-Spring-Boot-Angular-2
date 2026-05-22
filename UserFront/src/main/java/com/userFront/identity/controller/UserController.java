@@ -1,4 +1,4 @@
-package com.userFront.controller;
+package com.userFront.identity.controller;
 
 import java.security.Principal;
 
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.userFront.domain.User;
-import com.userFront.service.UserService;
+import com.userFront.identity.domain.User;
+import com.userFront.identity.service.UserService;
 
 @Controller
 @RequestMapping("/user")

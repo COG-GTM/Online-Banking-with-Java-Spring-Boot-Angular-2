@@ -1,10 +1,10 @@
-package com.userFront.dao;
+package com.userFront.identity.dao;
 
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.userFront.domain.User;
+import com.userFront.identity.domain.User;
 
 public interface UserDao extends CrudRepository<User, Long> {
 

@@ -1,9 +1,6 @@
-package com.userFront.domain.security;
-
-import com.userFront.domain.User;
+package com.userFront.identity.domain;
 
 import javax.persistence.*;
-
 
 @Entity
 @Table(name="user_role")
@@ -17,11 +14,9 @@ public class UserRole {
         this.role = role;
     }
 
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
-
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
@@ -52,6 +47,4 @@ public class UserRole {
     public void setRole(Role role) {
         this.role = role;
     }
-
-
 }

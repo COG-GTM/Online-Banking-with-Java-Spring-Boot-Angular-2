@@ -1,10 +1,10 @@
-package com.userFront.service;
+package com.userFront.identity.service;
 
 import java.util.List;
 import java.util.Set;
 
-import com.userFront.domain.User;
-import com.userFront.domain.security.UserRole;
+import com.userFront.identity.domain.User;
+import com.userFront.identity.domain.UserRole;
 
 public interface UserService {
 	

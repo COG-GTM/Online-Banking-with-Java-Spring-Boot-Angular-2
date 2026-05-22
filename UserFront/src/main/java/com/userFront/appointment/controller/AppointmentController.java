@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.userFront.appointment.domain.Appointment;
 import com.userFront.appointment.service.AppointmentService;
-import com.userFront.dao.UserDao;
-import com.userFront.domain.User;
+import com.userFront.identity.dao.UserDao;
+import com.userFront.identity.domain.User;
 
 @Controller
 @RequestMapping("/appointment")

@@ -1,4 +1,4 @@
-package com.userFront.service.UserServiceImpl;
+package com.userFront.identity.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,9 +8,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.userFront.dao.UserDao;
-import com.userFront.domain.User;
-import com.userFront.security.UserDetailsAdapter;
+import com.userFront.identity.dao.UserDao;
+import com.userFront.identity.domain.Authority;
+import com.userFront.identity.domain.User;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.springframework.security.core.GrantedAuthority;
 
 @Service
 public class UserSecurityService implements UserDetailsService {
@@ -27,6 +33,17 @@ public class UserSecurityService implements UserDetailsService {
 			LOG.warn("Username {} not found", username);
 			throw new UsernameNotFoundException("Username " + username + " not found");
 		}
-		return new UserDetailsAdapter(user);
+		return new org.springframework.security.core.userdetails.User(
+				user.getUsername(),
+				user.getPassword(),
+				user.isEnabled(),
+				true, true, true,
+				getAuthorities(user));
+	}
+
+	private Collection<? extends GrantedAuthority> getAuthorities(User user) {
+		Set<GrantedAuthority> authorities = new HashSet<>();
+		user.getUserRoles().forEach(ur -> authorities.add(new Authority(ur.getRole().getName())));
+		return authorities;
 	}
 }

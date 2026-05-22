@@ -1,4 +1,4 @@
-package com.userFront.domain;
+package com.userFront.identity.domain;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,7 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.userFront.domain.security.UserRole;
 
 @Entity
 public class User {

@@ -1,4 +1,4 @@
-package com.userFront.controller;
+package com.userFront.identity.controller;
 
 import java.security.Principal;
 import java.util.Set;
@@ -14,10 +14,10 @@ import com.userFront.account.dao.PrimaryAccountDao;
 import com.userFront.account.dao.SavingsAccountDao;
 import com.userFront.account.domain.PrimaryAccount;
 import com.userFront.account.domain.SavingsAccount;
-import com.userFront.domain.User;
-import com.userFront.domain.security.UserRole;
-import com.userFront.service.UserRegistrationService;
-import com.userFront.service.UserService;
+import com.userFront.identity.domain.User;
+import com.userFront.identity.domain.UserRole;
+import com.userFront.identity.service.UserRegistrationService;
+import com.userFront.identity.service.UserService;
 
 @Controller
 public class HomeController {
