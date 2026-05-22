@@ -18,6 +18,7 @@ import com.userFront.domain.PrimaryAccount;
 import com.userFront.domain.SavingsAccount;
 import com.userFront.domain.User;
 import com.userFront.domain.security.UserRole;
+import com.userFront.service.UserRegistrationService;
 import com.userFront.service.UserService;
 
 @Controller
@@ -25,6 +26,9 @@ public class HomeController {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private UserRegistrationService userRegistrationService;
 
 	@Autowired
 	private RoleDao roleDao;
@@ -72,7 +76,7 @@ public class HomeController {
 			Set<UserRole> userRoles = new HashSet<>();
 			userRoles.add(new UserRole(user, roleDao.findByName("ROLE_USER")));
 
-			userService.createUser(user, userRoles);
+			userRegistrationService.registerUser(user, userRoles);
 
 			return "redirect:/";
 		}

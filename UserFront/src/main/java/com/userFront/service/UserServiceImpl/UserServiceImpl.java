@@ -14,7 +14,6 @@ import com.userFront.dao.RoleDao;
 import com.userFront.dao.UserDao;
 import com.userFront.domain.User;
 import com.userFront.domain.security.UserRole;
-import com.userFront.service.AccountService;
 import com.userFront.service.UserService;
 
 @Service
@@ -28,9 +27,6 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private RoleDao roleDao;
-	
-	@Autowired
-	private AccountService accountService;
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
@@ -61,9 +57,6 @@ public class UserServiceImpl implements UserService {
 			}
 
 			user.getUserRoles().addAll(userRoles);
-
-			user.setPrimaryAccountId(accountService.createPrimaryAccount().getId());
-			user.setSavingsAccountId(accountService.createSavingsAccount().getId());
 
 			localUser = userDao.save(user);
 		}

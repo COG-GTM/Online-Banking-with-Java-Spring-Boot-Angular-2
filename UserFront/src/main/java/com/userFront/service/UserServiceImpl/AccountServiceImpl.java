@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.userFront.dao.PrimaryAccountDao;
 import com.userFront.dao.SavingsAccountDao;
+import com.userFront.dao.UserDao;
 import com.userFront.domain.PrimaryAccount;
 import com.userFront.domain.PrimaryTransaction;
 import com.userFront.domain.SavingsAccount;
@@ -16,7 +17,6 @@ import com.userFront.domain.SavingsTransaction;
 import com.userFront.domain.User;
 import com.userFront.service.AccountService;
 import com.userFront.service.TransactionService;
-import com.userFront.service.UserService;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -30,7 +30,7 @@ public class AccountServiceImpl implements AccountService {
 	private SavingsAccountDao savingsAccountDao;
 
 	@Autowired
-	private UserService userService;
+	private UserDao userDao;
 	
 	@Autowired
 	private TransactionService transactionService;
@@ -56,7 +56,7 @@ public class AccountServiceImpl implements AccountService {
 	}
 	
 	public void deposit(String accountType, double amount, Principal principal) {
-        User user = userService.findByUsername(principal.getName());
+        User user = userDao.findByUsername(principal.getName());
 
         if (accountType.equalsIgnoreCase("Primary")) {
             PrimaryAccount primaryAccount = primaryAccountDao.findOne(user.getPrimaryAccountId());
@@ -80,7 +80,7 @@ public class AccountServiceImpl implements AccountService {
     }
     
     public void withdraw(String accountType, double amount, Principal principal) {
-        User user = userService.findByUsername(principal.getName());
+        User user = userDao.findByUsername(principal.getName());
 
         if (accountType.equalsIgnoreCase("Primary")) {
             PrimaryAccount primaryAccount = primaryAccountDao.findOne(user.getPrimaryAccountId());
