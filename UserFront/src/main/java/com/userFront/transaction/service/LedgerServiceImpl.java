@@ -1,33 +1,29 @@
-package com.userFront.service.UserServiceImpl;
+package com.userFront.transaction.service;
 
 import java.math.BigDecimal;
-import java.security.Principal;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.userFront.dao.PrimaryAccountDao;
-import com.userFront.dao.PrimaryTransactionDao;
-import com.userFront.dao.RecipientDao;
 import com.userFront.dao.SavingsAccountDao;
-import com.userFront.dao.SavingsTransactionDao;
+import com.userFront.dao.UserDao;
 import com.userFront.domain.PrimaryAccount;
-import com.userFront.domain.PrimaryTransaction;
-import com.userFront.domain.Recipient;
 import com.userFront.domain.SavingsAccount;
-import com.userFront.domain.SavingsTransaction;
 import com.userFront.domain.User;
-import com.userFront.service.TransactionService;
-import com.userFront.service.UserService;
+import com.userFront.transaction.dao.PrimaryTransactionDao;
+import com.userFront.transaction.dao.SavingsTransactionDao;
+import com.userFront.transaction.domain.PrimaryTransaction;
+import com.userFront.transaction.domain.Recipient;
+import com.userFront.transaction.domain.SavingsTransaction;
 
 @Service
-public class TransactionServiceImpl implements TransactionService {
+public class LedgerServiceImpl implements LedgerService {
 
 	@Autowired
-	private UserService userService;
+	private UserDao userDao;
 
 	@Autowired
 	private PrimaryTransactionDao primaryTransactionDao;
@@ -40,12 +36,9 @@ public class TransactionServiceImpl implements TransactionService {
 
 	@Autowired
 	private SavingsAccountDao savingsAccountDao;
-	
-	@Autowired
-	private RecipientDao recipientDao;
 
 	public List<PrimaryTransaction> findPrimaryTransactionList(String username) {
-		User user = userService.findByUsername(username);
+		User user = userDao.findByUsername(username);
 		PrimaryAccount primaryAccount = primaryAccountDao.findOne(user.getPrimaryAccountId());
 		List<PrimaryTransaction> primaryTransactionList = primaryAccount.getPrimaryTransactionList();
 
@@ -53,7 +46,7 @@ public class TransactionServiceImpl implements TransactionService {
 	}
 
 	public List<SavingsTransaction> findSavingsTransactionList(String username) {
-		User user = userService.findByUsername(username);
+		User user = userDao.findByUsername(username);
 		SavingsAccount savingsAccount = savingsAccountDao.findOne(user.getSavingsAccountId());
 		List<SavingsTransaction> savingsTransactionList = savingsAccount.getSavingsTransactionList();
 
@@ -102,27 +95,6 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
-	public List<Recipient> findRecipientList(Principal principal) {
-        String username = principal.getName();
-        List<Recipient> recipientList = recipientDao.findAll().stream()
-                .filter(recipient -> username.equals(recipient.getUser().getUsername()))
-                .collect(Collectors.toList());
-
-        return recipientList;
-    }
-
-    public Recipient saveRecipient(Recipient recipient) {
-        return recipientDao.save(recipient);
-    }
-
-    public Recipient findRecipientByName(String recipientName) {
-        return recipientDao.findByName(recipientName);
-    }
-
-    public void deleteRecipientByName(String recipientName) {
-        recipientDao.deleteByName(recipientName);
-    }
-    
     public void toSomeoneElseTransfer(Recipient recipient, String accountType, String amount, PrimaryAccount primaryAccount, SavingsAccount savingsAccount) {
         if (accountType.equalsIgnoreCase("Primary")) {
             primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));

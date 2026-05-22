@@ -1,11 +1,9 @@
-package com.userFront.domain;
+package com.userFront.transaction.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -21,10 +19,8 @@ public class Recipient {
 	private String accountNumber;
 	private String description;
 
-	@ManyToOne
-	@JoinColumn(name = "user_id")
 	@JsonIgnore
-	private User user;
+	private Long userId;
 
 	public Long getId() {
 		return id;
@@ -74,12 +70,12 @@ public class Recipient {
 		this.description = description;
 	}
 
-	public User getUser() {
-		return user;
+	public Long getUserId() {
+		return userId;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 }

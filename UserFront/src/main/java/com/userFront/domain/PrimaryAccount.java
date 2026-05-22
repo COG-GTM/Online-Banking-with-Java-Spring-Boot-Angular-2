@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.userFront.transaction.domain.PrimaryTransaction;
 
 @Entity
 public class PrimaryAccount {

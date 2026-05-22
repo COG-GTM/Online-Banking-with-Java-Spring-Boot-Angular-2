@@ -11,12 +11,12 @@ import com.userFront.dao.PrimaryAccountDao;
 import com.userFront.dao.SavingsAccountDao;
 import com.userFront.dao.UserDao;
 import com.userFront.domain.PrimaryAccount;
-import com.userFront.domain.PrimaryTransaction;
 import com.userFront.domain.SavingsAccount;
-import com.userFront.domain.SavingsTransaction;
 import com.userFront.domain.User;
 import com.userFront.service.AccountService;
-import com.userFront.service.TransactionService;
+import com.userFront.transaction.domain.PrimaryTransaction;
+import com.userFront.transaction.domain.SavingsTransaction;
+import com.userFront.transaction.service.LedgerService;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -33,7 +33,7 @@ public class AccountServiceImpl implements AccountService {
 	private UserDao userDao;
 	
 	@Autowired
-	private TransactionService transactionService;
+	private LedgerService ledgerService;
 
 	public PrimaryAccount createPrimaryAccount() {
 		PrimaryAccount primaryAccount = new PrimaryAccount();
@@ -66,7 +66,7 @@ public class AccountServiceImpl implements AccountService {
             Date date = new Date();
 
             PrimaryTransaction primaryTransaction = new PrimaryTransaction(date, "Deposit to Primary Account", "Account", "Finished", amount, primaryAccount.getAccountBalance(), primaryAccount);
-            transactionService.savePrimaryDepositTransaction(primaryTransaction);
+            ledgerService.savePrimaryDepositTransaction(primaryTransaction);
             
         } else if (accountType.equalsIgnoreCase("Savings")) {
             SavingsAccount savingsAccount = savingsAccountDao.findOne(user.getSavingsAccountId());
@@ -75,7 +75,7 @@ public class AccountServiceImpl implements AccountService {
 
             Date date = new Date();
             SavingsTransaction savingsTransaction = new SavingsTransaction(date, "Deposit to savings Account", "Account", "Finished", amount, savingsAccount.getAccountBalance(), savingsAccount);
-            transactionService.saveSavingsDepositTransaction(savingsTransaction);
+            ledgerService.saveSavingsDepositTransaction(savingsTransaction);
         }
     }
     
@@ -90,7 +90,7 @@ public class AccountServiceImpl implements AccountService {
             Date date = new Date();
 
             PrimaryTransaction primaryTransaction = new PrimaryTransaction(date, "Withdraw from Primary Account", "Account", "Finished", amount, primaryAccount.getAccountBalance(), primaryAccount);
-            transactionService.savePrimaryWithdrawTransaction(primaryTransaction);
+            ledgerService.savePrimaryWithdrawTransaction(primaryTransaction);
         } else if (accountType.equalsIgnoreCase("Savings")) {
             SavingsAccount savingsAccount = savingsAccountDao.findOne(user.getSavingsAccountId());
             savingsAccount.setAccountBalance(savingsAccount.getAccountBalance().subtract(new BigDecimal(amount)));
@@ -98,7 +98,7 @@ public class AccountServiceImpl implements AccountService {
 
             Date date = new Date();
             SavingsTransaction savingsTransaction = new SavingsTransaction(date, "Withdraw from savings Account", "Account", "Finished", amount, savingsAccount.getAccountBalance(), savingsAccount);
-            transactionService.saveSavingsWithdrawTransaction(savingsTransaction);
+            ledgerService.saveSavingsWithdrawTransaction(savingsTransaction);
         }
     }
 

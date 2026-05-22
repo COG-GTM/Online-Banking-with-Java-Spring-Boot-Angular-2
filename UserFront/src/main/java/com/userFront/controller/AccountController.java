@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.userFront.dao.PrimaryAccountDao;
 import com.userFront.dao.SavingsAccountDao;
 import com.userFront.domain.PrimaryAccount;
-import com.userFront.domain.PrimaryTransaction;
 import com.userFront.domain.SavingsAccount;
-import com.userFront.domain.SavingsTransaction;
 import com.userFront.domain.User;
 import com.userFront.service.AccountService;
-import com.userFront.service.TransactionService;
 import com.userFront.service.UserService;
+import com.userFront.transaction.domain.PrimaryTransaction;
+import com.userFront.transaction.domain.SavingsTransaction;
+import com.userFront.transaction.service.LedgerService;
 
 @Controller
 @RequestMapping("/account")
@@ -32,7 +32,7 @@ public class AccountController {
 	private AccountService accountService;
 
 	@Autowired
-	private TransactionService transactionService;
+	private LedgerService ledgerService;
 
 	@Autowired
 	private PrimaryAccountDao primaryAccountDao;
@@ -42,7 +42,7 @@ public class AccountController {
 
 	@RequestMapping("/primaryAccount")
 	public String primaryAccount(Model model, Principal principal) {
-		List<PrimaryTransaction> primaryTransactionList = transactionService
+		List<PrimaryTransaction> primaryTransactionList = ledgerService
 				.findPrimaryTransactionList(principal.getName());
 
 		User user = userService.findByUsername(principal.getName());
@@ -56,7 +56,7 @@ public class AccountController {
 
 	@RequestMapping("/savingsAccount")
 	public String savingsAccount(Model model, Principal principal) {
-		List<SavingsTransaction> savingsTransactionList = transactionService
+		List<SavingsTransaction> savingsTransactionList = ledgerService
 				.findSavingsTransactionList(principal.getName());
 		User user = userService.findByUsername(principal.getName());
 		SavingsAccount savingsAccount = savingsAccountDao.findOne(user.getSavingsAccountId());

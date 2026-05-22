@@ -1,4 +1,4 @@
-package com.userFront.controller;
+package com.userFront.transaction.controller;
 
 import java.security.Principal;
 import java.util.List;
@@ -14,22 +14,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.userFront.dao.PrimaryAccountDao;
 import com.userFront.dao.SavingsAccountDao;
+import com.userFront.dao.UserDao;
 import com.userFront.domain.PrimaryAccount;
-import com.userFront.domain.Recipient;
 import com.userFront.domain.SavingsAccount;
 import com.userFront.domain.User;
-import com.userFront.service.TransactionService;
-import com.userFront.service.UserService;
+import com.userFront.transaction.domain.Recipient;
+import com.userFront.transaction.service.LedgerService;
+import com.userFront.transaction.service.RecipientService;
 
 @Controller
 @RequestMapping("/transfer")
 public class TransferController {
 
 	@Autowired
-	private TransactionService transactionService;
+	private LedgerService ledgerService;
 
 	@Autowired
-	private UserService userService;
+	private RecipientService recipientService;
+
+	@Autowired
+	private UserDao userDao;
 
 	@Autowired
 	private PrimaryAccountDao primaryAccountDao;
@@ -50,17 +54,18 @@ public class TransferController {
 	public String betweenAccountsPost(@ModelAttribute("transferFrom") String transferFrom,
 			@ModelAttribute("transferTo") String transferTo, @ModelAttribute("amount") String amount,
 			Principal principal) throws Exception {
-		User user = userService.findByUsername(principal.getName());
+		User user = userDao.findByUsername(principal.getName());
 		PrimaryAccount primaryAccount = primaryAccountDao.findOne(user.getPrimaryAccountId());
 		SavingsAccount savingsAccount = savingsAccountDao.findOne(user.getSavingsAccountId());
-		transactionService.betweenAccountsTransfer(transferFrom, transferTo, amount, primaryAccount, savingsAccount);
+		ledgerService.betweenAccountsTransfer(transferFrom, transferTo, amount, primaryAccount, savingsAccount);
 
 		return "redirect:/userFront";
 	}
 
 	@RequestMapping(value = "/recipient", method = RequestMethod.GET)
 	public String recipient(Model model, Principal principal) {
-		List<Recipient> recipientList = transactionService.findRecipientList(principal);
+		User user = userDao.findByUsername(principal.getName());
+		List<Recipient> recipientList = recipientService.findRecipientList(user.getUserId());
 
 		Recipient recipient = new Recipient();
 
@@ -73,9 +78,9 @@ public class TransferController {
 	@RequestMapping(value = "/recipient/save", method = RequestMethod.POST)
 	public String recipientPost(@ModelAttribute("recipient") Recipient recipient, Principal principal) {
 
-		User user = userService.findByUsername(principal.getName());
-		recipient.setUser(user);
-		transactionService.saveRecipient(recipient);
+		User user = userDao.findByUsername(principal.getName());
+		recipient.setUserId(user.getUserId());
+		recipientService.saveRecipient(recipient);
 
 		return "redirect:/transfer/recipient";
 	}
@@ -84,8 +89,9 @@ public class TransferController {
 	public String recipientEdit(@RequestParam(value = "recipientName") String recipientName, Model model,
 			Principal principal) {
 
-		Recipient recipient = transactionService.findRecipientByName(recipientName);
-		List<Recipient> recipientList = transactionService.findRecipientList(principal);
+		Recipient recipient = recipientService.findRecipientByName(recipientName);
+		User user = userDao.findByUsername(principal.getName());
+		List<Recipient> recipientList = recipientService.findRecipientList(user.getUserId());
 
 		model.addAttribute("recipientList", recipientList);
 		model.addAttribute("recipient", recipient);
@@ -98,9 +104,10 @@ public class TransferController {
 	public String recipientDelete(@RequestParam(value = "recipientName") String recipientName, Model model,
 			Principal principal) {
 
-		transactionService.deleteRecipientByName(recipientName);
+		recipientService.deleteRecipientByName(recipientName);
 
-		List<Recipient> recipientList = transactionService.findRecipientList(principal);
+		User user = userDao.findByUsername(principal.getName());
+		List<Recipient> recipientList = recipientService.findRecipientList(user.getUserId());
 
 		Recipient recipient = new Recipient();
 		model.addAttribute("recipient", recipient);
@@ -111,7 +118,8 @@ public class TransferController {
 
 	@RequestMapping(value = "/toSomeoneElse", method = RequestMethod.GET)
 	public String toSomeoneElse(Model model, Principal principal) {
-		List<Recipient> recipientList = transactionService.findRecipientList(principal);
+		User user = userDao.findByUsername(principal.getName());
+		List<Recipient> recipientList = recipientService.findRecipientList(user.getUserId());
 
 		model.addAttribute("recipientList", recipientList);
 		model.addAttribute("accountType", "");
@@ -123,11 +131,11 @@ public class TransferController {
 	public String toSomeoneElsePost(@ModelAttribute("recipientName") String recipientName,
 			@ModelAttribute("accountType") String accountType, @ModelAttribute("amount") String amount,
 			Principal principal) {
-		User user = userService.findByUsername(principal.getName());
+		User user = userDao.findByUsername(principal.getName());
 		PrimaryAccount primaryAccount = primaryAccountDao.findOne(user.getPrimaryAccountId());
 		SavingsAccount savingsAccount = savingsAccountDao.findOne(user.getSavingsAccountId());
-		Recipient recipient = transactionService.findRecipientByName(recipientName);
-		transactionService.toSomeoneElseTransfer(recipient, accountType, amount, primaryAccount, savingsAccount);
+		Recipient recipient = recipientService.findRecipientByName(recipientName);
+		ledgerService.toSomeoneElseTransfer(recipient, accountType, amount, primaryAccount, savingsAccount);
 
 		return "redirect:/userFront";
 	}

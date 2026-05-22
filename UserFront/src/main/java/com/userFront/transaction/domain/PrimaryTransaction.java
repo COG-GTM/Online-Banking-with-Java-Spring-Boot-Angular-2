@@ -1,4 +1,4 @@
-package com.userFront.domain;
+package com.userFront.transaction.domain;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -10,8 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.userFront.domain.PrimaryAccount;
+
 @Entity
-public class SavingsTransaction {
+public class PrimaryTransaction {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,23 +26,22 @@ public class SavingsTransaction {
 	private BigDecimal availableBalance;
 	
 	@ManyToOne
-	@JoinColumn(name = "savings_account_id")
-	private SavingsAccount savingsAccount;
+	@JoinColumn(name = "primary_account_id")
+	private PrimaryAccount primaryAccount;
 
-	public SavingsTransaction() {
+	public PrimaryTransaction() {
 
 	}
 
-	public SavingsTransaction(Date date, String description, String type, String status, double amount,
-			BigDecimal availableBalance, SavingsAccount savingsAccount) {
-		super();
+	public PrimaryTransaction(Date date, String description, String type, String status, double amount,
+			BigDecimal availableBalance, PrimaryAccount primaryAccount) {
 		this.date = date;
 		this.description = description;
 		this.type = type;
 		this.status = status;
 		this.amount = amount;
 		this.availableBalance = availableBalance;
-		this.savingsAccount = savingsAccount;
+		this.primaryAccount = primaryAccount;
 	}
 
 	public Long getId() {
@@ -99,12 +100,12 @@ public class SavingsTransaction {
 		this.availableBalance = availableBalance;
 	}
 
-	public SavingsAccount getSavingsAccount() {
-		return savingsAccount;
+	public PrimaryAccount getPrimaryAccount() {
+		return primaryAccount;
 	}
 
-	public void setSavingsAccount(SavingsAccount savingsAccount) {
-		this.savingsAccount = savingsAccount;
+	public void setPrimaryAccount(PrimaryAccount primaryAccount) {
+		this.primaryAccount = primaryAccount;
 	}
 
 }

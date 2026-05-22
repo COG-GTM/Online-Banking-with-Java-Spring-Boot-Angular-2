@@ -1,10 +1,10 @@
-package com.userFront.dao;
+package com.userFront.transaction.dao;
 
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.userFront.domain.Recipient;
+import com.userFront.transaction.domain.Recipient;
 
 public interface RecipientDao extends CrudRepository<Recipient, Long> {
     List<Recipient> findAll();
@@ -12,4 +12,6 @@ public interface RecipientDao extends CrudRepository<Recipient, Long> {
     Recipient findByName(String recipientName);
 
     void deleteByName(String recipientName);
+
+    List<Recipient> findByUserId(Long userId);
 }
