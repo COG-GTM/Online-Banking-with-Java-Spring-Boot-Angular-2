@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.userFront.dao.PrimaryAccountDao;
+import com.userFront.dao.SavingsAccountDao;
 import com.userFront.domain.PrimaryAccount;
 import com.userFront.domain.Recipient;
 import com.userFront.domain.SavingsAccount;
@@ -29,6 +31,12 @@ public class TransferController {
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private PrimaryAccountDao primaryAccountDao;
+
+	@Autowired
+	private SavingsAccountDao savingsAccountDao;
+
 	@RequestMapping(value = "/betweenAccounts", method = RequestMethod.GET)
 	public String betweenAccounts(Model model) {
 		model.addAttribute("transferFrom", "");
@@ -43,8 +51,8 @@ public class TransferController {
 			@ModelAttribute("transferTo") String transferTo, @ModelAttribute("amount") String amount,
 			Principal principal) throws Exception {
 		User user = userService.findByUsername(principal.getName());
-		PrimaryAccount primaryAccount = user.getPrimaryAccount();
-		SavingsAccount savingsAccount = user.getSavingsAccount();
+		PrimaryAccount primaryAccount = primaryAccountDao.findOne(user.getPrimaryAccountId());
+		SavingsAccount savingsAccount = savingsAccountDao.findOne(user.getSavingsAccountId());
 		transactionService.betweenAccountsTransfer(transferFrom, transferTo, amount, primaryAccount, savingsAccount);
 
 		return "redirect:/userFront";
@@ -116,9 +124,10 @@ public class TransferController {
 			@ModelAttribute("accountType") String accountType, @ModelAttribute("amount") String amount,
 			Principal principal) {
 		User user = userService.findByUsername(principal.getName());
+		PrimaryAccount primaryAccount = primaryAccountDao.findOne(user.getPrimaryAccountId());
+		SavingsAccount savingsAccount = savingsAccountDao.findOne(user.getSavingsAccountId());
 		Recipient recipient = transactionService.findRecipientByName(recipientName);
-		transactionService.toSomeoneElseTransfer(recipient, accountType, amount, user.getPrimaryAccount(),
-				user.getSavingsAccount());
+		transactionService.toSomeoneElseTransfer(recipient, accountType, amount, primaryAccount, savingsAccount);
 
 		return "redirect:/userFront";
 	}

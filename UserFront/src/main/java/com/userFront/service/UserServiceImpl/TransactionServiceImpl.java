@@ -46,14 +46,16 @@ public class TransactionServiceImpl implements TransactionService {
 
 	public List<PrimaryTransaction> findPrimaryTransactionList(String username) {
 		User user = userService.findByUsername(username);
-		List<PrimaryTransaction> primaryTransactionList = user.getPrimaryAccount().getPrimaryTransactionList();
+		PrimaryAccount primaryAccount = primaryAccountDao.findOne(user.getPrimaryAccountId());
+		List<PrimaryTransaction> primaryTransactionList = primaryAccount.getPrimaryTransactionList();
 
 		return primaryTransactionList;
 	}
 
 	public List<SavingsTransaction> findSavingsTransactionList(String username) {
 		User user = userService.findByUsername(username);
-		List<SavingsTransaction> savingsTransactionList = user.getSavingsAccount().getSavingsTransactionList();
+		SavingsAccount savingsAccount = savingsAccountDao.findOne(user.getSavingsAccountId());
+		List<SavingsTransaction> savingsTransactionList = savingsAccount.getSavingsTransactionList();
 
 		return savingsTransactionList;
 	}
@@ -102,8 +104,8 @@ public class TransactionServiceImpl implements TransactionService {
 
 	public List<Recipient> findRecipientList(Principal principal) {
         String username = principal.getName();
-        List<Recipient> recipientList = recipientDao.findAll().stream() 			//convert list to stream
-                .filter(recipient -> username.equals(recipient.getUser().getUsername()))	//filters the line, equals to username
+        List<Recipient> recipientList = recipientDao.findAll().stream()
+                .filter(recipient -> username.equals(recipient.getUser().getUsername()))
                 .collect(Collectors.toList());
 
         return recipientList;

@@ -2,7 +2,6 @@ package com.userFront.domain;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -13,7 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,18 +38,9 @@ public class User implements UserDetails{
 
     private boolean enabled=true;
 
-    @OneToOne
-    private PrimaryAccount primaryAccount;
+    private Long primaryAccountId;
 
-    @OneToOne
-    private SavingsAccount savingsAccount;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Appointment> appointmentList;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Recipient> recipientList;
+    private Long savingsAccountId;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
@@ -113,20 +102,20 @@ public class User implements UserDetails{
         this.phone = phone;
     }
 
-    public List<Appointment> getAppointmentList() {
-        return appointmentList;
+    public Long getPrimaryAccountId() {
+        return primaryAccountId;
     }
 
-    public void setAppointmentList(List<Appointment> appointmentList) {
-        this.appointmentList = appointmentList;
+    public void setPrimaryAccountId(Long primaryAccountId) {
+        this.primaryAccountId = primaryAccountId;
     }
 
-    public List<Recipient> getRecipientList() {
-        return recipientList;
+    public Long getSavingsAccountId() {
+        return savingsAccountId;
     }
 
-    public void setRecipientList(List<Recipient> recipientList) {
-        this.recipientList = recipientList;
+    public void setSavingsAccountId(Long savingsAccountId) {
+        this.savingsAccountId = savingsAccountId;
     }
 
     public String getPassword() {
@@ -135,22 +124,6 @@ public class User implements UserDetails{
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public PrimaryAccount getPrimaryAccount() {
-        return primaryAccount;
-    }
-
-    public void setPrimaryAccount(PrimaryAccount primaryAccount) {
-        this.primaryAccount = primaryAccount;
-    }
-
-    public SavingsAccount getSavingsAccount() {
-        return savingsAccount;
-    }
-
-    public void setSavingsAccount(SavingsAccount savingsAccount) {
-        this.savingsAccount = savingsAccount;
     }
 
     public void setEnabled(boolean enabled) {
@@ -167,8 +140,6 @@ public class User implements UserDetails{
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
-                ", appointmentList=" + appointmentList +
-                ", recipientList=" + recipientList +
                 ", userRoles=" + userRoles +
                 '}';
     }
@@ -182,19 +153,16 @@ public class User implements UserDetails{
 
     @Override
     public boolean isAccountNonExpired() {
-        // TODO Auto-generated method stub
         return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        // TODO Auto-generated method stub
         return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        // TODO Auto-generated method stub
         return true;
     }
 

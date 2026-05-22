@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.userFront.dao.PrimaryAccountDao;
+import com.userFront.dao.SavingsAccountDao;
 import com.userFront.domain.PrimaryAccount;
 import com.userFront.domain.PrimaryTransaction;
 import com.userFront.domain.SavingsAccount;
@@ -32,13 +34,19 @@ public class AccountController {
 	@Autowired
 	private TransactionService transactionService;
 
+	@Autowired
+	private PrimaryAccountDao primaryAccountDao;
+
+	@Autowired
+	private SavingsAccountDao savingsAccountDao;
+
 	@RequestMapping("/primaryAccount")
 	public String primaryAccount(Model model, Principal principal) {
 		List<PrimaryTransaction> primaryTransactionList = transactionService
 				.findPrimaryTransactionList(principal.getName());
 
 		User user = userService.findByUsername(principal.getName());
-		PrimaryAccount primaryAccount = user.getPrimaryAccount();
+		PrimaryAccount primaryAccount = primaryAccountDao.findOne(user.getPrimaryAccountId());
 
 		model.addAttribute("primaryAccount", primaryAccount);
 		model.addAttribute("primaryTransactionList", primaryTransactionList);
@@ -51,7 +59,7 @@ public class AccountController {
 		List<SavingsTransaction> savingsTransactionList = transactionService
 				.findSavingsTransactionList(principal.getName());
 		User user = userService.findByUsername(principal.getName());
-		SavingsAccount savingsAccount = user.getSavingsAccount();
+		SavingsAccount savingsAccount = savingsAccountDao.findOne(user.getSavingsAccountId());
 
 		model.addAttribute("savingsAccount", savingsAccount);
 		model.addAttribute("savingsTransactionList", savingsTransactionList);

@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.userFront.dao.PrimaryAccountDao;
 import com.userFront.dao.RoleDao;
+import com.userFront.dao.SavingsAccountDao;
 import com.userFront.domain.PrimaryAccount;
 import com.userFront.domain.SavingsAccount;
 import com.userFront.domain.User;
@@ -26,6 +28,12 @@ public class HomeController {
 
 	@Autowired
 	private RoleDao roleDao;
+
+	@Autowired
+	private PrimaryAccountDao primaryAccountDao;
+
+	@Autowired
+	private SavingsAccountDao savingsAccountDao;
 
 	@RequestMapping("/")
 	public String home() {
@@ -73,8 +81,8 @@ public class HomeController {
 	@RequestMapping("/userFront")
 	public String userFront(Principal principal, Model model) {
 		User user = userService.findByUsername(principal.getName());
-		PrimaryAccount primaryAccount = user.getPrimaryAccount();
-		SavingsAccount savingsAccount = user.getSavingsAccount();
+		PrimaryAccount primaryAccount = primaryAccountDao.findOne(user.getPrimaryAccountId());
+		SavingsAccount savingsAccount = savingsAccountDao.findOne(user.getSavingsAccountId());
 
 		model.addAttribute("primaryAccount", primaryAccount);
 		model.addAttribute("savingsAccount", savingsAccount);
