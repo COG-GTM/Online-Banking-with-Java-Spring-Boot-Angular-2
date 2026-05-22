@@ -1,8 +1,8 @@
-package com.userFront.service;
+package com.userFront.appointment.service;
 
 import java.util.List;
 
-import com.userFront.domain.Appointment;
+import com.userFront.appointment.domain.Appointment;
 
 public interface AppointmentService {
 	Appointment createAppointment(Appointment appointment);

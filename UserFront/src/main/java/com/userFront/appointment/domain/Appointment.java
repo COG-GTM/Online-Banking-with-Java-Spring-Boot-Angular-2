@@ -1,4 +1,4 @@
-package com.userFront.domain;
+package com.userFront.appointment.domain;
 
 import java.util.Date;
 
@@ -6,8 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 @Entity
 public class Appointment {
@@ -20,9 +18,7 @@ public class Appointment {
 	private String description;
 	private boolean confirmed;
 
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User user;
+	private Long userId;
 
 	public Long getId() {
 		return id;
@@ -64,12 +60,12 @@ public class Appointment {
 		this.confirmed = confirmed;
 	}
 
-	public User getUser() {
-		return user;
+	public Long getUserId() {
+		return userId;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 }

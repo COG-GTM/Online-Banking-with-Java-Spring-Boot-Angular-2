@@ -1,4 +1,4 @@
-package com.userFront.controller;
+package com.userFront.appointment.controller;
 
 import java.security.Principal;
 import java.text.ParseException;
@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.userFront.domain.Appointment;
+import com.userFront.appointment.domain.Appointment;
+import com.userFront.appointment.service.AppointmentService;
+import com.userFront.dao.UserDao;
 import com.userFront.domain.User;
-import com.userFront.service.AppointmentService;
-import com.userFront.service.UserService;
 
 @Controller
 @RequestMapping("/appointment")
@@ -25,7 +25,7 @@ public class AppointmentController {
 	private AppointmentService appointmentService;
 
 	@Autowired
-	private UserService userService;
+	private UserDao userDao;
 
 	@RequestMapping(value = "/create", method = RequestMethod.GET)
 	public String createAppointment(Model model) {
@@ -44,8 +44,8 @@ public class AppointmentController {
 		Date d1 = format1.parse(date);
 		appointment.setDate(d1);
 
-		User user = userService.findByUsername(principal.getName());
-		appointment.setUser(user);
+		User user = userDao.findByUsername(principal.getName());
+		appointment.setUserId(user.getUserId());
 
 		appointmentService.createAppointment(appointment);
 

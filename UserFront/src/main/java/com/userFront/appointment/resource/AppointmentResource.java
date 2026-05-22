@@ -1,4 +1,4 @@
-package com.userFront.resource;
+package com.userFront.appointment.resource;
 
 import java.util.List;
 
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.userFront.domain.Appointment;
-import com.userFront.service.AppointmentService;
+import com.userFront.appointment.domain.Appointment;
+import com.userFront.appointment.service.AppointmentService;
 
 @RestController
 @RequestMapping("/api/appointment")
