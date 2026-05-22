@@ -24,4 +24,6 @@ public interface UserService {
     void enableUser (String username);
 
     void disableUser (String username);
+
+    Set<UserRole> getDefaultUserRoles(User user);
 }

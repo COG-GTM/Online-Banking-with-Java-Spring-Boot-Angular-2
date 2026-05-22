@@ -1,5 +1,6 @@
 package com.userFront.service.UserServiceImpl;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -109,6 +110,12 @@ public class UserServiceImpl implements UserService {
 	public List<User> findUserList() {
         return userDao.findAll();
     }
+
+	public Set<UserRole> getDefaultUserRoles(User user) {
+		Set<UserRole> userRoles = new HashSet<>();
+		userRoles.add(new UserRole(user, roleDao.findByName("ROLE_USER")));
+		return userRoles;
+	}
 	
 	
 }

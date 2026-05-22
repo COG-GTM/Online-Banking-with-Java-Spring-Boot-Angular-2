@@ -1,7 +1,6 @@
 package com.userFront.controller;
 
 import java.security.Principal;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.userFront.dao.PrimaryAccountDao;
-import com.userFront.dao.RoleDao;
 import com.userFront.dao.SavingsAccountDao;
 import com.userFront.domain.PrimaryAccount;
 import com.userFront.domain.SavingsAccount;
@@ -29,9 +27,6 @@ public class HomeController {
 
 	@Autowired
 	private UserRegistrationService userRegistrationService;
-
-	@Autowired
-	private RoleDao roleDao;
 
 	@Autowired
 	private PrimaryAccountDao primaryAccountDao;
@@ -73,8 +68,7 @@ public class HomeController {
 
 			return "signup";
 		} else {
-			Set<UserRole> userRoles = new HashSet<>();
-			userRoles.add(new UserRole(user, roleDao.findByName("ROLE_USER")));
+			Set<UserRole> userRoles = userService.getDefaultUserRoles(user);
 
 			userRegistrationService.registerUser(user, userRoles);
 
