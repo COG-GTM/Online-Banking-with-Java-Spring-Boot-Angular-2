@@ -1,4 +1,4 @@
-package com.userFront.controller;
+package com.userFront.account.controller;
 
 import java.security.Principal;
 import java.util.List;
@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.userFront.dao.PrimaryAccountDao;
-import com.userFront.dao.SavingsAccountDao;
-import com.userFront.domain.PrimaryAccount;
-import com.userFront.domain.SavingsAccount;
+import com.userFront.account.dao.PrimaryAccountDao;
+import com.userFront.account.dao.SavingsAccountDao;
+import com.userFront.account.domain.PrimaryAccount;
+import com.userFront.account.domain.SavingsAccount;
+import com.userFront.account.service.AccountService;
+import com.userFront.dao.UserDao;
 import com.userFront.domain.User;
-import com.userFront.service.AccountService;
-import com.userFront.service.UserService;
 import com.userFront.transaction.domain.PrimaryTransaction;
 import com.userFront.transaction.domain.SavingsTransaction;
 import com.userFront.transaction.service.LedgerService;
@@ -26,7 +26,7 @@ import com.userFront.transaction.service.LedgerService;
 public class AccountController {
 
 	@Autowired
-	private UserService userService;
+	private UserDao userDao;
 
 	@Autowired
 	private AccountService accountService;
@@ -45,7 +45,7 @@ public class AccountController {
 		List<PrimaryTransaction> primaryTransactionList = ledgerService
 				.findPrimaryTransactionList(principal.getName());
 
-		User user = userService.findByUsername(principal.getName());
+		User user = userDao.findByUsername(principal.getName());
 		PrimaryAccount primaryAccount = primaryAccountDao.findOne(user.getPrimaryAccountId());
 
 		model.addAttribute("primaryAccount", primaryAccount);
@@ -58,7 +58,7 @@ public class AccountController {
 	public String savingsAccount(Model model, Principal principal) {
 		List<SavingsTransaction> savingsTransactionList = ledgerService
 				.findSavingsTransactionList(principal.getName());
-		User user = userService.findByUsername(principal.getName());
+		User user = userDao.findByUsername(principal.getName());
 		SavingsAccount savingsAccount = savingsAccountDao.findOne(user.getSavingsAccountId());
 
 		model.addAttribute("savingsAccount", savingsAccount);

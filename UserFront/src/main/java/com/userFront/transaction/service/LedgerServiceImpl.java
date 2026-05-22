@@ -7,11 +7,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.userFront.dao.PrimaryAccountDao;
-import com.userFront.dao.SavingsAccountDao;
+import com.userFront.account.dao.PrimaryAccountDao;
+import com.userFront.account.dao.SavingsAccountDao;
+import com.userFront.account.domain.PrimaryAccount;
+import com.userFront.account.domain.SavingsAccount;
 import com.userFront.dao.UserDao;
-import com.userFront.domain.PrimaryAccount;
-import com.userFront.domain.SavingsAccount;
 import com.userFront.domain.User;
 import com.userFront.transaction.dao.PrimaryTransactionDao;
 import com.userFront.transaction.dao.SavingsTransactionDao;

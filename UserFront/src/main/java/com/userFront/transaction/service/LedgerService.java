@@ -2,8 +2,8 @@ package com.userFront.transaction.service;
 
 import java.util.List;
 
-import com.userFront.domain.PrimaryAccount;
-import com.userFront.domain.SavingsAccount;
+import com.userFront.account.domain.PrimaryAccount;
+import com.userFront.account.domain.SavingsAccount;
 import com.userFront.transaction.domain.PrimaryTransaction;
 import com.userFront.transaction.domain.Recipient;
 import com.userFront.transaction.domain.SavingsTransaction;

@@ -1,10 +1,10 @@
-package com.userFront.dao;
+package com.userFront.account.dao;
 
-import com.userFront.domain.SavingsAccount;
 import org.springframework.data.repository.CrudRepository;
 
+import com.userFront.account.domain.SavingsAccount;
 
 public interface SavingsAccountDao extends CrudRepository<SavingsAccount, Long> {
 
-    SavingsAccount findByAccountNumber (int accountNumber);
+    SavingsAccount findByAccountNumber(int accountNumber);
 }

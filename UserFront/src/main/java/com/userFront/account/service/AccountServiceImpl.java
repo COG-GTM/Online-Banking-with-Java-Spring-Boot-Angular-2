@@ -1,4 +1,4 @@
-package com.userFront.service.UserServiceImpl;
+package com.userFront.account.service;
 
 import java.math.BigDecimal;
 import java.security.Principal;
@@ -7,13 +7,12 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.userFront.dao.PrimaryAccountDao;
-import com.userFront.dao.SavingsAccountDao;
+import com.userFront.account.dao.PrimaryAccountDao;
+import com.userFront.account.dao.SavingsAccountDao;
+import com.userFront.account.domain.PrimaryAccount;
+import com.userFront.account.domain.SavingsAccount;
 import com.userFront.dao.UserDao;
-import com.userFront.domain.PrimaryAccount;
-import com.userFront.domain.SavingsAccount;
 import com.userFront.domain.User;
-import com.userFront.service.AccountService;
 import com.userFront.transaction.domain.PrimaryTransaction;
 import com.userFront.transaction.domain.SavingsTransaction;
 import com.userFront.transaction.service.LedgerService;

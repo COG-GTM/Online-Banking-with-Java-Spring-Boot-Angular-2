@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.userFront.dao.PrimaryAccountDao;
-import com.userFront.dao.SavingsAccountDao;
-import com.userFront.domain.PrimaryAccount;
-import com.userFront.domain.SavingsAccount;
+import com.userFront.account.dao.PrimaryAccountDao;
+import com.userFront.account.dao.SavingsAccountDao;
+import com.userFront.account.domain.PrimaryAccount;
+import com.userFront.account.domain.SavingsAccount;
 import com.userFront.domain.User;
 import com.userFront.domain.security.UserRole;
 import com.userFront.service.UserRegistrationService;

@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.userFront.dao.PrimaryAccountDao;
-import com.userFront.dao.SavingsAccountDao;
+import com.userFront.account.dao.PrimaryAccountDao;
+import com.userFront.account.dao.SavingsAccountDao;
+import com.userFront.account.domain.PrimaryAccount;
+import com.userFront.account.domain.SavingsAccount;
 import com.userFront.dao.UserDao;
-import com.userFront.domain.PrimaryAccount;
-import com.userFront.domain.SavingsAccount;
 import com.userFront.domain.User;
 import com.userFront.transaction.domain.Recipient;
 import com.userFront.transaction.service.LedgerService;
