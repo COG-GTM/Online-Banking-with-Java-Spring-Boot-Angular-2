@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {UserService} from '../user.service';
+import {TransactionService} from '../transaction.service';
 import { ActivatedRoute, Params } from '@angular/router';
 
 @Component({
@@ -12,7 +12,7 @@ export class PrimaryTransactionComponent implements OnInit {
   username:string;
 	primaryTransactionList: Object[];
 
-	constructor(private route: ActivatedRoute, private userService: UserService) {
+	constructor(private route: ActivatedRoute, private transactionService: TransactionService) {
 		this.route.params.forEach((params: Params) => {
      		this.username = params['username'];
 		});
@@ -21,7 +21,7 @@ export class PrimaryTransactionComponent implements OnInit {
 	}
 
 	getPrimaryTransactionList() {
-		this.userService.getPrimaryTransactionList(this.username).subscribe(
+		this.transactionService.getPrimaryTransactionList(this.username).subscribe(
 			res => {
 				console.log(JSON.parse(JSON.stringify(res))._body);
         		this.primaryTransactionList = JSON.parse(JSON.parse(JSON.stringify(res))._body);
