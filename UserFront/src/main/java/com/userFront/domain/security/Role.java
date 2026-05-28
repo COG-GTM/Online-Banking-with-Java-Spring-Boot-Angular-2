@@ -1,6 +1,6 @@
 package com.userFront.domain.security;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,7 +9,7 @@ import java.util.Set;
 @Entity
 public class Role {
     @Id
-//  @GeneratedValue(strategy = GenerationType.AUTO)
+//  @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int roleId;
 
     private String name;
