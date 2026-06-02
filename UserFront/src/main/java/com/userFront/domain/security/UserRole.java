@@ -2,7 +2,7 @@ package com.userFront.domain.security;
 
 import com.userFront.domain.User;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 
 @Entity
