@@ -1,5 +1,4 @@
-import { ModuleWithProviders }  from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes } from '@angular/router';
 
 import { LoginComponent } from './login/login.component';
 import { UserAccountComponent } from './user-account/user-account.component';
@@ -7,18 +6,15 @@ import { PrimaryTransactionComponent } from './primary-transaction/primary-trans
 import { SavingsTransactionComponent } from './savings-transaction/savings-transaction.component';
 import { AppointmentComponent } from './appointment/appointment.component';
 
-
-
-
-const appRoutes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     redirectTo: '/login',
     pathMatch: 'full'
   },
   {
-  	path: 'login',
-  	component: LoginComponent
+    path: 'login',
+    component: LoginComponent
   },
   {
     path: 'userAccount',
@@ -37,5 +33,3 @@ const appRoutes: Routes = [
     component: AppointmentComponent
   }
 ];
-
-export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);
