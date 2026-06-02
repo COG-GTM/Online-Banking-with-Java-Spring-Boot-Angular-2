@@ -1,44 +1,36 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+
 import { LoginService } from '../login.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
+  standalone: true,
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent {
 
-  loggedIn: boolean;
+  loggedIn = false;
 
-	constructor(private loginService: LoginService, private router : Router) {
-		if(localStorage.getItem('PortalAdminHasLoggedIn') == '') {
-			this.loggedIn = false;
-		} else {
-			this.loggedIn = true;
-		}
-	}
-
-	logout(){
-		this.loginService.logout().subscribe(
-			res => {
-				localStorage.setItem('PortalAdminHasLoggedIn', '');
-			},
-			err => console.log(err)
-			);
-		location.reload();
-		this.router.navigate(['/login']);
-	}
-
-	getDisplay() {
-    if(!this.loggedIn){
-      return "none";
-    } else {
-      return "";
-    }
+  constructor(private loginService: LoginService) {
+    const flag = localStorage.getItem('PortalAdminHasLoggedIn');
+    this.loggedIn = !(flag === '' || flag == null);
   }
 
-  ngOnInit() {
+  logout(): void {
+    this.loginService.logout().subscribe({
+      next: () => {
+        localStorage.setItem('PortalAdminHasLoggedIn', '');
+        location.reload();
+      },
+      error: (err) => console.log(err)
+    });
   }
 
+  getDisplay(): string {
+    return this.loggedIn ? '' : 'none';
+  }
 }

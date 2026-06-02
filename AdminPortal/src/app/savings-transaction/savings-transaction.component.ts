@@ -1,35 +1,32 @@
-import { Component, OnInit } from '@angular/core';
-import {UserService} from '../user.service';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Params } from '@angular/router';
 
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-savings-transaction',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './savings-transaction.component.html',
   styleUrls: ['./savings-transaction.component.css']
 })
-export class SavingsTransactionComponent implements OnInit {
+export class SavingsTransactionComponent {
 
-  username:string;
-	savingsTransactionList: Object[];
+  username = '';
+  savingsTransactionList: any[] = [];
 
-	constructor(private route: ActivatedRoute, private userService: UserService) {
-		this.route.params.forEach((params: Params) => {
-     		this.username = params['username'];
-		});
+  constructor(private route: ActivatedRoute, private userService: UserService) {
+    this.route.params.forEach((params: Params) => {
+      this.username = params['username'];
+    });
+    this.getSavingsTransactionList();
+  }
 
-		this.getSavingsTransactionList();
-	}
-
-	getSavingsTransactionList() {
-		this.userService.getSavingsTransactionList(this.username).subscribe(
-			res => {
-				console.log(JSON.parse(JSON.stringify(res))._body);
-        		this.savingsTransactionList = JSON.parse(JSON.parse(JSON.stringify(res))._body);
-      		},
-      		error => console.log(error)
-		)
-	}
-
-	ngOnInit() {}
+  getSavingsTransactionList(): void {
+    this.userService.getSavingsTransactionList(this.username).subscribe({
+      next: (res) => this.savingsTransactionList = res,
+      error: (error) => console.log(error)
+    });
+  }
 }

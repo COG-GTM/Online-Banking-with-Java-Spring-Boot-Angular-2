@@ -70,7 +70,16 @@ public class AccountController {
 	@RequestMapping(value = "/deposit", method = RequestMethod.POST)
 	public String depositPOST(@ModelAttribute("amount") String amount,
 			@ModelAttribute("accountType") String accountType, Principal principal) {
-		accountService.deposit(accountType, Double.parseDouble(amount), principal);
+		double parsedAmount;
+		try {
+			parsedAmount = Double.parseDouble(amount);
+		} catch (NumberFormatException e) {
+			return "redirect:/userFront?error=invalidAmount";
+		}
+		if (parsedAmount <= 0 || parsedAmount > 1_000_000) {
+			return "redirect:/userFront?error=invalidAmount";
+		}
+		accountService.deposit(accountType, parsedAmount, principal);
 
 		return "redirect:/userFront";
 	}
@@ -86,7 +95,16 @@ public class AccountController {
 	@RequestMapping(value = "/withdraw", method = RequestMethod.POST)
 	public String withdrawPOST(@ModelAttribute("amount") String amount,
 			@ModelAttribute("accountType") String accountType, Principal principal) {
-		accountService.withdraw(accountType, Double.parseDouble(amount), principal);
+		double parsedAmount;
+		try {
+			parsedAmount = Double.parseDouble(amount);
+		} catch (NumberFormatException e) {
+			return "redirect:/userFront?error=invalidAmount";
+		}
+		if (parsedAmount <= 0 || parsedAmount > 1_000_000) {
+			return "redirect:/userFront?error=invalidAmount";
+		}
+		accountService.withdraw(accountType, parsedAmount, principal);
 
 		return "redirect:/userFront";
 	}

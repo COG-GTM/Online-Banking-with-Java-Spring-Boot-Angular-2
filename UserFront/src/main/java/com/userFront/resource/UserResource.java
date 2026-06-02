@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,13 +43,13 @@ public class UserResource {
         return transactionService.findSavingsTransactionList(username);
     }
 
-    @RequestMapping("/user/{username}/enable")
+    @PutMapping("/user/{username}/enable")
     public void enableUser(@PathVariable("username") String username) {
         userService.enableUser(username);
     }
 
-    @RequestMapping("/user/{username}/disable")
-    public void diableUser(@PathVariable("username") String username) {
+    @PutMapping("/user/{username}/disable")
+    public void disableUser(@PathVariable("username") String username) {
         userService.disableUser(username);
     }
 }

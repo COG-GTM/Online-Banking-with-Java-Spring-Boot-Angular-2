@@ -1,0 +1,8 @@
+.wrapper {
+  max-width: 360px;
+  margin: 40px auto;
+}
+
+.form-signin input {
+  margin-bottom: 10px;
+}
