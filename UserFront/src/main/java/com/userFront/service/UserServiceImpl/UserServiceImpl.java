@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	public boolean checkUserExists(String username, String email) {
-		if (checkUsernameExists(username) || checkEmailExists(username)) {
+		if (checkUsernameExists(username) || checkEmailExists(email)) {
 			return true;
 		} else {
 			return false;
@@ -108,9 +108,9 @@ public class UserServiceImpl implements UserService {
 	public void disableUser(String username) {
 		User user = findByUsername(username);
 		user.setEnabled(false);
-		System.out.println(user.isEnabled());
+		LOG.info("User {} enabled status: {}", username, user.isEnabled());
 		userDao.save(user);
-		System.out.println(username + " is disabled.");
+		LOG.info("{} is disabled.", username);
 	}
 
 	public List<User> findUserList() {
