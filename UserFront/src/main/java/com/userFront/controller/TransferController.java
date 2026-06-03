@@ -1,5 +1,6 @@
 package com.userFront.controller;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
 
@@ -42,10 +43,19 @@ public class TransferController {
 	public String betweenAccountsPost(@ModelAttribute("transferFrom") String transferFrom,
 			@ModelAttribute("transferTo") String transferTo, @ModelAttribute("amount") String amount,
 			Principal principal) throws Exception {
+		BigDecimal amt;
+		try {
+			amt = new BigDecimal(amount);
+		} catch (NumberFormatException e) {
+			return "redirect:/userFront?error=invalidAmount";
+		}
+		if (amt.compareTo(BigDecimal.ZERO) <= 0) {
+			return "redirect:/userFront?error=invalidAmount";
+		}
 		User user = userService.findByUsername(principal.getName());
 		PrimaryAccount primaryAccount = user.getPrimaryAccount();
 		SavingsAccount savingsAccount = user.getSavingsAccount();
-		transactionService.betweenAccountsTransfer(transferFrom, transferTo, amount, primaryAccount, savingsAccount);
+		transactionService.betweenAccountsTransfer(transferFrom, transferTo, amt, primaryAccount, savingsAccount);
 
 		return "redirect:/userFront";
 	}
@@ -85,7 +95,7 @@ public class TransferController {
 		return "recipient";
 	}
 
-	@RequestMapping(value = "/recipient/delete", method = RequestMethod.GET)
+	@RequestMapping(value = "/recipient/delete", method = RequestMethod.POST)
 	@Transactional
 	public String recipientDelete(@RequestParam(value = "recipientName") String recipientName, Model model,
 			Principal principal) {
