@@ -76,8 +76,13 @@ public class TransferController {
 	public String recipientEdit(@RequestParam(value = "recipientName") String recipientName, Model model,
 			Principal principal) {
 
-		Recipient recipient = transactionService.findRecipientByName(recipientName);
 		List<Recipient> recipientList = transactionService.findRecipientList(principal);
+		boolean owns = recipientList.stream().anyMatch(r -> r.getName().equals(recipientName));
+		if (!owns) {
+			return "redirect:/transfer/recipient?error=unauthorized";
+		}
+
+		Recipient recipient = transactionService.findRecipientByName(recipientName);
 
 		model.addAttribute("recipientList", recipientList);
 		model.addAttribute("recipient", recipient);
@@ -85,14 +90,20 @@ public class TransferController {
 		return "recipient";
 	}
 
-	@RequestMapping(value = "/recipient/delete", method = RequestMethod.GET)
+	@RequestMapping(value = "/recipient/delete", method = RequestMethod.POST)
 	@Transactional
 	public String recipientDelete(@RequestParam(value = "recipientName") String recipientName, Model model,
 			Principal principal) {
 
+		List<Recipient> recipientList = transactionService.findRecipientList(principal);
+		boolean owns = recipientList.stream().anyMatch(r -> r.getName().equals(recipientName));
+		if (!owns) {
+			return "redirect:/transfer/recipient?error=unauthorized";
+		}
+
 		transactionService.deleteRecipientByName(recipientName);
 
-		List<Recipient> recipientList = transactionService.findRecipientList(principal);
+		recipientList = transactionService.findRecipientList(principal);
 
 		Recipient recipient = new Recipient();
 		model.addAttribute("recipient", recipient);

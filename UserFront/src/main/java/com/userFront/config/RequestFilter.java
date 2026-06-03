@@ -16,7 +16,9 @@ import org.springframework.stereotype.Component;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class RequestFilter implements Filter {
 
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) {
+    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(RequestFilter.class);
+
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws javax.servlet.ServletException {
         HttpServletResponse response = (HttpServletResponse) res;
         HttpServletRequest request = (HttpServletRequest) req;
 
@@ -30,10 +32,10 @@ public class RequestFilter implements Filter {
             try {
                 chain.doFilter(req, res);
             } catch(Exception e) {
-                e.printStackTrace();
+                throw new javax.servlet.ServletException(e);
             }
         } else {
-            System.out.println("Pre-flight");
+            LOG.debug("Pre-flight");
             response.setHeader("Access-Control-Allow-Methods", "POST,GET,DELETE");
             response.setHeader("Access-Control-Max-Age", "3600");
             response.setHeader("Access-Control-Allow-Headers", "authorization, content-type," +
