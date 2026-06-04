@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.userFront.domain.Appointment;
 import com.userFront.domain.User;
@@ -37,12 +38,18 @@ public class AppointmentController {
 	}
 
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
-	public String createAppointmentPost(@ModelAttribute("appointment") Appointment appointment,
-			@ModelAttribute("dateString") String date, Model model, Principal principal) throws ParseException {
+	public String createAppointmentPost(@RequestParam("location") String location,
+			@RequestParam("description") String description,
+			@RequestParam("dateString") String date, Model model, Principal principal) throws ParseException {
 
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 		Date d1 = format1.parse(date);
+
+		Appointment appointment = new Appointment();
 		appointment.setDate(d1);
+		appointment.setLocation(location);
+		appointment.setDescription(description);
+		appointment.setConfirmed(false);
 
 		User user = userService.findByUsername(principal.getName());
 		appointment.setUser(user);

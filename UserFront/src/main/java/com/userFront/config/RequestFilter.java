@@ -16,15 +16,23 @@ import org.springframework.stereotype.Component;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class RequestFilter implements Filter {
 
+    private static final String ALLOWED_ORIGIN = "http://localhost:4200";
+
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) {
         HttpServletResponse response = (HttpServletResponse) res;
         HttpServletRequest request = (HttpServletRequest) req;
 
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");  //8081
+        String origin = request.getHeader("Origin");
+        boolean originAllowed = ALLOWED_ORIGIN.equals(origin);
+
+        if (originAllowed) {
+            response.setHeader("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
+            response.setHeader("Access-Control-Allow-Credentials", "true");
+            response.setHeader("Vary", "Origin");
+        }
         response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
-        response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
+        response.setHeader("Access-Control-Allow-Headers", "x-requested-with, authorization, content-type");
         response.setHeader("Access-Control-Max-Age", "3600");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
 
         if (!(request.getMethod().equalsIgnoreCase("OPTIONS"))) {
             try {
@@ -33,11 +41,6 @@ public class RequestFilter implements Filter {
                 e.printStackTrace();
             }
         } else {
-            System.out.println("Pre-flight");
-            response.setHeader("Access-Control-Allow-Methods", "POST,GET,DELETE");
-            response.setHeader("Access-Control-Max-Age", "3600");
-            response.setHeader("Access-Control-Allow-Headers", "authorization, content-type," +
-                    "access-control-request-headers,access-control-request-method,accept,origin,authorization,x-requested-with");
             response.setStatus(HttpServletResponse.SC_OK);
         }
 
