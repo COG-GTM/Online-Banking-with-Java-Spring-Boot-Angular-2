@@ -56,6 +56,10 @@ public class AccountServiceImpl implements AccountService {
 	}
 	
 	public void deposit(String accountType, double amount, Principal principal) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Deposit amount must be greater than zero");
+        }
+
         User user = userService.findByUsername(principal.getName());
 
         if (accountType.equalsIgnoreCase("Primary")) {
@@ -80,10 +84,17 @@ public class AccountServiceImpl implements AccountService {
     }
     
     public void withdraw(String accountType, double amount, Principal principal) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Withdrawal amount must be greater than zero");
+        }
+
         User user = userService.findByUsername(principal.getName());
 
         if (accountType.equalsIgnoreCase("Primary")) {
             PrimaryAccount primaryAccount = user.getPrimaryAccount();
+            if (primaryAccount.getAccountBalance().compareTo(new BigDecimal(amount)) < 0) {
+                throw new IllegalArgumentException("Insufficient funds in Primary account");
+            }
             primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));
             primaryAccountDao.save(primaryAccount);
 
@@ -93,6 +104,9 @@ public class AccountServiceImpl implements AccountService {
             transactionService.savePrimaryWithdrawTransaction(primaryTransaction);
         } else if (accountType.equalsIgnoreCase("Savings")) {
             SavingsAccount savingsAccount = user.getSavingsAccount();
+            if (savingsAccount.getAccountBalance().compareTo(new BigDecimal(amount)) < 0) {
+                throw new IllegalArgumentException("Insufficient funds in Savings account");
+            }
             savingsAccount.setAccountBalance(savingsAccount.getAccountBalance().subtract(new BigDecimal(amount)));
             savingsAccountDao.save(savingsAccount);
 
