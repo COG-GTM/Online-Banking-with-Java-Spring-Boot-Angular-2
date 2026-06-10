@@ -15,9 +15,17 @@ User-Front is a user-facing system and it includes modules such as User Signup/L
 
 It is mainly used by Admin and it involves User Account and Appointment modules. Admin can enable/disable Users, view statements of every Users, confirm an appointment.
 
+The Admin Portal has been migrated from Angular 4 to **React (Vite)** and lives in
+[`AdminPortal-React/`](./AdminPortal-React). The original Angular implementation is
+preserved in [`AdminPortal/`](./AdminPortal) for reference. The React frontend talks
+to the same `UserFront` Spring Boot backend and requires no backend changes. See
+[`AdminPortal-React/README.md`](./AdminPortal-React/README.md) for how to run it.
+
 ## Technologies Used
 
-**Front-end:** Html5/CSS3, JavaScript, TypeScript, JQuery, Bootstrap, Angular 2 and some JS plugins, JSON, Thymeleaf
+**Admin Portal (front-end):** HTML5/CSS3, JavaScript, React 19, Vite, react-router-dom, axios, Bootstrap
+
+**User Frontend / legacy Admin Portal:** Html5/CSS3, JavaScript, TypeScript, JQuery, Bootstrap, Angular and some JS plugins, JSON, Thymeleaf
 
 **Back-end:** Java 8, Spring Boot, Spring Data, Spring Security, Hibernate, MySQL, Maven, Log4j
 
