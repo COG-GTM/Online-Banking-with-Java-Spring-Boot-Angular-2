@@ -15,9 +15,28 @@ User-Front is a user-facing system and it includes modules such as User Signup/L
 
 It is mainly used by Admin and it involves User Account and Appointment modules. Admin can enable/disable Users, view statements of every Users, confirm an appointment.
 
+The Admin Portal lives in `AdminPortal-React/` and is a React 18+ single-page app
+(migrated from the original Angular 4 implementation). It talks to the UserFront
+Spring Boot REST API and uses cookie-based authentication (`withCredentials`).
+
+### Running the Admin Portal
+
+```bash
+cd AdminPortal-React
+npm install
+npm start          # dev server on http://localhost:4200
+npm run build      # production build to dist/
+npm run lint       # eslint
+```
+
+The dev server runs on port `4200` to match the backend CORS allow-origin
+(`UserFront` permits `http://localhost:4200`). The API base URL can be overridden
+with the `VITE_API_BASE_URL` environment variable (defaults to
+`http://localhost:8080`).
+
 ## Technologies Used
 
-**Front-end:** Html5/CSS3, JavaScript, TypeScript, JQuery, Bootstrap, Angular 2 and some JS plugins, JSON, Thymeleaf
+**Front-end (Admin Portal):** React 18+, TypeScript, Vite, React Router, Axios, Bootstrap 5
 
-**Back-end:** Java 8, Spring Boot, Spring Data, Spring Security, Hibernate, MySQL, Maven, Log4j
+**Back-end:** Java, Spring Boot, Spring Data, Spring Security, Hibernate, MySQL, Maven, Log4j
 
