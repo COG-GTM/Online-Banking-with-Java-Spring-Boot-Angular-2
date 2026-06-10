@@ -61,9 +61,16 @@ npm run dev      # starts the Vite dev server (default http://localhost:5173)
 ```
 
 The dev server proxies `/api`, `/index`, and `/logout` to `http://localhost:8080`
-(see `vite.config.js`) so you can use relative URLs without CORS issues. The
-service modules currently call the backend with absolute `http://localhost:8080`
-URLs (matching the original Angular app); the backend's CORS filter allows this.
+(see `vite.config.js`). The service modules use **relative** URLs by default, so
+requests go through this proxy and avoid CORS entirely (the backend's CORS filter
+only allows the old Angular origin `http://localhost:4200`).
+
+To point the app at a backend on a different origin (e.g. a production build),
+set `VITE_API_BASE_URL`:
+
+```bash
+VITE_API_BASE_URL=https://api.example.com npm run build
+```
 
 ## Production build
 
