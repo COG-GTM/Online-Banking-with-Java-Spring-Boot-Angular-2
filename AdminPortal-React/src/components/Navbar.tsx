@@ -19,7 +19,7 @@ export function Navbar() {
   };
 
   return (
-    <nav className="navbar navbar-clean navbar-default">
+    <nav className="navbar navbar-expand navbar-clean navbar-default">
       <div className="container-fluid">
         <div className="navbar-header">
           <NavLink className="navbar-brand" to="/login">
@@ -31,16 +31,21 @@ export function Navbar() {
           {isLoggedIn && (
             <>
               <ul className="nav navbar-nav">
-                <li>
-                  <NavLink to="/userAccount">User Account</NavLink>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/userAccount">
+                    User Account
+                  </NavLink>
                 </li>
-                <li>
-                  <NavLink to="/appointment">Appointment</NavLink>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/appointment">
+                    Appointment
+                  </NavLink>
                 </li>
               </ul>
-              <ul className="nav navbar-nav navbar-right">
-                <li>
+              <ul className="nav navbar-nav navbar-right ms-auto">
+                <li className="nav-item">
                   <a
+                    className="nav-link"
                     onClick={handleLogout}
                     style={{ cursor: 'pointer' }}
                   >
