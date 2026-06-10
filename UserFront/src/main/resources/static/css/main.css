@@ -1,288 +1,560 @@
-body {
-	background-color: transparent;
+/* =====================================================================
+   Rabobank-inspired theme for Online Banking (UserFront)
+   Palette:  Rabo navy #000066 / #001E5A  |  Rabo orange #FB4F14 / #EC6608
+   Typography: Nunito Sans (Rabobank-style humanist sans)
+   ===================================================================== */
+
+:root {
+	--rabo-navy: #000066;
+	--rabo-navy-dark: #00134d;
+	--rabo-navy-deep: #001a4d;
+	--rabo-blue: #0a3d91;
+	--rabo-orange: #fb4f14;
+	--rabo-orange-dark: #d8410c;
+	--rabo-bg: #f4f5f7;
+	--rabo-card: #ffffff;
+	--rabo-border: #e3e6eb;
+	--rabo-text: #1d1d1b;
+	--rabo-muted: #5b6470;
 }
 
 html {
-	background: url("/images/bg.png") no-repeat center center fixed;
-	-webkit-background-size: cover;
-	-moz-background-size: cover;
-	-o-background-size: cover;
-	background-size: cover;
-}
-
-.form-basic {
-	max-width: 640px;
-	margin: 0 auto;
-	padding: 55px;
-	box-sizing: border-box;
-	background-color: #ffffff;
-	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-	font: bold 14px sans-serif;
-	text-align: center;
-}
-
-.form-basic .form-row {
-	text-align: left;
-	margin-bottom: 22px;
-}
-
-.form-basic .form-title-row {
-	text-align: center;
-	margin-bottom: 55px;
-}
-
-/* The form title */
-.form-basic h1 {
-	display: inline-block;
-	box-sizing: border-box;
-	color: #4c565e;
-	font-size: 24px;
-	padding: 0 10px 15px;
-	border-bottom: 2px solid #6caee0;
-	margin: 0;
-}
-
-.form-basic .form-row>label span {
-	display: inline-block;
-	box-sizing: border-box;
-	color: #5F5F5F;
-	width: 180px;
-	text-align: right;
-	vertical-align: top;
-	padding: 12px 25px;
-}
-
-.form-basic input {
-	color: #5f5f5f;
-	box-sizing: border-box;
-	width: 240px;
-	box-shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.08);
-	padding: 12px;
-	border: 1px solid #dbdbdb;
-}
-
-.form-basic input[type=radio], .form-basic input[type=checkbox] {
-	box-shadow: none;
-	width: auto;
-}
-
-.form-basic input[type=checkbox] {
-	margin-top: 13px;
-}
-
-.form-basic select {
-	background-color: #ffffff;
-	color: #5f5f5f;
-	box-sizing: border-box;
-	max-width: 240px;
-	box-shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.08);
-	padding: 12px 8px;
-	border: 1px solid #dbdbdb;
-}
-
-.form-basic textarea {
-	color: #5f5f5f;
-	box-sizing: border-box;
-	width: 240px;
-	height: 80px;
-	box-shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.08);
-	font: normal 13px sans-serif;
-	padding: 12px;
-	border: 1px solid #dbdbdb;
-	resize: vertical;
-}
-
-.form-basic .form-radio-buttons {
-	display: inline-block;
-	vertical-align: top;
-}
-
-.form-basic .form-radio-buttons>div {
-	margin-top: 10px;
-}
-
-.form-basic .form-radio-buttons label span {
-	margin-left: 8px;
-	color: #5f5f5f;
-	font-weight: normal;
-}
-
-.form-basic .form-radio-buttons input {
-	width: auto;
-}
-
-.form-basic button {
-	display: block;
-	border-radius: 2px;
-	background-color: #6caee0;
-	color: #ffffff;
-	font-weight: bold;
-	box-shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.08);
-	padding: 14px 22px;
-	border: 0;
-	margin: 40px 183px 0;
-}
-
-/*	Making the form responsive. Remove this media query
-    if you don't need the form to work on mobile devices. */
-@media ( max-width : 600px) {
-	.form-basic {
-		padding: 30px;
-		max-width: 480px;
-	}
-	.form-basic .form-row {
-		max-width: 300px;
-		margin: 25px auto;
-		text-align: left;
-	}
-	.form-basic .form-title-row {
-		margin-bottom: 50px;
-	}
-	.form-basic .form-row>label span {
-		display: block;
-		text-align: left;
-		padding: 0 0 15px;
-	}
-	.form-basic select {
-		width: 240px;
-	}
-	.form-basic input[type=checkbox] {
-		margin-top: 0;
-	}
-	.form-basic .form-radio-buttons>div {
-		margin: 0 0 10px;
-	}
-	.form-basic button {
-		margin: 0;
-	}
-}
-
-.main {
-	margin-top: 70px;
-}
-
-.main-center {
-	margin-top: 30px;
-	margin: 0 auto;
-	max-width: 330px;
-	padding: 40px 40px;
-}
-
-.responstable {
-	margin: 1em 0;
-	width: 100%;
-	overflow: hidden;
-	background: #FFF;
-	color: #024457;
-	border-radius: 10px;
-	border: 1px solid #167F92;
-}
-
-.responstable tr {
-	border: 1px solid #D9E4E6;
-}
-
-.responstable tr:nth-child(odd) {
-	background-color: #EAF3F3;
-}
-
-.responstable th {
-	display: none;
-	border: 1px solid #FFF;
-	background-color: #167F92;
-	color: #FFF;
-	padding: 1em;
-}
-
-.responstable th:first-child {
-	display: table-cell;
-	text-align: center;
-}
-
-.responstable th:nth-child(2) {
-	display: table-cell;
-}
-
-.responstable th:nth-child(2) span {
-	display: none;
-}
-
-.responstable th:nth-child(2):after {
-	content: attr(data-th);
-}
-
-@media ( min-width : 480px) {
-	.responstable th:nth-child(2) span {
-		display: block;
-	}
-	.responstable th:nth-child(2):after {
-		display: none;
-	}
-}
-
-.responstable td {
-	display: block;
-	word-wrap: break-word;
-	max-width: 7em;
-}
-
-.responstable td:first-child {
-	display: table-cell;
-	text-align: center;
-	border-right: 1px solid #D9E4E6;
-}
-
-@media ( min-width : 480px) {
-	.responstable td {
-		border: 1px solid #D9E4E6;
-	}
-}
-
-.responstable th, .responstable td {
-	text-align: left;
-	margin: .5em 1em;
-}
-
-@media ( min-width : 480px) {
-	.responstable th, .responstable td {
-		display: table-cell;
-		padding: 1em;
-	}
+	background: var(--rabo-bg);
+	min-height: 100%;
 }
 
 body {
-	padding: 0 2em;
-	font-family: Arial, sans-serif;
-	color: #024457;
-	/*background: #f2f2f2;*/
+	background: var(--rabo-bg);
+	padding: 0;
+	margin: 0;
+	color: var(--rabo-text);
+	font-family: 'Nunito Sans', 'Segoe UI', Arial, sans-serif;
+	font-size: 15px;
+	min-height: 100vh;
 }
 
-h1 {
-	font-family: Verdana;
-	font-weight: normal;
-	/*color: #024457;*/
+h1, h2, h3, h4, h5 {
+	font-family: 'Nunito Sans', 'Segoe UI', Arial, sans-serif;
+	color: var(--rabo-navy);
+	font-weight: 800;
 }
 
-h1 span {
-	color: #167F92;
+a {
+	color: var(--rabo-blue);
 }
 
-.box {
-	border: 2px solid red;
+a:hover, a:focus {
+	color: var(--rabo-orange);
+}
+
+/* ----------------------------------------------------------------- */
+/* Utility strip (Particulieren | Bedrijven | Private Banking)        */
+/* ----------------------------------------------------------------- */
+.rabo-utility {
+	background: #ffffff;
+	border-bottom: 1px solid var(--rabo-border);
+	font-size: 13px;
+}
+
+.rabo-utility .container {
+	padding-top: 8px;
+	padding-bottom: 8px;
+}
+
+.rabo-utility-link {
+	color: var(--rabo-muted);
+	margin-right: 22px;
+	font-weight: 600;
+	cursor: default;
+}
+
+.rabo-utility-link.rabo-active {
+	color: var(--rabo-navy);
+	border-bottom: 2px solid var(--rabo-orange);
+	padding-bottom: 7px;
+}
+
+/* ----------------------------------------------------------------- */
+/* Navbar (main navy bar with Rabobank wordmark)                      */
+/* ----------------------------------------------------------------- */
+.rabo-navbar.navbar-default {
+	background: linear-gradient(90deg, var(--rabo-navy-dark) 0%, var(--rabo-navy) 55%, var(--rabo-blue) 100%);
+	border: 0;
+	border-radius: 0;
+	margin-bottom: 0;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+	min-height: 64px;
+}
+
+.rabo-navbar .navbar-brand.rabo-brand {
+	color: #ffffff;
+	font-style: italic;
+	font-weight: 800;
+	font-size: 28px;
+	line-height: 64px;
+	height: 64px;
+	padding: 0 18px 0 0;
+	letter-spacing: 0.2px;
+}
+
+.rabo-navbar .navbar-brand.rabo-brand:hover {
+	color: #ffffff;
+}
+
+.rabo-navbar .navbar-nav > li > a {
+	color: rgba(255, 255, 255, 0.92);
+	font-weight: 600;
+	line-height: 34px;
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+.rabo-navbar .navbar-nav > li > a:hover,
+.rabo-navbar .navbar-nav > li > a:focus {
+	color: #ffffff;
+	background: rgba(255, 255, 255, 0.10);
+}
+
+.rabo-navbar .navbar-nav > .open > a,
+.rabo-navbar .navbar-nav > .open > a:hover,
+.rabo-navbar .navbar-nav > .open > a:focus {
+	background: rgba(255, 255, 255, 0.12);
+	color: #ffffff;
+}
+
+.rabo-navbar .dropdown-menu {
+	border: 0;
+	border-top: 3px solid var(--rabo-orange);
+	border-radius: 0 0 6px 6px;
+	box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
+	padding: 6px 0;
+}
+
+.rabo-navbar .dropdown-menu > li > a {
+	color: var(--rabo-navy);
+	font-weight: 600;
+	padding: 9px 20px;
+}
+
+.rabo-navbar .dropdown-menu > li > a:hover {
+	background: var(--rabo-bg);
+	color: var(--rabo-orange);
+}
+
+.rabo-navbar .navbar-toggle .icon-bar {
+	background: #ffffff;
+}
+
+.rabo-navbar .navbar-toggle {
+	border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* ----------------------------------------------------------------- */
+/* Public header bar (login / signup pages)                          */
+/* ----------------------------------------------------------------- */
+.rabo-public-header {
+	background: linear-gradient(90deg, var(--rabo-navy-dark) 0%, var(--rabo-navy) 55%, var(--rabo-blue) 100%);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+	padding: 16px 0;
+	margin-bottom: 0;
+}
+
+.rabo-public-header .rabo-brand {
+	color: #ffffff;
+	font-style: italic;
+	font-weight: 800;
+	font-size: 30px;
+	letter-spacing: 0.2px;
+}
+
+.rabo-hero {
+	background: linear-gradient(120deg, var(--rabo-navy) 0%, var(--rabo-blue) 100%);
+	color: #fff;
+	padding: 46px 0 90px;
+	text-align: center;
+	margin-bottom: -60px;
+}
+
+.rabo-hero h1 {
+	color: #fff;
+	font-size: 34px;
+	margin: 0 0 8px;
+}
+
+.rabo-hero p {
+	color: rgba(255, 255, 255, 0.85);
+	font-size: 16px;
+	margin: 0;
+}
+
+/* ----------------------------------------------------------------- */
+/* Layout spacing                                                     */
+/* ----------------------------------------------------------------- */
+.main {
+	margin-top: 36px;
+	margin-bottom: 48px;
+}
+
+.container.main {
+	margin-top: 36px;
+	margin-bottom: 48px;
+}
+
+/* ----------------------------------------------------------------- */
+/* Dashboard balance / action cards (Bootstrap panels)               */
+/* ----------------------------------------------------------------- */
+.panel {
+	border: 1px solid var(--rabo-border);
+	border-radius: 12px;
+	box-shadow: 0 4px 16px rgba(0, 32, 91, 0.06);
+	overflow: hidden;
+	background: var(--rabo-card);
+}
+
+.panel > .panel-heading {
+	background: var(--rabo-card);
+	border: 0;
+	padding: 22px 24px;
+	color: var(--rabo-text);
+}
+
+.panel h1 {
+	font-size: 30px;
+	margin: 0;
+	font-weight: 800;
+}
+
+.panel h2 {
+	font-size: 17px;
+	margin: 6px 0 0;
+	color: var(--rabo-muted);
+	font-weight: 700;
+}
+
+.panel .panel-footer {
+	background: var(--rabo-bg);
+	border-top: 1px solid var(--rabo-border);
+	color: var(--rabo-navy);
+	font-weight: 700;
+}
+
+.panel a:hover .panel-footer {
+	background: #eef0f4;
+	color: var(--rabo-orange);
+}
+
+/* Coloured accent strip on the left of each card */
+.panel-info { border-top: 4px solid var(--rabo-navy); }
+.panel-success { border-top: 4px solid #1f8a4c; }
+.panel-yellow { border-top: 4px solid var(--rabo-orange); }
+.panel-red { border-top: 4px solid #c0392b; }
+
+.panel-info .fa,
+.panel-success .fa,
+.panel-yellow .fa,
+.panel-red .fa {
+	color: var(--rabo-navy);
+}
+
+.panel-yellow .fa { color: var(--rabo-orange); }
+
+/* ----------------------------------------------------------------- */
+/* Forms                                                              */
+/* ----------------------------------------------------------------- */
+.container.main .col-md-6 > form,
+.container.main > .row > .col-md-6 > form {
+	background: var(--rabo-card);
+	border: 1px solid var(--rabo-border);
+	border-radius: 12px;
+	padding: 30px 32px;
+	box-shadow: 0 4px 16px rgba(0, 32, 91, 0.06);
+}
+
+.container.main h3 {
+	margin-top: 0;
+	margin-bottom: 18px;
+	font-size: 22px;
+}
+
+label, .control-label {
+	color: var(--rabo-navy);
+	font-weight: 700;
+}
+
+.form-control {
+	border: 1px solid #cfd4dc;
+	border-radius: 8px;
+	box-shadow: none;
+	height: 44px;
+	color: var(--rabo-text);
+}
+
+textarea.form-control {
+	height: auto;
+}
+
+.form-control:focus {
+	border-color: var(--rabo-blue);
+	box-shadow: 0 0 0 3px rgba(10, 61, 145, 0.12);
+}
+
+.input-group-addon {
+	background: var(--rabo-bg);
+	border: 1px solid #cfd4dc;
+	color: var(--rabo-muted);
+	border-radius: 8px 0 0 8px;
+}
+
+/* ----------------------------------------------------------------- */
+/* Buttons                                                            */
+/* ----------------------------------------------------------------- */
+.btn {
+	border-radius: 24px;
+	font-weight: 700;
+	padding: 10px 24px;
+	border: 0;
+	transition: background 0.15s ease, transform 0.05s ease;
+}
+
+.btn:active {
+	transform: translateY(1px);
+}
+
+.btn-primary {
+	background: var(--rabo-navy);
+	color: #fff;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+	background: var(--rabo-blue);
+	color: #fff;
+}
+
+.btn-info {
+	background: var(--rabo-orange);
+	color: #fff;
+}
+
+.btn-info:hover,
+.btn-info:focus,
+.btn-info:active {
+	background: var(--rabo-orange-dark);
+	color: #fff;
+}
+
+.login-button {
+	margin-top: 6px;
+}
+
+/* ----------------------------------------------------------------- */
+/* Login / Sign-in card                                              */
+/* ----------------------------------------------------------------- */
+.main-center {
+	margin: 40px auto 0;
+	max-width: 380px;
+	padding: 36px 34px;
+	background: var(--rabo-card);
+	border: 1px solid var(--rabo-border);
+	border-radius: 14px;
+	box-shadow: 0 10px 30px rgba(0, 32, 91, 0.10);
+	position: relative;
+	z-index: 2;
+}
+
+.form-signin-heading {
+	text-align: center;
+	margin: 0 0 22px;
+	font-size: 24px;
+	color: var(--rabo-navy);
+	font-weight: 800;
+}
+
+.form-signin .form-control {
+	margin-bottom: 12px;
+}
+
+/* Sign-up card */
+.main-login {
+	background: var(--rabo-card);
+	border: 1px solid var(--rabo-border);
+	border-radius: 14px;
+	box-shadow: 0 10px 30px rgba(0, 32, 91, 0.08);
+	max-width: 520px;
+	padding: 36px 38px;
+}
+
+.title {
+	color: var(--rabo-navy);
+	font-weight: 800;
+	text-align: center;
+}
+
+/* ----------------------------------------------------------------- */
+/* Generic Bootstrap form-basic (legacy class)                        */
+/* ----------------------------------------------------------------- */
+.form-basic {
+	max-width: 640px;
+	margin: 0 auto;
+	padding: 40px;
+	background: var(--rabo-card);
+	border: 1px solid var(--rabo-border);
+	border-radius: 14px;
+	box-shadow: 0 8px 24px rgba(0, 32, 91, 0.08);
+}
+
+.form-basic h1 {
+	color: var(--rabo-navy);
+	border-bottom: 2px solid var(--rabo-orange);
+}
+
+.form-basic button {
+	background: var(--rabo-navy);
+	border-radius: 24px;
+}
+
+/* ----------------------------------------------------------------- */
+/* Tables                                                             */
+/* ----------------------------------------------------------------- */
+.table, .dataTable {
+	background: var(--rabo-card);
+	border-radius: 12px;
+	overflow: hidden;
+}
+
+.table > thead > tr > th {
+	background: var(--rabo-navy);
+	color: #fff;
+	border-bottom: 0;
+	font-weight: 700;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+	background: #f6f8fb;
+}
+
+.table-hover > tbody > tr:hover {
+	background: #eef2f8;
+}
+
+/* Account-history balance card */
+.panel.panel-info h1 .fa-usd,
+.panel h1 .fa-usd {
+	color: var(--rabo-orange);
+}
+
+/* Profile account-info table (responstable) */
+.responstable {
+	margin: 1em 0;
+	width: 100%;
+	background: var(--rabo-card);
+	color: var(--rabo-text);
+	border-radius: 12px;
+	border: 1px solid var(--rabo-border);
+	overflow: hidden;
+}
+
+.responstable tr {
+	border: 1px solid var(--rabo-border);
+}
+
+.responstable th {
+	background: var(--rabo-navy);
+	color: #fff;
+	padding: 1em;
+	border: 1px solid var(--rabo-navy);
+}
+
+.responstable td {
+	padding: 1em;
+	text-align: center;
+}
+
+/* DataTables controls */
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select {
+	border: 1px solid #cfd4dc;
+	border-radius: 8px;
+	padding: 4px 8px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+	background: var(--rabo-navy) !important;
+	border-color: var(--rabo-navy) !important;
+	color: #fff !important;
+	border-radius: 6px;
+}
+
+/* ----------------------------------------------------------------- */
+/* Alerts                                                             */
+/* ----------------------------------------------------------------- */
+.bg-danger {
+	background: #fdecea;
+	color: #b3261e;
+	padding: 10px 14px;
+	border-radius: 8px;
+	border: 1px solid #f5c6c2;
+	margin-bottom: 14px;
+	display: block;
 }
 
 hr {
-	-moz-border-bottom-colors: none;
-	-moz-border-image: none;
-	-moz-border-left-colors: none;
-	-moz-border-right-colors: none;
-	-moz-border-top-colors: none;
-	border-color: #EEEEEE -moz-use-text-color #FFFFFF;
-	border-style: solid none;
-	border-width: 1px 0;
-	margin: 18px 0;
 	border: 0;
 	height: 1px;
-	background: #333;
-	background-image: linear-gradient(to right, #ccc, #333, #ccc);
+	background: var(--rabo-border);
+	margin: 22px 0;
+}
+
+/* ----------------------------------------------------------------- */
+/* Footer                                                             */
+/* ----------------------------------------------------------------- */
+.rabo-footer {
+	background: var(--rabo-navy-dark);
+	color: rgba(255, 255, 255, 0.85);
+	margin-top: 48px;
+	padding: 30px 0 26px;
+}
+
+.rabo-footer-top {
+	display: flex;
+	align-items: baseline;
+	gap: 14px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+	padding-bottom: 16px;
+	margin-bottom: 16px;
+}
+
+.rabo-footer-brand {
+	font-style: italic;
+	font-weight: 800;
+	font-size: 24px;
+	color: #fff;
+}
+
+.rabo-footer-tag {
+	color: rgba(255, 255, 255, 0.7);
+	font-size: 14px;
+}
+
+.rabo-footer-links {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 22px;
+	margin-bottom: 16px;
+}
+
+.rabo-footer-links span {
+	color: rgba(255, 255, 255, 0.85);
+	font-weight: 600;
+	font-size: 14px;
+}
+
+.rabo-footer-legal {
+	color: rgba(255, 255, 255, 0.6);
+	font-size: 13px;
+}
+
+@media (max-width: 600px) {
+	.rabo-footer-top { flex-direction: column; gap: 4px; }
 }
