@@ -47,7 +47,7 @@ export default function AppointmentPage() {
               <td>{formatDateTime(appointment.date)}</td>
               <td>{appointment.description}</td>
               <td>{String(appointment.confirmed)}</td>
-              {!appointment.confirmed && (
+              {!appointment.confirmed ? (
                 <td>
                   <a
                     onClick={() => handleConfirm(appointment.id)}
@@ -56,6 +56,8 @@ export default function AppointmentPage() {
                     Confirm
                   </a>
                 </td>
+              ) : (
+                <td></td>
               )}
             </tr>
           ))}
