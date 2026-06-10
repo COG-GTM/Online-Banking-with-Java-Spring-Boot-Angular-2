@@ -6,17 +6,30 @@ import { useAuth } from '../context/AuthContext';
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const { isLoggedIn, login } = useAuth();
   const navigate = useNavigate();
 
   const onSubmit = (event) => {
     event.preventDefault();
+    setError('');
     sendCredential(username, password)
-      .then(() => {
+      .then((response) => {
+        // Spring Security form login answers with a 302 for both success
+        // (-> /userFront) and failure (-> /index?error), and the browser
+        // transparently follows it. Inspect the final URL to tell them apart.
+        const finalUrl = response?.request?.responseURL || '';
+        if (finalUrl.includes('error')) {
+          setError('Invalid username or password.');
+          return;
+        }
         login();
         navigate('/userAccount');
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setError('Unable to log in. Please try again.');
+      });
   };
 
   return (
@@ -24,6 +37,12 @@ export default function LoginPage() {
       {!isLoggedIn ? (
         <form className="form-signin" onSubmit={onSubmit}>
           <h2 className="clean-font">Please login</h2>
+
+          {error && (
+            <div className="alert alert-danger" role="alert">
+              {error}
+            </div>
+          )}
 
           <input
             type="text"

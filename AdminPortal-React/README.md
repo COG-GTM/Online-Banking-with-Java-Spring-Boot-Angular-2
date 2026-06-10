@@ -72,6 +72,13 @@ set `VITE_API_BASE_URL`:
 VITE_API_BASE_URL=https://api.example.com npm run build
 ```
 
+> **Deployment note:** if you serve the frontend from a different origin than the
+> backend (i.e. you set `VITE_API_BASE_URL`), the backend must allow that origin.
+> The current CORS filter (`UserFront/.../config/RequestFilter.java`) hard-codes
+> `Access-Control-Allow-Origin: http://localhost:4200`, so it would need to be
+> updated for any cross-origin deployment. The default relative-URL + Vite-proxy
+> setup avoids this in development.
+
 ## Production build
 
 ```bash
