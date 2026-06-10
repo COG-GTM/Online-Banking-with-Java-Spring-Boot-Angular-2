@@ -19,5 +19,5 @@ It is mainly used by Admin and it involves User Account and Appointment modules.
 
 **Front-end:** Html5/CSS3, JavaScript, TypeScript, JQuery, Bootstrap, Angular 2 and some JS plugins, JSON, Thymeleaf
 
-**Back-end:** Java 8, Spring Boot, Spring Data, Spring Security, Hibernate, MySQL, Maven, Log4j
+**Back-end:** Java 25, Spring Boot 3.4.x, Spring Data JPA, Spring Security 6.x, Hibernate 6.x, MySQL 8.x, Maven
 

@@ -5,59 +5,65 @@
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<meta name="description" content="" />
-	<meta name="author" content="" />
-	<title>User Front</title>
+	<meta name="description" content="Rabobank Online Banking" />
+	<meta name="author" content="Rabobank" />
+	<title>Rabobank &ndash; Online Banking</title>
 	<!-- Bootstrap Core CSS -->
 	<link href="/css/bootstrap.min.css" rel="stylesheet" />
-	
+
 	<!-- Website Font style -->
 	<link rel="stylesheet"
 		href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css" />
-	
+
 	<!-- Google Fonts -->
-	<link href='https://fonts.googleapis.com/css?family=Passion+One'
-		rel='stylesheet' type='text/css' />
-	<link href='https://fonts.googleapis.com/css?family=Oxygen'
-		rel='stylesheet' type='text/css' />
-	
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800;1,800&display=swap"
+		rel="stylesheet" type="text/css" />
+
 	<!--bootstrap date-time picker-->
 	<link href="/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
-	
+
 	<!--data table-->
 	<link href="/css/jquery.dataTable.min.css" rel="stylesheet" />
 	<link href="/css/dataTables.bootstrap.min.css" rel="stylesheet" />
-	
+
 	<!-- Custom CSS -->
-	<!--<link href="css/scrolling-nav.css" rel="stylesheet" />-->
 	<link href="/css/main.css" rel="stylesheet" />
 </head>
 <body>
 	<!-- Navigation -->
 	<div th:fragment="navbar">
-		<img class="img-responsive" src="/images/banner.png" alt="banner" />
 
-		<nav class="navbar navbar-default " role="navigation">
+		<!-- Rabobank utility strip -->
+		<div class="rabo-utility">
+			<div class="container">
+				<span class="rabo-utility-link rabo-active">Particulieren</span>
+				<span class="rabo-utility-link">Bedrijven</span>
+				<span class="rabo-utility-link">Private Banking</span>
+			</div>
+		</div>
+
+		<nav class="navbar navbar-default rabo-navbar" role="navigation">
 			<div class="container">
 				<div class="navbar-header page-scroll">
 					<button type="button" class="navbar-toggle" data-toggle="collapse"
 						data-target=".navbar-ex1-collapse">
-						<span class="sr-only">Toggle navigation</span> <span
-							class="icon-bar"></span> <span class="icon-bar"></span> <span
-							class="icon-bar"></span>
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand page-scroll" th:href="@{/userFront}">Home</a>
+					<a class="navbar-brand rabo-brand page-scroll" th:href="@{/userFront}">Rabobank</a>
 				</div>
 
 				<!-- Collect the nav links, forms, and other content for toggling -->
-				<div class="collapse  navbar-collapse navbar-ex1-collapse">
+				<div class="collapse navbar-collapse navbar-ex1-collapse">
 					<ul class="nav navbar-nav">
-						<!-- Hidden li included to remove active class from about link when scrolled up past about section -->
-						<li class="hidden"><a class="page-scroll" href="#page-top"></a>
-						</li>
+						<li class="hidden"><a class="page-scroll" href="#page-top"></a></li>
+						<li><a class="page-scroll" th:href="@{/userFront}">Home</a></li>
 						<li class="dropdown"><a href="#" class="dropdown-toggle"
 							data-toggle="dropdown" role="button" aria-haspopup="true"
-							aria-expanded="false">Accounts <span class="caret"></span></a>
+							aria-expanded="false">Betalen &amp; Sparen <span class="caret"></span></a>
 							<ul class="dropdown-menu">
 								<li><a th:href="@{/account/primaryAccount}">Primary</a></li>
 								<li role="separator" class="divider"></li>
@@ -65,28 +71,24 @@
 							</ul></li>
 						<li class="dropdown"><a href="#" class="dropdown-toggle"
 							data-toggle="dropdown" role="button" aria-haspopup="true"
-							aria-expanded="false">Transfer <span class="caret"></span></a>
+							aria-expanded="false">Overboeken <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a th:href="@{/transfer/betweenAccounts}">Between
-										Accounts</a></li>
-								<li><a th:href="@{/transfer/toSomeoneElse}">To Someone
-										Else</a></li>
+								<li><a th:href="@{/transfer/betweenAccounts}">Between Accounts</a></li>
+								<li><a th:href="@{/transfer/toSomeoneElse}">To Someone Else</a></li>
 								<li role="separator" class="divider"></li>
-								<li><a th:href="@{/transfer/recipient}">Add/Edit
-										Recipient</a></li>
+								<li><a th:href="@{/transfer/recipient}">Add/Edit Recipient</a></li>
 							</ul></li>
 						<li class="dropdown"><a href="#" class="dropdown-toggle"
 							data-toggle="dropdown" role="button" aria-haspopup="true"
-							aria-expanded="false">Appointment <span class="caret"></span></a>
+							aria-expanded="false">Afspraak <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a th:href="@{/appointment/create}">Schedule an
-										Appointment</a></li>
+								<li><a th:href="@{/appointment/create}">Schedule an Appointment</a></li>
 							</ul></li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						<li class="dropdown"><a href="#" class="dropdown-toggle"
 							data-toggle="dropdown" role="button" aria-haspopup="true"
-							aria-expanded="false">Me <span class="caret"></span></a>
+							aria-expanded="false"><i class="fa fa-user-circle"></i> Mijn account <span class="caret"></span></a>
 							<ul class="dropdown-menu">
 								<li><a th:href="@{/user/profile}">Profile</a></li>
 								<li role="separator" class="divider"></li>
@@ -101,6 +103,28 @@
 	</div>
 
 	<div th:fragment="body-bottom-scripts">
+
+		<!-- Rabobank footer -->
+		<footer class="rabo-footer">
+			<div class="container">
+				<div class="rabo-footer-top">
+					<span class="rabo-footer-brand">Rabobank</span>
+					<span class="rabo-footer-tag">Een aandeel in elkaar</span>
+				</div>
+				<div class="rabo-footer-links">
+					<span>Betalen</span>
+					<span>Sparen</span>
+					<span>Hypotheken</span>
+					<span>Verzekeren</span>
+					<span>Veilig bankieren</span>
+					<span>Contact</span>
+				</div>
+				<div class="rabo-footer-legal">
+					&copy; Rabobank 2026 &middot; Voorwaarden &middot; Privacy en cookies &middot; Disclaimer
+				</div>
+			</div>
+		</footer>
+
 		<!-- jQuery -->
 		<script src="/js/jquery.js"></script>
 
