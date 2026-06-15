@@ -2,6 +2,7 @@ package com.userFront.service.UserServiceImpl;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.security.SecureRandom;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,9 @@ import com.userFront.service.UserService;
 @Service
 public class AccountServiceImpl implements AccountService {
 
-	private static int nextAccountNumber = 11223145;
+	private static final SecureRandom RANDOM = new SecureRandom();
+	private static final int MIN_ACCOUNT_NUMBER = 100000000;
+	private static final int MAX_ACCOUNT_NUMBER = 999999999;
 
 	@Autowired
 	private PrimaryAccountDao primaryAccountDao;
@@ -56,6 +59,10 @@ public class AccountServiceImpl implements AccountService {
 	}
 	
 	public void deposit(String accountType, double amount, Principal principal) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Deposit amount must be greater than zero");
+        }
+
         User user = userService.findByUsername(principal.getName());
 
         if (accountType.equalsIgnoreCase("Primary")) {
@@ -80,10 +87,17 @@ public class AccountServiceImpl implements AccountService {
     }
     
     public void withdraw(String accountType, double amount, Principal principal) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Withdrawal amount must be greater than zero");
+        }
+
         User user = userService.findByUsername(principal.getName());
 
         if (accountType.equalsIgnoreCase("Primary")) {
             PrimaryAccount primaryAccount = user.getPrimaryAccount();
+            if (primaryAccount.getAccountBalance().compareTo(new BigDecimal(amount)) < 0) {
+                throw new IllegalArgumentException("Insufficient funds");
+            }
             primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));
             primaryAccountDao.save(primaryAccount);
 
@@ -93,6 +107,9 @@ public class AccountServiceImpl implements AccountService {
             transactionService.savePrimaryWithdrawTransaction(primaryTransaction);
         } else if (accountType.equalsIgnoreCase("Savings")) {
             SavingsAccount savingsAccount = user.getSavingsAccount();
+            if (savingsAccount.getAccountBalance().compareTo(new BigDecimal(amount)) < 0) {
+                throw new IllegalArgumentException("Insufficient funds");
+            }
             savingsAccount.setAccountBalance(savingsAccount.getAccountBalance().subtract(new BigDecimal(amount)));
             savingsAccountDao.save(savingsAccount);
 
@@ -103,7 +120,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
 	private int accountGen() {
-		return ++nextAccountNumber;
+		int accountNumber;
+		do {
+			accountNumber = MIN_ACCOUNT_NUMBER + RANDOM.nextInt(MAX_ACCOUNT_NUMBER - MIN_ACCOUNT_NUMBER + 1);
+		} while (primaryAccountDao.findByAccountNumber(accountNumber) != null
+				|| savingsAccountDao.findByAccountNumber(accountNumber) != null);
+
+		return accountNumber;
 	}
 
 }
