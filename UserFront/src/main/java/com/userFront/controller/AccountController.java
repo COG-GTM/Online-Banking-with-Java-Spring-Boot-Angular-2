@@ -1,5 +1,6 @@
 package com.userFront.controller;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
 
@@ -22,6 +23,8 @@ import com.userFront.service.UserService;
 @Controller
 @RequestMapping("/account")
 public class AccountController {
+
+	private static final BigDecimal MAX_AMOUNT = new BigDecimal("1000000");
 
 	@Autowired
 	private UserService userService;
@@ -69,8 +72,18 @@ public class AccountController {
 
 	@RequestMapping(value = "/deposit", method = RequestMethod.POST)
 	public String depositPOST(@ModelAttribute("amount") String amount,
-			@ModelAttribute("accountType") String accountType, Principal principal) {
-		accountService.deposit(accountType, Double.parseDouble(amount), principal);
+			@ModelAttribute("accountType") String accountType, Principal principal, Model model) {
+		BigDecimal depositAmount;
+		try {
+			depositAmount = parseAmount(amount);
+		} catch (IllegalArgumentException e) {
+			model.addAttribute("accountType", accountType);
+			model.addAttribute("amount", amount);
+			model.addAttribute("error", e.getMessage());
+			return "deposit";
+		}
+
+		accountService.deposit(accountType, depositAmount, principal);
 
 		return "redirect:/userFront";
 	}
@@ -85,9 +98,38 @@ public class AccountController {
 
 	@RequestMapping(value = "/withdraw", method = RequestMethod.POST)
 	public String withdrawPOST(@ModelAttribute("amount") String amount,
-			@ModelAttribute("accountType") String accountType, Principal principal) {
-		accountService.withdraw(accountType, Double.parseDouble(amount), principal);
+			@ModelAttribute("accountType") String accountType, Principal principal, Model model) {
+		BigDecimal withdrawAmount;
+		try {
+			withdrawAmount = parseAmount(amount);
+		} catch (IllegalArgumentException e) {
+			model.addAttribute("accountType", accountType);
+			model.addAttribute("amount", amount);
+			model.addAttribute("error", e.getMessage());
+			return "withdraw";
+		}
+
+		accountService.withdraw(accountType, withdrawAmount, principal);
 
 		return "redirect:/userFront";
+	}
+
+	private BigDecimal parseAmount(String amount) {
+		BigDecimal parsed;
+		try {
+			parsed = new BigDecimal(amount);
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Please enter a valid amount.");
+		}
+
+		if (parsed.compareTo(BigDecimal.ZERO) <= 0) {
+			throw new IllegalArgumentException("Amount must be greater than zero.");
+		}
+
+		if (parsed.compareTo(MAX_AMOUNT) > 0) {
+			throw new IllegalArgumentException("Amount exceeds the maximum allowed limit of " + MAX_AMOUNT + ".");
+		}
+
+		return parsed;
 	}
 }
