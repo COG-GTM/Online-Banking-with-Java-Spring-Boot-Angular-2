@@ -1,9 +1,10 @@
 import { useCallback, useState, type ReactNode } from 'react';
 import { AuthContext, STORAGE_KEY } from './authContext';
 
+// Mirrors AdminPortal/src/app/navbar/navbar.component.ts: the navbar treats any
+// value other than the empty string (including a missing/null key) as logged-in.
 function readInitialState(): boolean {
-  const value = localStorage.getItem(STORAGE_KEY);
-  return value !== null && value !== '';
+  return localStorage.getItem(STORAGE_KEY) !== '';
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {

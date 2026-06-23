@@ -1,41 +1,33 @@
 import { useState, type FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { useAuthContext } from '../context/authContext';
+import { STORAGE_KEY, useAuthContext } from '../context/authContext';
 
 export function LoginPage() {
   const { login } = useAuth();
-  const { isLoggedIn, setLoggedIn } = useAuthContext();
-  const navigate = useNavigate();
+  const { setLoggedIn } = useAuthContext();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+
+  // Mirrors AdminPortal/src/app/login/login.component.ts: the login view treats a
+  // missing/empty key as logged-out (show the form) and any stored value as
+  // logged-in (show the welcome message).
+  const value = localStorage.getItem(STORAGE_KEY);
+  const loggedIn = !(value === '' || value === null);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError('');
     try {
       await login(username, password);
       setLoggedIn(true);
-      navigate('/userAccount');
     } catch (err) {
       console.log(err);
-      setError('Login failed. Please check your credentials.');
     }
   };
 
-  if (isLoggedIn) {
-    return (
-      <div className="wrapper">
-        <h2>Welcome to Admin Portal!</h2>
-      </div>
-    );
-  }
-
   return (
     <div className="wrapper">
-      <form className="form-signin" onSubmit={onSubmit}>
+      <form className="form-signin" onSubmit={onSubmit} hidden={loggedIn}>
         <h2 className="clean-font">Please login</h2>
 
         <input
@@ -67,12 +59,13 @@ export function LoginPage() {
           </label>
         </div>
 
-        {error && <div className="alert alert-danger">{error}</div>}
-
-        <button className="btn btn-primary btn-block w-100" type="submit">
+        <button className="btn btn-primary btn-block" type="submit">
           Login
         </button>
       </form>
+      <div hidden={!loggedIn}>
+        <h2>Welcome to Admin Portal!</h2>
+      </div>
     </div>
   );
 }
