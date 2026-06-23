@@ -7,6 +7,5 @@ export default defineConfig({
   server: {
     // Match the backend CORS allow-origin (UserFront expects http://localhost:4200)
     port: 4200,
-    host: true,
   },
 })
