@@ -4,11 +4,12 @@ import { useAuthContext } from '../context/authContext';
 
 export function Navbar() {
   const { logout } = useAuth();
-  const { isLoggedIn, setLoggedIn } = useAuthContext();
+  const { authValue, setLoggedIn } = useAuthContext();
   const navigate = useNavigate();
 
-  // Mirrors AdminPortal/src/app/navbar/navbar.component.ts `getDisplay()`.
-  const display = isLoggedIn ? '' : 'none';
+  // Mirrors AdminPortal/src/app/navbar/navbar.component.ts: only an explicit
+  // logged-out value ('') hides the links; null (fresh) and 'true' show them.
+  const display = authValue === '' ? 'none' : '';
 
   const handleLogout = async () => {
     try {

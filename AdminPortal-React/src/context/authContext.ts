@@ -3,7 +3,7 @@ import { createContext, useContext } from 'react';
 export const STORAGE_KEY = 'PortalAdminHasLoggedIn';
 
 export interface AuthContextValue {
-  isLoggedIn: boolean;
+  authValue: string | null;
   setLoggedIn: (value: boolean) => void;
 }
 

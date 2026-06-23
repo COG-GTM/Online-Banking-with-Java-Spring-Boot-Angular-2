@@ -1,10 +1,10 @@
 import { useState, type FormEvent } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { STORAGE_KEY, useAuthContext } from '../context/authContext';
+import { useAuthContext } from '../context/authContext';
 
 export function LoginPage() {
   const { login } = useAuth();
-  const { setLoggedIn } = useAuthContext();
+  const { authValue, setLoggedIn } = useAuthContext();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -12,8 +12,7 @@ export function LoginPage() {
   // Mirrors AdminPortal/src/app/login/login.component.ts: the login view treats a
   // missing/empty key as logged-out (show the form) and any stored value as
   // logged-in (show the welcome message).
-  const value = localStorage.getItem(STORAGE_KEY);
-  const loggedIn = !(value === '' || value === null);
+  const loggedIn = !(authValue === '' || authValue === null);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
