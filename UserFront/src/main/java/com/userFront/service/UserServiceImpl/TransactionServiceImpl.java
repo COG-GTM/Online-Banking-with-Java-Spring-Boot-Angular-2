@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.userFront.dao.PrimaryAccountDao;
 import com.userFront.dao.PrimaryTransactionDao;
@@ -25,6 +26,7 @@ import com.userFront.service.TransactionService;
 import com.userFront.service.UserService;
 
 @Service
+@Transactional
 public class TransactionServiceImpl implements TransactionService {
 
 	@Autowired
@@ -145,13 +147,13 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     public Recipient findRecipientByName(String recipientName, Principal principal) {
-        Recipient recipient = recipientDao.findByName(recipientName);
+        Recipient recipient = recipientDao.findByNameAndUser_Username(recipientName, principal.getName());
         verifyOwnership(recipient, principal);
         return recipient;
     }
 
     public void deleteRecipientByName(String recipientName, Principal principal) {
-        Recipient recipient = recipientDao.findByName(recipientName);
+        Recipient recipient = recipientDao.findByNameAndUser_Username(recipientName, principal.getName());
         verifyOwnership(recipient, principal);
         recipientDao.delete(recipient);
     }
@@ -177,6 +179,8 @@ public class TransactionServiceImpl implements TransactionService {
 
             SavingsTransaction savingsTransaction = new SavingsTransaction(date, "Transfer to recipient "+recipient.getName(), "Transfer", "Finished", transferAmount.doubleValue(), savingsAccount.getAccountBalance(), savingsAccount);
             savingsTransactionDao.save(savingsTransaction);
+        } else {
+            throw new IllegalArgumentException("Invalid account type: " + accountType);
         }
     }
 }

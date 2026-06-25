@@ -167,13 +167,19 @@ public class TransactionServiceImplTest {
 		transactionService.toSomeoneElseTransfer(recipient, "Primary", "-10.00", primaryAccount, savingsAccount);
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void toSomeoneElseTransfer_invalidAccountType_throws() {
+		Recipient recipient = recipientOwnedBy("alice");
+		transactionService.toSomeoneElseTransfer(recipient, "Checking", "10.00", primaryAccount, savingsAccount);
+	}
+
 	// ---------- recipient ownership (IDOR) ----------
 
 	@Test
 	public void findRecipientByName_owned_returnsRecipient() {
 		Recipient recipient = recipientOwnedBy("alice");
 		when(principal.getName()).thenReturn("alice");
-		when(recipientDao.findByName("Bob")).thenReturn(recipient);
+		when(recipientDao.findByNameAndUser_Username("Bob", "alice")).thenReturn(recipient);
 
 		Recipient result = transactionService.findRecipientByName("Bob", principal);
 
@@ -182,18 +188,17 @@ public class TransactionServiceImplTest {
 
 	@Test(expected = AccessDeniedException.class)
 	public void findRecipientByName_notOwned_throws() {
-		Recipient recipient = recipientOwnedBy("bob");
+		// User-scoped lookup returns nothing for a recipient the caller does not own.
 		when(principal.getName()).thenReturn("alice");
-		when(recipientDao.findByName("Bob")).thenReturn(recipient);
+		when(recipientDao.findByNameAndUser_Username("Bob", "alice")).thenReturn(null);
 
 		transactionService.findRecipientByName("Bob", principal);
 	}
 
 	@Test(expected = AccessDeniedException.class)
 	public void deleteRecipientByName_notOwned_throwsAndDoesNotDelete() {
-		Recipient recipient = recipientOwnedBy("bob");
 		when(principal.getName()).thenReturn("alice");
-		when(recipientDao.findByName("Bob")).thenReturn(recipient);
+		when(recipientDao.findByNameAndUser_Username("Bob", "alice")).thenReturn(null);
 		try {
 			transactionService.deleteRecipientByName("Bob", principal);
 		} finally {
@@ -206,7 +211,7 @@ public class TransactionServiceImplTest {
 	public void deleteRecipientByName_owned_deletes() {
 		Recipient recipient = recipientOwnedBy("alice");
 		when(principal.getName()).thenReturn("alice");
-		when(recipientDao.findByName("Bob")).thenReturn(recipient);
+		when(recipientDao.findByNameAndUser_Username("Bob", "alice")).thenReturn(recipient);
 
 		transactionService.deleteRecipientByName("Bob", principal);
 
