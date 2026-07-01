@@ -25,9 +25,8 @@ export default function AppointmentPage() {
       setError(
         err instanceof Error ? err.message : 'Failed to load appointments',
       );
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -56,6 +55,9 @@ export default function AppointmentPage() {
   }, []);
 
   const handleConfirm = async (id: number) => {
+    if (confirmingId !== null) {
+      return;
+    }
     setConfirmingId(id);
     try {
       await confirmAppointment(id);
