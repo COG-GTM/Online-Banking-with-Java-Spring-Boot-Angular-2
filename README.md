@@ -21,3 +21,24 @@ It is mainly used by Admin and it involves User Account and Appointment modules.
 
 **Back-end:** Java 8, Spring Boot, Spring Data, Spring Security, Hibernate, MySQL, Maven, Log4j
 
+## Environment Variables
+
+The database credentials are no longer stored in the versioned `application.properties`.
+They are read from environment variables at runtime, so you must set the following before
+starting the User Frontend backend:
+
+| Variable | Description |
+| --- | --- |
+| `DB_USERNAME` | MySQL username used to connect to the `onlinebanking` database |
+| `DB_PASSWORD` | Password for the above MySQL user |
+
+Example:
+
+```bash
+export DB_USERNAME=onlinebanking_app
+export DB_PASSWORD=your_strong_password
+```
+
+Use a dedicated MySQL account with limited privileges (restricted to the `onlinebanking`
+database) rather than the `root` account.
+
