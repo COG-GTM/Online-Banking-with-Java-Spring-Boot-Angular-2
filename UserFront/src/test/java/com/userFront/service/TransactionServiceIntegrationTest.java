@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.userFront.AbstractBankingIntegrationTest;
 import com.userFront.domain.Recipient;
 import com.userFront.domain.User;
+import com.userFront.exception.InsufficientFundsException;
 
 public class TransactionServiceIntegrationTest extends AbstractBankingIntegrationTest {
 
@@ -32,8 +33,8 @@ public class TransactionServiceIntegrationTest extends AbstractBankingIntegratio
     public void setUp() {
         createUser("txnUser", "txn@example.com", "secret");
         principal = () -> "txnUser";
-        accountService.deposit("Primary", 100.0, principal);
-        accountService.deposit("Savings", 100.0, principal);
+        accountService.deposit("Primary", new BigDecimal("100.0"), principal);
+        accountService.deposit("Savings", new BigDecimal("100.0"), principal);
     }
 
     @Test
@@ -68,6 +69,27 @@ public class TransactionServiceIntegrationTest extends AbstractBankingIntegratio
         } catch (Exception expected) {
             // expected
         }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void betweenAccountsTransferRejectsNonPositiveAmount() throws Exception {
+        User user = userService.findByUsername("txnUser");
+        transactionService.betweenAccountsTransfer("Primary", "Savings", "-10",
+                user.getPrimaryAccount(), user.getSavingsAccount());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void betweenAccountsTransferRejectsNonNumericAmount() throws Exception {
+        User user = userService.findByUsername("txnUser");
+        transactionService.betweenAccountsTransfer("Primary", "Savings", "abc",
+                user.getPrimaryAccount(), user.getSavingsAccount());
+    }
+
+    @Test(expected = InsufficientFundsException.class)
+    public void betweenAccountsTransferRejectsInsufficientFunds() throws Exception {
+        User user = userService.findByUsername("txnUser");
+        transactionService.betweenAccountsTransfer("Primary", "Savings", "1000",
+                user.getPrimaryAccount(), user.getSavingsAccount());
     }
 
     @Test

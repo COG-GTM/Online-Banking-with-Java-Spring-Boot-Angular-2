@@ -17,6 +17,7 @@ import com.userFront.domain.User;
 import com.userFront.service.AccountService;
 import com.userFront.service.TransactionService;
 import com.userFront.service.UserService;
+import com.userFront.util.AmountUtil;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -55,12 +56,13 @@ public class AccountServiceImpl implements AccountService {
 		return savingsAccountDao.findByAccountNumber(savingsAccount.getAccountNumber());
 	}
 	
-	public void deposit(String accountType, double amount, Principal principal) {
+	public void deposit(String accountType, BigDecimal amount, Principal principal) {
+        AmountUtil.requirePositive(amount);
         User user = userService.findByUsername(principal.getName());
 
         if (accountType.equalsIgnoreCase("Primary")) {
             PrimaryAccount primaryAccount = user.getPrimaryAccount();
-            primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().add(new BigDecimal(amount)));
+            primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().add(amount));
             primaryAccountDao.save(primaryAccount);
 
             Date date = new Date();
@@ -70,7 +72,7 @@ public class AccountServiceImpl implements AccountService {
             
         } else if (accountType.equalsIgnoreCase("Savings")) {
             SavingsAccount savingsAccount = user.getSavingsAccount();
-            savingsAccount.setAccountBalance(savingsAccount.getAccountBalance().add(new BigDecimal(amount)));
+            savingsAccount.setAccountBalance(savingsAccount.getAccountBalance().add(amount));
             savingsAccountDao.save(savingsAccount);
 
             Date date = new Date();
@@ -79,12 +81,14 @@ public class AccountServiceImpl implements AccountService {
         }
     }
     
-    public void withdraw(String accountType, double amount, Principal principal) {
+    public void withdraw(String accountType, BigDecimal amount, Principal principal) {
+        AmountUtil.requirePositive(amount);
         User user = userService.findByUsername(principal.getName());
 
         if (accountType.equalsIgnoreCase("Primary")) {
             PrimaryAccount primaryAccount = user.getPrimaryAccount();
-            primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));
+            AmountUtil.requireSufficientFunds(primaryAccount.getAccountBalance(), amount);
+            primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(amount));
             primaryAccountDao.save(primaryAccount);
 
             Date date = new Date();
@@ -93,7 +97,8 @@ public class AccountServiceImpl implements AccountService {
             transactionService.savePrimaryWithdrawTransaction(primaryTransaction);
         } else if (accountType.equalsIgnoreCase("Savings")) {
             SavingsAccount savingsAccount = user.getSavingsAccount();
-            savingsAccount.setAccountBalance(savingsAccount.getAccountBalance().subtract(new BigDecimal(amount)));
+            AmountUtil.requireSufficientFunds(savingsAccount.getAccountBalance(), amount);
+            savingsAccount.setAccountBalance(savingsAccount.getAccountBalance().subtract(amount));
             savingsAccountDao.save(savingsAccount);
 
             Date date = new Date();
