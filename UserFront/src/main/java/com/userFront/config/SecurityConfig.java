@@ -1,25 +1,27 @@
 package com.userFront.config;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.userFront.service.UserServiceImpl.UserSecurityService;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled=true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    private Environment env;
+@EnableMethodSecurity(prePostEnabled = true)
+public class SecurityConfig {
 
     @Autowired
     private UserSecurityService userSecurityService;
@@ -35,35 +37,59 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/",
             "/about/**",
             "/contact/**",
-            "/error/**/*",
+            "/error/**",
             "/console/**",
             "/signup"
     };
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests().
-//                antMatchers("/**").
-                antMatchers(PUBLIC_MATCHERS).
-                permitAll().anyRequest().authenticated();
-
-        http
-                .csrf().disable().cors().disable()
-                .formLogin().failureUrl("/index?error").defaultSuccessUrl("/userFront").loginPage("/index").permitAll()
-                .and()
-                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/index?logout").deleteCookies("remember-me").permitAll()
-                .and()
-                .rememberMe();
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userSecurityService);
+        provider.setPasswordEncoder(passwordEncoder);
+        return provider;
     }
 
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                // CSRF is enabled (Spring Security default). The server-rendered
+                // Thymeleaf forms receive the token automatically; the cross-origin
+                // JSON API consumed by the Angular SPA is exempted and relies on the
+                // CORS allowlist plus the authenticated session. Full SPA CSRF token
+                // handling is addressed with the frontend rewrite (Phase 7).
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(PUBLIC_MATCHERS).permitAll()
+                        .anyRequest().authenticated())
+                .formLogin(form -> form
+                        .loginPage("/index")
+                        .failureUrl("/index?error")
+                        .defaultSuccessUrl("/userFront")
+                        .permitAll())
+                .logout(logout -> logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .logoutSuccessUrl("/index?logout")
+                        .deleteCookies("remember-me")
+                        .permitAll())
+                .rememberMe(remember -> {
+                });
 
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//    	 auth.inMemoryAuthentication().withUser("user").password("password").roles("USER"); //This is in-memory authentication
-        auth.userDetailsService(userSecurityService).passwordEncoder(passwordEncoder);
+        return http.build();
     }
 
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
 
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }
