@@ -108,9 +108,8 @@ public class UserServiceImpl implements UserService {
 	public void disableUser(String username) {
 		User user = findByUsername(username);
 		user.setEnabled(false);
-		System.out.println(user.isEnabled());
 		userDao.save(user);
-		System.out.println(username + " is disabled.");
+		LOG.info("User {} has been disabled.", username);
 	}
 
 	public List<User> findUserList() {
