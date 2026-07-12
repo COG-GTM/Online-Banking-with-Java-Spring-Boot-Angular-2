@@ -35,6 +35,18 @@ public class UserServiceIntegrationTest extends AbstractBankingIntegrationTest {
     }
 
     @Test
+    public void checkUserExistsDetectsDuplicateEmailForNewUsername() {
+        createUser("erin", "erin@example.com", "secret");
+
+        assertTrue("existing username should be detected",
+                userService.checkUserExists("erin", "brand-new@example.com"));
+        assertTrue("existing email should be detected even with a new username",
+                userService.checkUserExists("erin2", "erin@example.com"));
+        assertFalse("a brand new username and email should not exist",
+                userService.checkUserExists("nobody", "nobody@example.com"));
+    }
+
+    @Test
     public void enableAndDisableUserTogglesFlag() {
         createUser("carol", "carol@example.com", "secret");
 
