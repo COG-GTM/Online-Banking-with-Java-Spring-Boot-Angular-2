@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+jobs:
+  backend:
+    name: UserFront (Spring Boot) build & test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: UserFront
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '8'
+          cache: maven
+
+      - name: Build and run tests
+        run: mvn -B test
+
+  frontend:
+    name: AdminPortal (Angular) build & test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: AdminPortal
+    env:
+      # Integration tests run against a real Chrome in headless mode.
+      CHROME_BIN: /usr/bin/google-chrome
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '12'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Production build
+        run: npx ng build
+
+      # The Angular 4 karma/Jasmine specs are legacy scaffolding and are not yet
+      # a hard gate; the suite is run for visibility and will become blocking as
+      # part of the Phase 7 frontend upgrade. See PR description for details.
+      - name: Unit tests (Karma/Jasmine)
+        continue-on-error: true
+        run: npx ng test --single-run --browsers ChromeHeadlessCI
