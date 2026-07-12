@@ -16,6 +16,7 @@ import { PrimaryTransactionComponent } from './primary-transaction/primary-trans
 import { SavingsTransactionComponent } from './savings-transaction/savings-transaction.component';
 import { AppointmentComponent } from './appointment/appointment.component';
 import { AppointmentService } from './appointment.service';
+import { AuthGuard } from './auth-guard.service';
 
 
 
@@ -38,7 +39,8 @@ import { AppointmentService } from './appointment.service';
   providers: [
     LoginService,
     UserService,
-    AppointmentService
+    AppointmentService,
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })

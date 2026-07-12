@@ -7,7 +7,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.userFront.domain.PrimaryTransaction;
@@ -32,22 +31,22 @@ public class UserResource {
         return userService.findUserList();
     }
 
-    @RequestMapping(value = "/user/primary/transaction", method = RequestMethod.GET)
-    public List<PrimaryTransaction> getPrimaryTransactionList(@RequestParam("username") String username) {
+    @RequestMapping(value = "/user/primary/transaction/{username}", method = RequestMethod.GET)
+    public List<PrimaryTransaction> getPrimaryTransactionList(@PathVariable("username") String username) {
         return transactionService.findPrimaryTransactionList(username);
     }
 
-    @RequestMapping(value = "/user/savings/transaction", method = RequestMethod.GET)
-    public List<SavingsTransaction> getSavingsTransactionList(@RequestParam("username") String username) {
+    @RequestMapping(value = "/user/savings/transaction/{username}", method = RequestMethod.GET)
+    public List<SavingsTransaction> getSavingsTransactionList(@PathVariable("username") String username) {
         return transactionService.findSavingsTransactionList(username);
     }
 
-    @RequestMapping("/user/{username}/enable")
+    @RequestMapping(value = "/user/{username}/enable", method = RequestMethod.POST)
     public void enableUser(@PathVariable("username") String username) {
         userService.enableUser(username);
     }
 
-    @RequestMapping("/user/{username}/disable")
+    @RequestMapping(value = "/user/{username}/disable", method = RequestMethod.POST)
     public void diableUser(@PathVariable("username") String username) {
         userService.disableUser(username);
     }

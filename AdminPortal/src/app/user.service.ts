@@ -13,23 +13,23 @@ export class UserService {
   }
 
    getPrimaryTransactionList(username: string) {
-     let url = "http://localhost:8080/api/user/primary/transaction?username="+username;
+     let url = "http://localhost:8080/api/user/primary/transaction/"+encodeURIComponent(username);
     return this.http.get(url, { withCredentials: true });
    }
 
    getSavingsTransactionList(username: string) {
-     let url = "http://localhost:8080/api/user/savings/transaction?username="+username;
+     let url = "http://localhost:8080/api/user/savings/transaction/"+encodeURIComponent(username);
     return this.http.get(url, { withCredentials: true });
    }
 
    enableUser (username: string) {
-     let url = "http://localhost:8080/api/user/"+username+"/enable";
-     return this.http.get(url, { withCredentials: true });
+     let url = "http://localhost:8080/api/user/"+encodeURIComponent(username)+"/enable";
+     return this.http.post(url, {}, { withCredentials: true });
    }
 
    disableUser (username: string) {
-     let url = "http://localhost:8080/api/user/"+username+"/disable";
-     return this.http.get(url, { withCredentials: true });
+     let url = "http://localhost:8080/api/user/"+encodeURIComponent(username)+"/disable";
+     return this.http.post(url, {}, { withCredentials: true });
    }
 
 }

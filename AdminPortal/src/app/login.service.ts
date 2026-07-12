@@ -9,13 +9,14 @@ export class LoginService {
 
   sendCredential(username: string, password: string) {
     let url = 'http://localhost:8080/index';
-    let params = 'username='+username+'&password='+password;
+    // Credentials are sent in the (encoded) request body, never in the URL.
+    let body = 'username=' + encodeURIComponent(username)
+             + '&password=' + encodeURIComponent(password);
     let headers = new Headers(
     {
       'Content-Type': 'application/x-www-form-urlencoded'
-      // 'Access-Control-Allow-Credentials' : true
     });
-    return this.http.post(url, params, {headers: headers, withCredentials : true});
+    return this.http.post(url, body, {headers: headers, withCredentials : true});
   }
 
   logout() {
