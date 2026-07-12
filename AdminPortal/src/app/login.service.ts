@@ -1,27 +1,31 @@
 import { Injectable } from '@angular/core';
-import {Http, Headers} from '@angular/http';
-import {Observable}     from 'rxjs/Observable';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-@Injectable()
+import { environment } from '../environments/environment';
+
+@Injectable({ providedIn: 'root' })
 export class LoginService {
 
-  constructor (private http: Http) {}
+  constructor(private http: HttpClient) {}
 
-  sendCredential(username: string, password: string) {
-    let url = 'http://localhost:8080/index';
+  sendCredential(username: string, password: string): Observable<string> {
+    const url = `${environment.apiBaseUrl}/index`;
     // Credentials are sent in the (encoded) request body, never in the URL.
-    let body = 'username=' + encodeURIComponent(username)
-             + '&password=' + encodeURIComponent(password);
-    let headers = new Headers(
-    {
-      'Content-Type': 'application/x-www-form-urlencoded'
+    const body = 'username=' + encodeURIComponent(username)
+               + '&password=' + encodeURIComponent(password);
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
     });
-    return this.http.post(url, body, {headers: headers, withCredentials : true});
+    return this.http.post(url, body, {
+      headers,
+      withCredentials: true,
+      responseType: 'text',
+    });
   }
 
-  logout() {
-     let url = 'http://localhost:8080/logout';
-     return this.http.get(url, { withCredentials: true });
-   }
-
+  logout(): Observable<string> {
+    const url = `${environment.apiBaseUrl}/logout`;
+    return this.http.get(url, { withCredentials: true, responseType: 'text' });
+  }
 }
