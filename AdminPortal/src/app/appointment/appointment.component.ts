@@ -1,33 +1,37 @@
 import { Component, OnInit } from '@angular/core';
-import {AppointmentService} from '../appointment.service';
+import { CommonModule } from '@angular/common';
 
+import { AppointmentService } from '../appointment.service';
+import { Appointment } from '../models';
 
 @Component({
   selector: 'app-appointment',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './appointment.component.html',
-  styleUrls: ['./appointment.component.css']
+  styleUrls: ['./appointment.component.css'],
 })
 export class AppointmentComponent implements OnInit {
 
-  appointmentList: Object[];
+  appointmentList: Appointment[] = [];
 
-	constructor(private appointmentService: AppointmentService) {
-		this.getAppointmentList();
-	}
+  constructor(private appointmentService: AppointmentService) {}
 
-	getAppointmentList() {
-		this.appointmentService.getAppointmentList().subscribe(
-			res => {
-        		this.appointmentList = JSON.parse(JSON.parse(JSON.stringify(res))._body);
-      		},
-      		error => console.log(error)
-		)
-	}	
+  ngOnInit(): void {
+    this.getAppointmentList();
+  }
 
-	confirmAppointment(id: number) {
-  		this.appointmentService.confirmAppointment(id).subscribe();
-  		location.reload();
-  	}
+  getAppointmentList(): void {
+    this.appointmentService.getAppointmentList().subscribe({
+      next: (appointments) => (this.appointmentList = appointments),
+      error: (error) => console.log(error),
+    });
+  }
 
-ngOnInit() {}
+  confirmAppointment(id: number): void {
+    this.appointmentService.confirmAppointment(id).subscribe({
+      next: () => location.reload(),
+      error: (error) => console.log(error),
+    });
+  }
 }

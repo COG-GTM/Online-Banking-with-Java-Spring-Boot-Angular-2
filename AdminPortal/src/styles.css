@@ -44,7 +44,7 @@ html {
   margin-left: 6px;
 }
 
-Required for Dropdowns
+/* Required for Dropdowns */
 .dropdown {
   position: relative;
 }

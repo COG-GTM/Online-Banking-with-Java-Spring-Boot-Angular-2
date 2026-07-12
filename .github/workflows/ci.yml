@@ -31,16 +31,15 @@ jobs:
     defaults:
       run:
         working-directory: AdminPortal
-    env:
-      # Integration tests run against a real Chrome in headless mode.
-      CHROME_BIN: /usr/bin/google-chrome
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '12'
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: AdminPortal/package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -48,9 +47,30 @@ jobs:
       - name: Production build
         run: npx ng build
 
-      # The Angular 4 karma/Jasmine specs are legacy scaffolding and are not yet
-      # a hard gate; the suite is run for visibility and will become blocking as
-      # part of the Phase 7 frontend upgrade. See PR description for details.
       - name: Unit tests (Karma/Jasmine)
-        continue-on-error: true
-        run: npx ng test --single-run --browsers ChromeHeadlessCI
+        run: npx ng test --watch=false --browsers=ChromeHeadlessCI
+
+  e2e:
+    name: AdminPortal (Angular) e2e (Playwright)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: AdminPortal
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: AdminPortal/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright smoke tests
+        run: npx playwright test
