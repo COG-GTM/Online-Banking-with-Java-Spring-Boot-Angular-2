@@ -112,13 +112,34 @@ public class TransactionServiceIntegrationTest extends AbstractBankingIntegratio
         List<Recipient> recipients = transactionService.findRecipientList(principal);
         assertEquals(2, recipients.size());
 
-        Recipient found = transactionService.findRecipientByName("Jane Doe");
+        Recipient found = transactionService.findRecipientByName("Jane Doe", principal);
         assertNotNull(found);
         assertEquals("Jane Doe", found.getName());
 
-        transactionService.deleteRecipientByName("Jane Doe");
-        assertNull(transactionService.findRecipientByName("Jane Doe"));
+        transactionService.deleteRecipientByName("Jane Doe", principal);
+        assertNull(transactionService.findRecipientByName("Jane Doe", principal));
         assertEquals(1, transactionService.findRecipientList(principal).size());
+    }
+
+    @Test
+    public void findRecipientByNameDoesNotReturnAnotherUsersRecipient() {
+        createUser("otherUser", "other2@example.com", "secret");
+        saveRecipient("otherUser", "Someone Else");
+
+        assertNull("recipient owned by another user must not be visible",
+                transactionService.findRecipientByName("Someone Else", principal));
+    }
+
+    @Test
+    public void deleteRecipientByNameDoesNotDeleteAnotherUsersRecipient() {
+        createUser("otherUser", "other3@example.com", "secret");
+        Principal other = () -> "otherUser";
+        saveRecipient("otherUser", "Someone Else");
+
+        transactionService.deleteRecipientByName("Someone Else", principal);
+
+        assertNotNull("another user's recipient must survive a cross-user delete",
+                transactionService.findRecipientByName("Someone Else", other));
     }
 
     @Test

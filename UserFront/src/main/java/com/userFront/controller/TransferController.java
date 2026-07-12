@@ -16,6 +16,7 @@ import com.userFront.domain.PrimaryAccount;
 import com.userFront.domain.Recipient;
 import com.userFront.domain.SavingsAccount;
 import com.userFront.domain.User;
+import com.userFront.exception.InsufficientFundsException;
 import com.userFront.service.TransactionService;
 import com.userFront.service.UserService;
 
@@ -41,11 +42,15 @@ public class TransferController {
 	@RequestMapping(value = "/betweenAccounts", method = RequestMethod.POST)
 	public String betweenAccountsPost(@ModelAttribute("transferFrom") String transferFrom,
 			@ModelAttribute("transferTo") String transferTo, @ModelAttribute("amount") String amount,
-			Principal principal) throws Exception {
+			Principal principal) {
 		User user = userService.findByUsername(principal.getName());
 		PrimaryAccount primaryAccount = user.getPrimaryAccount();
 		SavingsAccount savingsAccount = user.getSavingsAccount();
-		transactionService.betweenAccountsTransfer(transferFrom, transferTo, amount, primaryAccount, savingsAccount);
+		try {
+			transactionService.betweenAccountsTransfer(transferFrom, transferTo, amount, primaryAccount, savingsAccount);
+		} catch (Exception e) {
+			return "redirect:/transfer/betweenAccounts?error";
+		}
 
 		return "redirect:/userFront";
 	}
@@ -76,7 +81,7 @@ public class TransferController {
 	public String recipientEdit(@RequestParam(value = "recipientName") String recipientName, Model model,
 			Principal principal) {
 
-		Recipient recipient = transactionService.findRecipientByName(recipientName);
+		Recipient recipient = transactionService.findRecipientByName(recipientName, principal);
 		List<Recipient> recipientList = transactionService.findRecipientList(principal);
 
 		model.addAttribute("recipientList", recipientList);
@@ -85,12 +90,12 @@ public class TransferController {
 		return "recipient";
 	}
 
-	@RequestMapping(value = "/recipient/delete", method = RequestMethod.GET)
+	@RequestMapping(value = "/recipient/delete", method = RequestMethod.POST)
 	@Transactional
 	public String recipientDelete(@RequestParam(value = "recipientName") String recipientName, Model model,
 			Principal principal) {
 
-		transactionService.deleteRecipientByName(recipientName);
+		transactionService.deleteRecipientByName(recipientName, principal);
 
 		List<Recipient> recipientList = transactionService.findRecipientList(principal);
 
@@ -116,9 +121,16 @@ public class TransferController {
 			@ModelAttribute("accountType") String accountType, @ModelAttribute("amount") String amount,
 			Principal principal) {
 		User user = userService.findByUsername(principal.getName());
-		Recipient recipient = transactionService.findRecipientByName(recipientName);
-		transactionService.toSomeoneElseTransfer(recipient, accountType, amount, user.getPrimaryAccount(),
-				user.getSavingsAccount());
+		Recipient recipient = transactionService.findRecipientByName(recipientName, principal);
+		if (recipient == null) {
+			return "redirect:/transfer/toSomeoneElse?error";
+		}
+		try {
+			transactionService.toSomeoneElseTransfer(recipient, accountType, amount, user.getPrimaryAccount(),
+					user.getSavingsAccount());
+		} catch (IllegalArgumentException | InsufficientFundsException e) {
+			return "redirect:/transfer/toSomeoneElse?error";
+		}
 
 		return "redirect:/userFront";
 	}
