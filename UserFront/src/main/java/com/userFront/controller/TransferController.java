@@ -51,7 +51,7 @@ public class TransferController {
 			model.addAttribute("transferFrom", transferFrom);
 			model.addAttribute("transferTo", transferTo);
 			model.addAttribute("amount", amount);
-			model.addAttribute("error", e.getMessage());
+			model.addAttribute("error", errorMessage(e));
 			return "betweenAccounts";
 		}
 
@@ -132,10 +132,14 @@ public class TransferController {
 			model.addAttribute("recipientList", transactionService.findRecipientList(principal));
 			model.addAttribute("accountType", accountType);
 			model.addAttribute("amount", amount);
-			model.addAttribute("error", e.getMessage());
+			model.addAttribute("error", errorMessage(e));
 			return "toSomeoneElse";
 		}
 
 		return "redirect:/userFront";
+	}
+
+	private String errorMessage(Exception e) {
+		return e.getMessage() != null ? e.getMessage() : "Transfer could not be completed";
 	}
 }

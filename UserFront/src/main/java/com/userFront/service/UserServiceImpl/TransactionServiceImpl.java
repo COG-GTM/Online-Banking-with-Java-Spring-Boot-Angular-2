@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.userFront.dao.PrimaryAccountDao;
 import com.userFront.dao.PrimaryTransactionDao;
@@ -74,6 +75,7 @@ public class TransactionServiceImpl implements TransactionService {
 		savingsTransactionDao.save(savingsTransaction);
 	}
 	
+	@Transactional(rollbackFor = Exception.class)
 	public void betweenAccountsTransfer(String transferFrom, String transferTo, String amount, PrimaryAccount primaryAccount, SavingsAccount savingsAccount) throws Exception {
         BigDecimal transferAmount = parsePositiveAmount(amount);
 
@@ -160,7 +162,12 @@ public class TransactionServiceImpl implements TransactionService {
         recipientDao.deleteByName(recipientName);
     }
     
+    @Transactional(rollbackFor = Exception.class)
     public void toSomeoneElseTransfer(Recipient recipient, String accountType, String amount, PrimaryAccount primaryAccount, SavingsAccount savingsAccount) throws Exception {
+        if (recipient == null) {
+            throw new Exception("Recipient not found");
+        }
+
         BigDecimal transferAmount = parsePositiveAmount(amount);
 
         if (accountType.equalsIgnoreCase("Primary")) {
