@@ -41,11 +41,19 @@ public class TransferController {
 	@RequestMapping(value = "/betweenAccounts", method = RequestMethod.POST)
 	public String betweenAccountsPost(@ModelAttribute("transferFrom") String transferFrom,
 			@ModelAttribute("transferTo") String transferTo, @ModelAttribute("amount") String amount,
-			Principal principal) throws Exception {
+			Principal principal, Model model) {
 		User user = userService.findByUsername(principal.getName());
 		PrimaryAccount primaryAccount = user.getPrimaryAccount();
 		SavingsAccount savingsAccount = user.getSavingsAccount();
-		transactionService.betweenAccountsTransfer(transferFrom, transferTo, amount, primaryAccount, savingsAccount);
+		try {
+			transactionService.betweenAccountsTransfer(transferFrom, transferTo, amount, primaryAccount, savingsAccount);
+		} catch (Exception e) {
+			model.addAttribute("transferFrom", transferFrom);
+			model.addAttribute("transferTo", transferTo);
+			model.addAttribute("amount", amount);
+			model.addAttribute("error", e.getMessage());
+			return "betweenAccounts";
+		}
 
 		return "redirect:/userFront";
 	}
@@ -114,11 +122,19 @@ public class TransferController {
 	@RequestMapping(value = "/toSomeoneElse", method = RequestMethod.POST)
 	public String toSomeoneElsePost(@ModelAttribute("recipientName") String recipientName,
 			@ModelAttribute("accountType") String accountType, @ModelAttribute("amount") String amount,
-			Principal principal) {
+			Principal principal, Model model) {
 		User user = userService.findByUsername(principal.getName());
 		Recipient recipient = transactionService.findRecipientByName(recipientName);
-		transactionService.toSomeoneElseTransfer(recipient, accountType, amount, user.getPrimaryAccount(),
-				user.getSavingsAccount());
+		try {
+			transactionService.toSomeoneElseTransfer(recipient, accountType, amount, user.getPrimaryAccount(),
+					user.getSavingsAccount());
+		} catch (Exception e) {
+			model.addAttribute("recipientList", transactionService.findRecipientList(principal));
+			model.addAttribute("accountType", accountType);
+			model.addAttribute("amount", amount);
+			model.addAttribute("error", e.getMessage());
+			return "toSomeoneElse";
+		}
 
 		return "redirect:/userFront";
 	}
