@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { routing }  from './app.routing';
 
 
@@ -10,6 +10,8 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { LoginComponent } from './login/login.component';
 
 import { LoginService } from './login.service';
+import { AuthService } from './auth.service';
+import { AuthGuard } from './auth.guard';
 import { UserAccountComponent } from './user-account/user-account.component';
 import { UserService } from './user.service';
 import { PrimaryTransactionComponent } from './primary-transaction/primary-transaction.component';
@@ -32,11 +34,13 @@ import { AppointmentService } from './appointment.service';
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule,
+    HttpClientModule,
     routing
   ],
   providers: [
     LoginService,
+    AuthService,
+    AuthGuard,
     UserService,
     AppointmentService
   ],

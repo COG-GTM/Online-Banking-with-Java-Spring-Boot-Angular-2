@@ -18,15 +18,17 @@ export class AppointmentComponent implements OnInit {
 	getAppointmentList() {
 		this.appointmentService.getAppointmentList().subscribe(
 			res => {
-        		this.appointmentList = JSON.parse(JSON.parse(JSON.stringify(res))._body);
+        		this.appointmentList = res;
       		},
       		error => console.log(error)
 		)
 	}	
 
 	confirmAppointment(id: number) {
-  		this.appointmentService.confirmAppointment(id).subscribe();
-  		location.reload();
+  		this.appointmentService.confirmAppointment(id).subscribe(
+  			res => this.getAppointmentList(),
+  			error => console.log(error)
+  		);
   	}
 
 ngOnInit() {}

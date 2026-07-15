@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {Observable}  from 'rxjs/Observable';
 import {LoginService} from '../login.service';
+import {AuthService} from '../auth.service';
 
 @Component({
   selector: 'app-login',
@@ -13,20 +13,15 @@ export class LoginComponent implements OnInit {
   username: string;
   password: string;
 
-	constructor (private loginService: LoginService) {
-    if(localStorage.getItem('PortalAdminHasLoggedIn') == '' || localStorage.getItem('PortalAdminHasLoggedIn') == null) {
-      this.loggedIn = false;
-    } else {
-      this.loggedIn = true;
-    }
+	constructor (private loginService: LoginService, private authService: AuthService) {
+    this.loggedIn = this.authService.isLoggedIn;
   }
   
   onSubmit() {
   	this.loginService.sendCredential(this.username, this.password).subscribe(
       res => {
-        this.loggedIn=true;
-        localStorage.setItem('PortalAdminHasLoggedIn', 'true');
-        location.reload();
+        this.authService.setLoggedIn(true);
+        this.loggedIn = true;
       },
       err => console.log(err)
     );
