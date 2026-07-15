@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginService } from '../login.service';
+import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -11,23 +12,21 @@ export class NavbarComponent implements OnInit {
 
   loggedIn: boolean;
 
-	constructor(private loginService: LoginService, private router : Router) {
-		if(localStorage.getItem('PortalAdminHasLoggedIn') == '') {
-			this.loggedIn = false;
-		} else {
-			this.loggedIn = true;
-		}
+	constructor(private loginService: LoginService, private authService: AuthService, private router: Router) {
 	}
 
 	logout(){
 		this.loginService.logout().subscribe(
 			res => {
-				localStorage.setItem('PortalAdminHasLoggedIn', '');
+				this.authService.setLoggedIn(false);
+				this.router.navigate(['/login']);
 			},
-			err => console.log(err)
+			err => {
+				console.log(err);
+				this.authService.setLoggedIn(false);
+				this.router.navigate(['/login']);
+			}
 			);
-		location.reload();
-		this.router.navigate(['/login']);
 	}
 
 	getDisplay() {
@@ -39,6 +38,7 @@ export class NavbarComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.authService.isLoggedIn$.subscribe(loggedIn => this.loggedIn = loggedIn);
   }
 
 }

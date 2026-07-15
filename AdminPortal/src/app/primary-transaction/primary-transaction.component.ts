@@ -23,8 +23,7 @@ export class PrimaryTransactionComponent implements OnInit {
 	getPrimaryTransactionList() {
 		this.userService.getPrimaryTransactionList(this.username).subscribe(
 			res => {
-				console.log(JSON.parse(JSON.stringify(res))._body);
-        		this.primaryTransactionList = JSON.parse(JSON.parse(JSON.stringify(res))._body);
+        		this.primaryTransactionList = res;
       		},
       		error => console.log(error)
 		)
