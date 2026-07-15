@@ -18,7 +18,7 @@ export class AppointmentService {
 
   confirmAppointment(id: number): Observable<any> {
     let url = this.baseUrl + '/api/appointment/' + id + '/confirm';
-    return this.http.get(url, { withCredentials: true });
+    return this.http.get(url, { withCredentials: true, responseType: 'text' });
   }
 
 }

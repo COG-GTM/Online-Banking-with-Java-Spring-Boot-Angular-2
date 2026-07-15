@@ -28,12 +28,12 @@ export class UserService {
 
    enableUser (username: string): Observable<any> {
      let url = this.baseUrl + '/api/user/' + username + '/enable';
-     return this.http.get(url, { withCredentials: true });
+     return this.http.get(url, { withCredentials: true, responseType: 'text' });
    }
 
    disableUser (username: string): Observable<any> {
      let url = this.baseUrl + '/api/user/' + username + '/disable';
-     return this.http.get(url, { withCredentials: true });
+     return this.http.get(url, { withCredentials: true, responseType: 'text' });
    }
 
 }
