@@ -1,6 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { HttpModule, XHRBackend } from '@angular/http';
+import { MockBackend } from '@angular/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { NavbarComponent } from './navbar.component';
+import { LoginService } from '../login.service';
 
 describe('NavbarComponent', () => {
   let component: NavbarComponent;
@@ -8,7 +13,13 @@ describe('NavbarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NavbarComponent ]
+      imports: [HttpModule, RouterTestingModule],
+      declarations: [ NavbarComponent ],
+      providers: [
+        LoginService,
+        { provide: XHRBackend, useClass: MockBackend }
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
   }));
@@ -21,5 +32,15 @@ describe('NavbarComponent', () => {
 
   it('should be created', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('getDisplay should hide items when logged out', () => {
+    component.loggedIn = false;
+    expect(component.getDisplay()).toBe('none');
+  });
+
+  it('getDisplay should show items when logged in', () => {
+    component.loggedIn = true;
+    expect(component.getDisplay()).toBe('');
   });
 });
