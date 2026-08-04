@@ -7,19 +7,19 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-  getUsers(): Observable<Object[]> {
+  getUsers(): Observable<object[]> {
     const url = 'http://localhost:8080/api/user/all';
-    return this.http.get<Object[]>(url, { withCredentials: true });
+    return this.http.get<object[]>(url, { withCredentials: true });
   }
 
-  getPrimaryTransactionList(username: string): Observable<Object[]> {
+  getPrimaryTransactionList(username: string): Observable<object[]> {
     const url = 'http://localhost:8080/api/user/primary/transaction?username=' + username;
-    return this.http.get<Object[]>(url, { withCredentials: true });
+    return this.http.get<object[]>(url, { withCredentials: true });
   }
 
-  getSavingsTransactionList(username: string): Observable<Object[]> {
+  getSavingsTransactionList(username: string): Observable<object[]> {
     const url = 'http://localhost:8080/api/user/savings/transaction?username=' + username;
-    return this.http.get<Object[]>(url, { withCredentials: true });
+    return this.http.get<object[]>(url, { withCredentials: true });
   }
 
   enableUser(username: string): Observable<string> {

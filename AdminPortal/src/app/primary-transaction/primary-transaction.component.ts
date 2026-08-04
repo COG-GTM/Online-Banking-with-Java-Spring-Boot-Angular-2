@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {UserService} from '../user.service';
 import { ActivatedRoute, Params } from '@angular/router';
 
@@ -7,10 +7,10 @@ import { ActivatedRoute, Params } from '@angular/router';
   templateUrl: './primary-transaction.component.html',
   styleUrls: ['./primary-transaction.component.css']
 })
-export class PrimaryTransactionComponent implements OnInit {
+export class PrimaryTransactionComponent {
 
   username:string;
-	primaryTransactionList: Object[];
+	primaryTransactionList: object[];
 
 	constructor(private route: ActivatedRoute, private userService: UserService) {
 		this.route.params.forEach((params: Params) => {
@@ -29,6 +29,5 @@ export class PrimaryTransactionComponent implements OnInit {
 		)
 	}
 
-	ngOnInit() {}
 
 }

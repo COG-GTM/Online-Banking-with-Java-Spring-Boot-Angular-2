@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '../user.service';
 
@@ -7,9 +7,9 @@ import { UserService } from '../user.service';
   templateUrl: './user-account.component.html',
   styleUrls: ['./user-account.component.css']
 })
-export class UserAccountComponent implements OnInit {
+export class UserAccountComponent {
 
-  	userList: Object[];
+  	userList: object[];
 	
 	constructor(private userService: UserService, private router: Router) {
 		this.getUsers();
@@ -43,7 +43,5 @@ export class UserAccountComponent implements OnInit {
   	}
 
 
-  ngOnInit() {
-  }
 
 }

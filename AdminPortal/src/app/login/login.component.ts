@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {LoginService} from '../login.service';
 
 @Component({
@@ -6,7 +6,7 @@ import {LoginService} from '../login.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
 
   loggedIn: boolean;
   username: string;
@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
   
   onSubmit() {
   	this.loginService.sendCredential(this.username, this.password).subscribe(
-      res => {
+      () => {
         this.loggedIn=true;
         localStorage.setItem('PortalAdminHasLoggedIn', 'true');
         location.reload();
@@ -31,6 +31,5 @@ export class LoginComponent implements OnInit {
     );
   }
 
-  ngOnInit() {}
 
 }

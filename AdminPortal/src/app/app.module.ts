@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { routing }  from './app.routing';
 
 
@@ -19,27 +19,21 @@ import { AppointmentService } from './appointment.service';
 
 
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    NavbarComponent,
-    LoginComponent,
-    UserAccountComponent,
-    PrimaryTransactionComponent,
-    SavingsTransactionComponent,
-    AppointmentComponent
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    HttpClientModule,
-    routing
-  ],
-  providers: [
-    LoginService,
-    UserService,
-    AppointmentService
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        NavbarComponent,
+        LoginComponent,
+        UserAccountComponent,
+        PrimaryTransactionComponent,
+        SavingsTransactionComponent,
+        AppointmentComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        FormsModule,
+        routing], providers: [
+        LoginService,
+        UserService,
+        AppointmentService,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule { }

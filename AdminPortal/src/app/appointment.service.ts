@@ -7,9 +7,9 @@ export class AppointmentService {
 
   constructor(private http: HttpClient) {}
 
-  getAppointmentList(): Observable<Object[]> {
+  getAppointmentList(): Observable<object[]> {
     const url = 'http://localhost:8080/api/appointment/all';
-    return this.http.get<Object[]>(url, { withCredentials: true });
+    return this.http.get<object[]>(url, { withCredentials: true });
   }
 
   confirmAppointment(id: number): Observable<string> {
