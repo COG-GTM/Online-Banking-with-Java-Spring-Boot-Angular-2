@@ -24,8 +24,7 @@ export class SavingsTransactionComponent implements OnInit {
 	getSavingsTransactionList() {
 		this.userService.getSavingsTransactionList(this.username).subscribe(
 			res => {
-				console.log(JSON.parse(JSON.stringify(res))._body);
-        		this.savingsTransactionList = JSON.parse(JSON.parse(JSON.stringify(res))._body);
+        		this.savingsTransactionList = res;
       		},
       		error => console.log(error)
 		)
