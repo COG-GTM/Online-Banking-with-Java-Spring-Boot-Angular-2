@@ -1,6 +1,6 @@
 /* tslint:disable:no-unused-variable */
 
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { PrimaryTransactionComponent } from './primary-transaction.component';
 
 describe('Component: PrimaryTransaction', () => {
