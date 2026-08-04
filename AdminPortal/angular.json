@@ -107,7 +107,6 @@
       }
     }
   },
-  "defaultProject": "admin-portal",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",
