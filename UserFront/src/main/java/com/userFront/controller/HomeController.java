@@ -15,6 +15,7 @@ import com.userFront.dao.RoleDao;
 import com.userFront.domain.PrimaryAccount;
 import com.userFront.domain.SavingsAccount;
 import com.userFront.domain.User;
+import com.userFront.domain.dto.SignupForm;
 import com.userFront.domain.security.UserRole;
 import com.userFront.service.UserService;
 
@@ -39,28 +40,28 @@ public class HomeController {
 
 	@RequestMapping(value = "/signup", method = RequestMethod.GET)
 	public String signup(Model model) {
-		User user = new User();
-
-		model.addAttribute("user", user);
+		model.addAttribute("user", new SignupForm());
 
 		return "signup";
 	}
 
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
-	public String signupPost(@ModelAttribute("user") User user, Model model) {
+	public String signupPost(@ModelAttribute("user") SignupForm signupForm, Model model) {
 
-		if (userService.checkUserExists(user.getUsername(), user.getEmail())) {
+		if (userService.checkUserExists(signupForm.getUsername(), signupForm.getEmail())) {
 
-			if (userService.checkEmailExists(user.getEmail())) {
+			if (userService.checkEmailExists(signupForm.getEmail())) {
 				model.addAttribute("emailExists", true);
 			}
 
-			if (userService.checkUsernameExists(user.getUsername())) {
+			if (userService.checkUsernameExists(signupForm.getUsername())) {
 				model.addAttribute("usernameExists", true);
 			}
 
 			return "signup";
 		} else {
+			User user = toNewUser(signupForm);
+
 			Set<UserRole> userRoles = new HashSet<>();
 			userRoles.add(new UserRole(user, roleDao.findByName("ROLE_USER")));
 
@@ -68,6 +69,18 @@ public class HomeController {
 
 			return "redirect:/";
 		}
+	}
+
+	private User toNewUser(SignupForm signupForm) {
+		User user = new User();
+		user.setUsername(signupForm.getUsername());
+		user.setPassword(signupForm.getPassword());
+		user.setFirstName(signupForm.getFirstName());
+		user.setLastName(signupForm.getLastName());
+		user.setEmail(signupForm.getEmail());
+		user.setPhone(signupForm.getPhone());
+
+		return user;
 	}
 
 	@RequestMapping("/userFront")
