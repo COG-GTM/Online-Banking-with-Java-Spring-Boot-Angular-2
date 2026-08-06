@@ -48,7 +48,7 @@ public class SecurityConfig {
             "/",
             "/about/**",
             "/contact/**",
-            "/error/**/*",
+            "/error/**",
             "/console/**",
             "/signup"
     };

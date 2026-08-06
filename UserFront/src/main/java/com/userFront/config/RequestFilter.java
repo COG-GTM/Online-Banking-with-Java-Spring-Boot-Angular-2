@@ -1,8 +1,11 @@
 package com.userFront.config;
 
+import java.io.IOException;
+
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +19,8 @@ import org.springframework.stereotype.Component;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class RequestFilter implements Filter {
 
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) {
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
+            throws IOException, ServletException {
         HttpServletResponse response = (HttpServletResponse) res;
         HttpServletRequest request = (HttpServletRequest) req;
 
@@ -27,11 +31,7 @@ public class RequestFilter implements Filter {
         response.setHeader("Access-Control-Allow-Credentials", "true");
 
         if (!(request.getMethod().equalsIgnoreCase("OPTIONS"))) {
-            try {
-                chain.doFilter(req, res);
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
+            chain.doFilter(req, res);
         } else {
             System.out.println("Pre-flight");
             response.setHeader("Access-Control-Allow-Methods", "POST,GET,DELETE");
