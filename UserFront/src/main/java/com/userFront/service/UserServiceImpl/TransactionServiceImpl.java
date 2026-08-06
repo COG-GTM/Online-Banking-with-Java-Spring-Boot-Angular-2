@@ -4,10 +4,11 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.userFront.dao.PrimaryAccountDao;
 import com.userFront.dao.PrimaryTransactionDao;
@@ -101,24 +102,50 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
 	public List<Recipient> findRecipientList(Principal principal) {
-        String username = principal.getName();
-        List<Recipient> recipientList = recipientDao.findAll().stream() 			//convert list to stream
-                .filter(recipient -> username.equals(recipient.getUser().getUsername()))	//filters the line, equals to username
-                .collect(Collectors.toList());
-
-        return recipientList;
+        return recipientDao.findByUser(currentUser(principal));
     }
 
-    public Recipient saveRecipient(Recipient recipient) {
-        return recipientDao.save(recipient);
+    public Recipient saveRecipient(Recipient recipient, Principal principal) {
+        User user = currentUser(principal);
+        Recipient target;
+
+        if (recipient.getId() == null) {
+            target = new Recipient();
+        } else {
+            target = recipientDao.findByIdAndUser(recipient.getId(), user);
+
+            if (target == null) {
+                throw new AccessDeniedException("Recipient does not belong to the authenticated user");
+            }
+        }
+
+        target.setName(recipient.getName());
+        target.setEmail(recipient.getEmail());
+        target.setPhone(recipient.getPhone());
+        target.setAccountNumber(recipient.getAccountNumber());
+        target.setDescription(recipient.getDescription());
+        target.setUser(user);
+
+        return recipientDao.save(target);
     }
 
-    public Recipient findRecipientByName(String recipientName) {
-        return recipientDao.findByName(recipientName);
+    public Recipient findRecipientByName(String recipientName, Principal principal) {
+        return recipientDao.findByNameAndUser(recipientName, currentUser(principal));
     }
 
-    public void deleteRecipientByName(String recipientName) {
-        recipientDao.deleteByName(recipientName);
+    @Transactional
+    public void deleteRecipientByName(String recipientName, Principal principal) {
+        recipientDao.deleteByNameAndUser(recipientName, currentUser(principal));
+    }
+
+    private User currentUser(Principal principal) {
+        User user = userService.findByUsername(principal.getName());
+
+        if (user == null) {
+            throw new AccessDeniedException("Unknown user");
+        }
+
+        return user;
     }
     
     public void toSomeoneElseTransfer(Recipient recipient, String accountType, String amount, PrimaryAccount primaryAccount, SavingsAccount savingsAccount) {
