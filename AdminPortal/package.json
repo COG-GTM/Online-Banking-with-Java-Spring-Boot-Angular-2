@@ -45,5 +45,8 @@
     "ts-node": "~3.0.4",
     "tslint": "~5.3.2",
     "typescript": "~2.3.3"
+  },
+  "overrides": {
+    "xmldom": "npm:@xmldom/xmldom@^0.8.10"
   }
 }
