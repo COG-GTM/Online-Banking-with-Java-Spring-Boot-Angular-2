@@ -33,7 +33,7 @@ To regenerate the component SBOMs:
 
 ```sh
 cd UserFront
-mvn -B org.cyclonedx:cyclonedx-maven-plugin:2.7.11:makeAggregateBom -DoutputFormat=json -DschemaVersion=1.5
+mvn -B org.cyclonedx:cyclonedx-maven-plugin:2.7.11:makeAggregateBom -DoutputFormat=json
 cp target/bom.json sbom.json
 
 cd ../AdminPortal
