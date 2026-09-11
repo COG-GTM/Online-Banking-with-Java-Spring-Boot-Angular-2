@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -76,7 +77,7 @@ public class TransferController {
 	public String recipientEdit(@RequestParam(value = "recipientName") String recipientName, Model model,
 			Principal principal) {
 
-		Recipient recipient = transactionService.findRecipientByName(recipientName);
+		Recipient recipient = findOwnedRecipient(recipientName, principal);
 		List<Recipient> recipientList = transactionService.findRecipientList(principal);
 
 		model.addAttribute("recipientList", recipientList);
@@ -90,6 +91,7 @@ public class TransferController {
 	public String recipientDelete(@RequestParam(value = "recipientName") String recipientName, Model model,
 			Principal principal) {
 
+		findOwnedRecipient(recipientName, principal);
 		transactionService.deleteRecipientByName(recipientName);
 
 		List<Recipient> recipientList = transactionService.findRecipientList(principal);
@@ -116,10 +118,19 @@ public class TransferController {
 			@ModelAttribute("accountType") String accountType, @ModelAttribute("amount") String amount,
 			Principal principal) {
 		User user = userService.findByUsername(principal.getName());
-		Recipient recipient = transactionService.findRecipientByName(recipientName);
+		Recipient recipient = findOwnedRecipient(recipientName, principal);
 		transactionService.toSomeoneElseTransfer(recipient, accountType, amount, user.getPrimaryAccount(),
 				user.getSavingsAccount());
 
 		return "redirect:/userFront";
+	}
+
+	private Recipient findOwnedRecipient(String recipientName, Principal principal) {
+		Recipient recipient = transactionService.findRecipientByName(recipientName);
+		if (recipient == null || recipient.getUser() == null
+				|| !principal.getName().equals(recipient.getUser().getUsername())) {
+			throw new AccessDeniedException("Recipient does not belong to the current user");
+		}
+		return recipient;
 	}
 }
