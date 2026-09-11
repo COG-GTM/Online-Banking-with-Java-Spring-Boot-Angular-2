@@ -21,7 +21,7 @@ export class NavbarComponent implements OnInit {
 
 	logout(){
 		this.loginService.logout().subscribe(
-			res => {
+			(res: string) => {
 				localStorage.setItem('PortalAdminHasLoggedIn', '');
 			},
 			err => console.log(err)

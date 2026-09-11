@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {AppointmentService} from '../appointment.service';
+import { AppointmentService, Appointment } from '../appointment.service';
 
 
 @Component({
@@ -9,7 +9,7 @@ import {AppointmentService} from '../appointment.service';
 })
 export class AppointmentComponent implements OnInit {
 
-  appointmentList: Object[];
+  appointmentList: Appointment[];
 
 	constructor(private appointmentService: AppointmentService) {
 		this.getAppointmentList();
@@ -17,8 +17,8 @@ export class AppointmentComponent implements OnInit {
 
 	getAppointmentList() {
 		this.appointmentService.getAppointmentList().subscribe(
-			res => {
-        		this.appointmentList = JSON.parse(JSON.parse(JSON.stringify(res))._body);
+			(res: Appointment[]) => {
+        		this.appointmentList = res;
       		},
       		error => console.log(error)
 		)
