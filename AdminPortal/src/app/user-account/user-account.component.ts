@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserService } from '../user.service';
+import { UserService, User } from '../user.service';
 
 @Component({
   selector: 'app-user-account',
@@ -9,7 +9,7 @@ import { UserService } from '../user.service';
 })
 export class UserAccountComponent implements OnInit {
 
-  	userList: Object[];
+  	userList: User[];
 	
 	constructor(private userService: UserService, private router: Router) {
 		this.getUsers();
@@ -17,8 +17,8 @@ export class UserAccountComponent implements OnInit {
 
 	getUsers() {
 		this.userService.getUsers().subscribe(
-			res => {
-        		this.userList = JSON.parse(JSON.parse(JSON.stringify(res))._body);
+			(res: User[]) => {
+        		this.userList = res;
       		},
       		error => console.log(error)
 		)
