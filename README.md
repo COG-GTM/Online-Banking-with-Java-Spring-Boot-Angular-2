@@ -11,6 +11,20 @@ Created two separate server:
 
 User-Front is a user-facing system and it includes modules such as User Signup/Login, Account, Transfer, Appointment, Transaction and User Profile.
 
+### Configuration
+
+The User Frontend reads its database connection from environment variables:
+
+- `DB_URL` (optional; defaults to `jdbc:mysql://localhost:3306/onlinebanking`)
+- `DB_USERNAME` (required)
+- `DB_PASSWORD` (required)
+
+Use a dedicated least-privilege, non-root MySQL account. For example:
+
+```sh
+export DB_URL=jdbc:mysql://localhost:3306/onlinebanking DB_USERNAME=onlinebanking_app DB_PASSWORD='change-me'
+```
+
 ## Admin Portal
 
 It is mainly used by Admin and it involves User Account and Appointment modules. Admin can enable/disable Users, view statements of every Users, confirm an appointment.
@@ -20,4 +34,3 @@ It is mainly used by Admin and it involves User Account and Appointment modules.
 **Front-end:** Html5/CSS3, JavaScript, TypeScript, JQuery, Bootstrap, Angular 2 and some JS plugins, JSON, Thymeleaf
 
 **Back-end:** Java 8, Spring Boot, Spring Data, Spring Security, Hibernate, MySQL, Maven, Log4j
-
