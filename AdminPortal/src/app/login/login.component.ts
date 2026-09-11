@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
   
   onSubmit() {
   	this.loginService.sendCredential(this.username, this.password).subscribe(
-      res => {
+      (res: string) => {
         this.loggedIn=true;
         localStorage.setItem('PortalAdminHasLoggedIn', 'true');
         location.reload();
