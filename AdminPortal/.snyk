@@ -1,0 +1,15 @@
+# Snyk (https://snyk.io) policy file
+version: v1.25.0
+ignore:
+  SNYK-JS-ANGULARCOMMON-17356555:
+    - '*':
+        reason: >-
+          CVE-2026-54266 (Use of Weak Hash) is in HttpTransferCache, an SSR
+          transfer-cache feature added in Angular 17. @angular/common@4.4.7
+          does not ship HttpTransferCache and AdminPortal does not use SSR
+          (no @angular/platform-server), so the vulnerable code path is not
+          present. The only fixed versions (>=20.3.25) require a full Angular
+          major upgrade; see docs/security/angular-common-weak-hash.md.
+        expires: 2027-03-11T00:00:00.000Z
+        created: 2026-09-11T00:00:00.000Z
+patch: {}
