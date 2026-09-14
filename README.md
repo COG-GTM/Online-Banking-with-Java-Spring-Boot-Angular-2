@@ -29,5 +29,5 @@ It is mainly used by Admin and it involves User Account and Appointment modules.
 ```
 export DB_URL=jdbc:mysql://localhost:3306/onlinebanking   # optional, this is the default
 export DB_USERNAME=onlinebanking_app                        # use a least-privilege user, not root
-export DB_PASSWORD=<your password>
+export DB_PASSWORD=change-me
 ```
