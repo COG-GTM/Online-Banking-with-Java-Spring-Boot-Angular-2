@@ -113,6 +113,10 @@ public class TransactionServiceImpl implements TransactionService {
         return recipientDao.save(recipient);
     }
 
+    public Recipient findRecipientById(Long id, Principal principal) {
+        return recipientDao.findByIdAndUserUsername(id, principal.getName());
+    }
+
     public Recipient findRecipientByName(String recipientName, Principal principal) {
         return recipientDao.findByNameAndUserUsername(recipientName, principal.getName());
     }
