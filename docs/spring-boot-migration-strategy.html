@@ -178,10 +178,10 @@
     <tr><th>Step</th><th>Boot</th><th>What breaks here</th><th>Files touched</th></tr>
     <tr><td>1</td><td>2.7.18</td>
       <td><code>CrudRepository.findOne(ID)</code> removed · Tomcat JDBC → Hikari properties · JUnit 4 runner no longer on classpath · <code>spring.jpa.hibernate.use-new-id-generator-mappings</code> defaults to <code>true</code> · Spring MVC suffix pattern matching off · Jackson stops writing dates as epoch millis · <code>WebSecurityConfigurerAdapter</code> deprecated (still works)</td>
-      <td><span class="file">pom.xml · AppointmentServiceImpl · application.properties · UserFrontApplicationTests · all 8 @Entity classes</span></td></tr>
+      <td><span class="file">pom.xml · AppointmentServiceImpl · application.properties · UserFrontApplicationTests · all 9 @Entity classes</span></td></tr>
     <tr><td>2</td><td>3.5.x</td>
       <td>Java 17 minimum · <code>javax.*</code> → <code>jakarta.*</code> · <code>WebSecurityConfigurerAdapter</code> removed · <code>antMatchers()</code> removed · <code>@EnableGlobalMethodSecurity</code> deprecated · <code>MySQL5Dialect</code> removed (Hibernate 6.x) · driver artifact renamed · trailing-slash matching off · PathPattern rejects <code>/error/**/*</code></td>
-      <td><span class="file">pom.xml · SecurityConfig · RequestFilter · 8 entities · application.properties</span></td></tr>
+      <td><span class="file">pom.xml · SecurityConfig · RequestFilter · 9 entities · application.properties</span></td></tr>
     <tr><td>3</td><td>4.1.1</td>
       <td><code>spring-boot-starter-web</code> → <code>spring-boot-starter-webmvc</code> · <code>AntPathRequestMatcher</code> removed → <code>PathPatternRequestMatcher</code> · non-lambda security DSL removed · <code>@EnableGlobalMethodSecurity</code> removed · Jackson 3 (<code>tools.jackson</code> runtime; annotation package unchanged) · Hibernate 7 / JPA 3.2</td>
       <td><span class="file">pom.xml · SecurityConfig</span></td></tr>
@@ -303,7 +303,7 @@ public class SecurityConfig {
 
   @Bean
   public PasswordEncoder passwordEncoder() {
-    <span class="add">return new BCryptPasswordEncoder(12);</span> <span class="cm">// see note below</span>
+    <span class="add">return new BCryptPasswordEncoder(12);</span> <span class="cm">// see note below; UserServiceImpl:36 must inject PasswordEncoder</span>
   }
 
   <span class="add">@Bean</span>
@@ -322,7 +322,8 @@ public class SecurityConfig {
       <span class="add">.authorizeHttpRequests(auth -&gt; auth</span>
         <span class="add">.requestMatchers(PUBLIC_MATCHERS).permitAll()</span>
         .anyRequest().authenticated())
-      <span class="add">.csrf(AbstractHttpConfigurer::disable)</span>
+      <span class="add">.csrf(csrf -&gt; csrf.csrfTokenRepository(</span>
+          <span class="add">CookieCsrfTokenRepository.withHttpOnlyFalse()))</span>  <span class="cm">// was .disable(); see note</span>
       <span class="add">.cors(Customizer.withDefaults())</span>   <span class="cm">// was .disable(); see RequestFilter</span>
       <span class="add">.formLogin(form -&gt; form</span>
         .loginPage("/index")
@@ -343,6 +344,9 @@ public class SecurityConfig {
     </div>
     <div class="callout warn">
       <b>Password hash compatibility.</b> <code>new BCryptPasswordEncoder(12, new SecureRandom("salt".getBytes()))</code> seeds the salt RNG but does <em>not</em> change the hash format — BCrypt embeds the per-hash salt in the stored string. Replacing the seeded RNG with the default is therefore safe for existing rows in <code>user.password</code>; every stored <code>$2a$12$…</code> hash still verifies. Keep strength 12 to avoid needless rehash pressure.
+    </div>
+    <div class="callout danger">
+      <b>CSRF.</b> Line 47 today is <code>.csrf().disable().cors().disable()</code>. Carrying <code>csrf.disable()</code> forward with cookie-based form login and remember-me leaves every POST in <span class="file">TransferController</span>, <span class="file">AccountController</span> and <span class="file">AppointmentController</span> callable from a third-party page using the victim's session cookie. Thymeleaf's <code>th:action</code> injects the <code>_csrf</code> hidden field automatically once CSRF is on, so the 13 templates need no edits; AdminPortal (Angular <code>Http</code>, <code>withCredentials</code>) needs to read the <code>XSRF-TOKEN</code> cookie and send it as <code>X-XSRF-TOKEN</code>, which is why the repository is <code>CookieCsrfTokenRepository.withHttpOnlyFalse()</code>. If AdminPortal cannot be changed in the same release, scope the exemption to <code>csrf.ignoringRequestMatchers("/api/**", "/index", "/logout")</code> rather than disabling it globally.
     </div>
     <div class="callout">
       <b>Unused injections.</b> <code>Environment env</code> (line 26) is injected but never read; remove it. <code>UserSecurityService</code> is now supplied through the <code>DaoAuthenticationProvider</code> bean rather than field injection.
@@ -395,18 +399,25 @@ public class CorsConfig {
 
     UrlBasedCorsConfigurationSource src =
         new UrlBasedCorsConfigurationSource();
+    <span class="cm">// AdminPortal posts credentials to /index and calls</span>
+    <span class="cm">// /logout (login.service.ts:11,22), not only /api/**</span>
     src.registerCorsConfiguration("/api/**", cfg);
+    src.registerCorsConfiguration("/index", cfg);
+    src.registerCorsConfiguration("/logout", cfg);
     return src;
   }
 }</code></pre></div>
+    </div>
+    <div class="callout warn">
+      <b>Credentialed CORS.</b> <code>allowCredentials(true)</code> plus a configurable origin means the value of <code>CORS_ORIGIN</code> in production must be the <code>https://</code> AdminPortal origin, and <code>server.servlet.session.cookie.secure=true</code> / <code>spring.security.rememberme</code> cookies must be marked secure, otherwise the session cookie AdminPortal relies on is sent in clear text. The <code>localhost:4200</code> default exists for local development only; fail startup if the property is unset in the <code>prod</code> profile.
     </div>
     <p class="why">If the team prefers the minimum-risk path for Step 2, keep the class and only change the four imports plus the <code>doFilter</code> signature to declare <code>throws IOException, ServletException</code> instead of catching <code>Exception</code>.</p>
   </div>
 
   <!-- Entities -->
   <div class="change card">
-    <h4><span class="file">domain/*.java</span> · 8 entities <span class="badge b-break">compile</span> <span class="badge b-data">schema</span></h4>
-    <p class="why">Mechanical namespace swap in <span class="file">User, PrimaryAccount, SavingsAccount, PrimaryTransaction, SavingsTransaction, Recipient, Appointment, security/Role, security/UserRole</span>. <span class="file">Role.java</span> and <span class="file">UserRole.java</span> use the wildcard <code>import javax.persistence.*;</code>. Seven of the nine entity classes also use <code>@GeneratedValue(strategy = GenerationType.AUTO)</code> — see the data section for why that must become <code>IDENTITY</code>.</p>
+    <h4><span class="file">domain/*.java</span> · 9 entities <span class="badge b-break">compile</span> <span class="badge b-data">schema</span></h4>
+    <p class="why">Mechanical namespace swap in <span class="file">User, PrimaryAccount, SavingsAccount, PrimaryTransaction, SavingsTransaction, Recipient, Appointment, security/Role, security/UserRole</span>. <span class="file">Role.java</span> and <span class="file">UserRole.java</span> use the wildcard <code>import javax.persistence.*;</code>. Eight of the nine declare a <code>@GeneratedValue</code>; seven are active <code>@GeneratedValue(strategy = GenerationType.AUTO)</code> and one (<span class="file">Role.java</span>) is commented out — see the data section for why that must become <code>IDENTITY</code>.</p>
     <div class="diff">
       <div class="before"><div class="lbl">Before · e.g. User.java lines 8-16, 28-31</div><pre><code><span class="del">import javax.persistence.CascadeType;</span>
 <span class="del">import javax.persistence.Column;</span>
@@ -506,7 +517,7 @@ spring.jpa.show-sql = true
 <span class="add">app.cors.allowed-origin = ${CORS_ORIGIN:http://localhost:4200}</span></code></pre></div>
     </div>
     <div class="callout warn">
-      <b>open-in-view.</b> <span class="file">User.java</span> lines 46-50 declare <code>appointmentList</code> and <code>recipientList</code> as <code>FetchType.LAZY</code> and <span class="file">HomeController.userFront()</span> / <span class="file">TransferController.recipient()</span> render them in Thymeleaf. Today this works because Boot's Open-Session-In-View interceptor keeps the persistence context open through view rendering. Setting <code>open-in-view=false</code> is the right long-term default but requires adding <code>@Transactional(readOnly = true)</code> to the read paths or fetching eagerly in a DAO query. Defer this to a follow-up if the migration timeline is tight; leaving it unset only produces a warning.
+      <b>open-in-view.</b> <span class="file">User.java</span> lines 46-50 declare <code>appointmentList</code> and <code>recipientList</code> as <code>FetchType.LAZY</code>. An audit of the 13 templates finds neither collection is read through <code>User</code>: <span class="file">recipient.html</span> and <span class="file">toSomeoneElse.html</span> iterate the <code>recipientList</code> model attribute that <span class="file">TransactionServiceImpl.findRecipientList()</span> builds from <code>recipientDao.findAll()</code>, and no template touches <code>appointmentList</code>. <code>userRoles</code> is <code>EAGER</code>. So <code>open-in-view=false</code> is expected to be safe today, but because it turns a rendering-time <code>LazyInitializationException</code> into a runtime failure rather than a compile error, enable it only under the smoke test suite from step 0 and add <code>@Transactional(readOnly = true)</code> to any read path that fails. Leaving it unset only produces a warning.
     </div>
   </div>
 
@@ -552,7 +563,7 @@ import org.springframework.boot.test.context.SpringBootTest;
   <!-- Services -->
   <div class="change card">
     <h4><span class="file">service/UserServiceImpl/UserServiceImpl.java</span> · <span class="file">AccountServiceImpl.java</span> · <span class="file">TransactionServiceImpl.java</span> <span class="badge b-ok">compile clean</span></h4>
-    <p class="why"><span class="file">UserServiceImpl</span> line 32 injects the concrete <code>BCryptPasswordEncoder</code>; if the bean type in the new <span class="file">SecurityConfig</span> is widened to <code>PasswordEncoder</code>, change the field type to match (or keep the bean typed as <code>BCryptPasswordEncoder</code>). Nothing else in the service layer references a removed API. <span class="file">AccountServiceImpl</span> line 15 keeps account numbers in a <code>static int nextAccountNumber</code> — that is a pre-existing correctness bug (resets on restart, not thread-safe), not a migration issue, but the migration branch is a natural place to flag it.</p>
+    <p class="why"><span class="file">UserServiceImpl</span> lines 9 and 36 import and inject the concrete <code>BCryptPasswordEncoder</code>. Spring registers the bean under the factory method's declared return type, so the <code>PasswordEncoder passwordEncoder()</code> bean shown in the new <span class="file">SecurityConfig</span> does <em>not</em> satisfy that field and the context fails to start with <code>NoSuchBeanDefinitionException</code>. This edit is <b>required in the same commit</b> as the security rewrite: <code>import org.springframework.security.crypto.password.PasswordEncoder;</code> and <code>private PasswordEncoder passwordEncoder;</code> (line 56's <code>encode()</code> call is unchanged). The alternative is to keep the bean declared as <code>BCryptPasswordEncoder</code>. Nothing else in the service layer references a removed API. <span class="file">AccountServiceImpl</span> line 15 keeps account numbers in a <code>static int nextAccountNumber</code> — that is a pre-existing correctness bug (resets on restart, not thread-safe), not a migration issue, but the migration branch is a natural place to flag it.</p>
   </div>
 </section>
 
@@ -604,8 +615,8 @@ import org.springframework.boot.test.context.SpringBootTest;
     <tr><th>#</th><th>Work item</th><th>Gate</th><th>Sessions</th></tr>
     <tr><td>0</td><td>Add Testcontainers-backed <code>@SpringBootTest</code> and a MockMvc smoke test covering signup, login, deposit, between-accounts transfer, appointment create, and <code>GET /api/user/all</code> as <code>ROLE_ADMIN</code>. Baseline the MySQL schema with <code>mysqldump --no-data</code>.</td><td>Green on Boot 1.5.4</td><td>1</td></tr>
     <tr><td>1</td><td>Boot 2.7.18: pom, Hikari properties, JUnit 5, <code>findById</code>, <code>GenerationType.IDENTITY</code>. Compare <code>/api/user/primary/transaction</code> JSON before/after for the date format.</td><td>Smoke green · AdminPortal renders statements</td><td>1</td></tr>
-    <tr><td>2</td><td>Boot 3.5.x + Java 21: OpenRewrite <code>UpgradeSpringBoot_3_5</code> recipe for imports; hand-write <span class="file">SecurityConfig</span>; delete dialect property; swap driver.</td><td>Smoke green · login/logout/remember-me manual check</td><td>1</td></tr>
-    <tr><td>3</td><td>Boot 4.1.1: <code>starter-webmvc</code>, <code>PathPatternRequestMatcher</code>, <code>@EnableMethodSecurity</code>. Run once with <code>ddl-auto=validate</code> against a restored dump; encode any diff as <code>V1__baseline.sql</code> + <code>V2__hibernate7_types.sql</code>.</td><td>Smoke green · <code>validate</code> passes on prod copy</td><td>1</td></tr>
+    <tr><td>2</td><td>Boot 3.5.x + Java 21: OpenRewrite <code>UpgradeSpringBoot_3_5</code> recipe for imports; hand-write <span class="file">SecurityConfig</span> and widen <span class="file">UserServiceImpl</span>'s encoder field to <code>PasswordEncoder</code>; delete dialect property; swap driver.</td><td>Smoke green · login/logout/remember-me manual check</td><td>1</td></tr>
+    <tr><td>3</td><td>Boot 4.1.1: <code>starter-webmvc</code>, <code>PathPatternRequestMatcher</code>, <code>@EnableMethodSecurity</code>. Run once with <code>ddl-auto=validate</code> against a restored dump. Adopt the existing schema with Flyway by setting <code>spring.flyway.baseline-on-migrate=true</code> and <code>spring.flyway.baseline-version=1</code> (creates <code>flyway_schema_history</code> without rejecting the non-empty schema), keep <code>V1__baseline.sql</code> as documentation only, and encode any validate diff as <code>V2__hibernate7_types.sql</code>.</td><td>Smoke green · <code>validate</code> passes on prod copy</td><td>1</td></tr>
     <tr><td>4</td><td>Follow-ups: <span class="file">CorsConfig</span>, <code>open-in-view=false</code>, env-var secrets, <code>ListCrudRepository</code>, <code>@GetMapping</code>.</td><td>Smoke green</td><td>1</td></tr>
   </table>
   <p class="why" style="color:var(--muted)">Total: <b>~5 Devin sessions</b> of engineering. External waits (MySQL 8 provisioning if the current server is 5.x — Connector/J 9 requires MySQL 8.0+; AdminPortal owner sign-off on the JSON date contract) are the only items likely to extend the calendar.</p>
