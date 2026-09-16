@@ -1,0 +1,29 @@
+name: UserFront CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - 'upgrade/**'
+  pull_request:
+    branches:
+      - main
+      - master
+      - 'upgrade/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: UserFront/pom.xml
+
+      - name: Build and verify UserFront
+        run: ./mvnw -B -f UserFront/pom.xml verify
