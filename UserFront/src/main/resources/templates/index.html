@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head th:replace="common/header :: common-header" />
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{common/header :: common-header}"></head>
 <body>
 	<!-- Login Section -->
 	<img class="img-responsive" src="/images/banner.png" alt="banner" />
@@ -45,7 +45,7 @@
 		</div>
 	</div>
 
-	<div th:replace="common/header :: body-bottom-scripts" />
+	<div th:replace="~{common/header :: body-bottom-scripts}"></div>
 
 </body>
 </html>

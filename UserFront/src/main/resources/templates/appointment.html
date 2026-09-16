@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head th:replace="common/header :: common-header"/>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{common/header :: common-header}"></head>
 <body roleId="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
-<head th:replace="common/header :: navbar"/>
+<div th:replace="~{common/header :: navbar}"></div>
 <div class="container main">
     <div class="row">
         <div class="col-md-6">
@@ -23,7 +23,7 @@
 
                 <div class="form-group">
                     <label for="location">Pick a location:</label>
-                    <select class="form-control" th:value="${appointment.location}" name="location" id="location"
+                    <select class="form-control" name="location" id="location"
                             >
                         <option disabled="disabled" selected="selected" > -- select the location --</option>
                         <option>Boston</option>
@@ -35,13 +35,9 @@
 
                 <div class="form-group">
                     <label for="description">Notes:</label>
-                    <textarea th:value="${appointment.description}" class="form-control" name="description" id="description" placeholder="Description" ></textarea>
+                    <textarea th:text="${appointment.description}" class="form-control" name="description" id="description" placeholder="Description" ></textarea>
                 </div>
 
-
-                <input type="hidden"
-                       name="${_csrf.parameterName}"
-                       value="${_csrf.token}"/>
 
                 <a class="btn btn-primary" id="submitAppointment">Submit Scheduling</a>
             </form>
@@ -53,7 +49,7 @@
     <br/>
 </div>
 
-<div th:replace="common/header :: body-bottom-scripts"/>
+<div th:replace="~{common/header :: body-bottom-scripts}"></div>
 
 </body>
 </html>
