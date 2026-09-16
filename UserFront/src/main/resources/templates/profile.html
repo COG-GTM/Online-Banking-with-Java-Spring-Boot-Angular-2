@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head th:replace="common/header :: common-header"/>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{common/header :: common-header}"></head>
 <body roleId="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
-<head th:replace="common/header :: navbar"/>
+<div th:replace="~{common/header :: navbar}"></div>
 <div class="container">
     <div class="row main">
         <div class="col-md-6">
@@ -92,8 +92,8 @@
                     </tr>
 
                     <tr>
-                        <td data-th-text="${user.primaryAccount.accountNumber}">...</td>
-                        <td data-th-text="${user.savingsAccount.accountNumber}">...</td>
+                        <td th:text="${user.primaryAccount.accountNumber}">...</td>
+                        <td th:text="${user.savingsAccount.accountNumber}">...</td>
                     </tr>
                 </table>
             </div>
@@ -102,7 +102,7 @@
 </div>
 
 
-<div th:replace="common/header :: body-bottom-scripts"/>
+<div th:replace="~{common/header :: body-bottom-scripts}"></div>
 
 </body>
 </html>
