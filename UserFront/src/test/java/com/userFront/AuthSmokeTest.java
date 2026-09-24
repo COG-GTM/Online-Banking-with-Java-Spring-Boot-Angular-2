@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.servlet.http.Cookie;
 
 import org.junit.Before;
@@ -49,6 +51,9 @@ public class AuthSmokeTest extends AbstractIntegrationTest {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Before
     public void seedRole() {
         if (roleDao.findByName("ROLE_USER") == null) {
@@ -70,6 +75,9 @@ public class AuthSmokeTest extends AbstractIntegrationTest {
                 .param("phone", "5551234567"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
+
+        entityManager.flush();
+        entityManager.clear();
 
         User user = userDao.findByUsername(USERNAME);
         assertNotNull(user);
@@ -114,12 +122,17 @@ public class AuthSmokeTest extends AbstractIntegrationTest {
 
         MvcResult login = mockMvc.perform(post("/index")
                 .param("username", USERNAME)
-                .param("password", PASSWORD))
+                .param("password", PASSWORD)
+                .param("remember-me", "on"))
                 .andExpect(redirectedUrl("/userFront"))
                 .andReturn();
 
+        Cookie issued = login.getResponse().getCookie("remember-me");
+        assertNotNull(issued);
+
         // GET, not POST: W2 turns CSRF on and the logoutRequestMatcher must keep this working.
         MvcResult logout = mockMvc.perform(get("/logout")
+                .cookie(issued)
                 .session((MockHttpSession) login.getRequest().getSession()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/index?logout"))
@@ -128,6 +141,11 @@ public class AuthSmokeTest extends AbstractIntegrationTest {
         Cookie rememberMe = logout.getResponse().getCookie("remember-me");
         assertNotNull(rememberMe);
         assertEquals(0, rememberMe.getMaxAge());
+
+        // Today's behaviour: remember-me is token-based, so a copy of the cookie kept by the
+        // client still authenticates after logout. Captured, not endorsed.
+        mockMvc.perform(get("/userFront").cookie(issued).session(new MockHttpSession()))
+                .andExpect(status().isOk());
     }
 
     @Test
