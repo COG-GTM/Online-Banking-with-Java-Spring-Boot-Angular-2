@@ -7,22 +7,28 @@ file is committed as data, not regenerated per environment.
 
 Flyway is **not** wired up yet; this directory only holds the baseline SQL for now.
 
+All commands below are run from the repository root.
+
+```bash
+BASELINE=UserFront/src/main/resources/db/migration/V1__baseline.sql
+```
+
 ## Regenerating the baseline
 
 ```bash
-mysqldump --no-data --skip-add-drop-table --routines onlinebanking > V1__baseline.sql
+mysqldump --no-data --skip-add-drop-table --routines onlinebanking > "$BASELINE"
 ```
 
-Then strip the environment-specific bits so the file is portable:
+Then strip the environment-specific bits in place so the file is portable:
 
 ```bash
-sed -E -e '/^-- MySQL dump/d' \
-       -e '/^-- Host:/d' \
-       -e '/^-- Server version/d' \
-       -e '/^-- Dump completed/d' \
-       -e 's/ AUTO_INCREMENT=[0-9]+//g' \
-       -e 's/DEFINER=`[^`]*`@`[^`]*` //g' \
-       V1__baseline.sql
+sed -E -i -e '/^-- MySQL dump/d' \
+          -e '/^-- Host:/d' \
+          -e '/^-- Server version/d' \
+          -e '/^-- Dump completed/d' \
+          -e 's/ AUTO_INCREMENT=[0-9]+//g' \
+          -e 's/DEFINER=`[^`]*`@`[^`]*` //g' \
+          "$BASELINE"
 ```
 
 ## Verifying the baseline
@@ -37,12 +43,11 @@ docker run -d --name ob-mysql -e MYSQL_ROOT_PASSWORD=avengers1993 -p 3306:3306 \
 mysql -h 127.0.0.1 -uroot -p -e "CREATE DATABASE onlinebanking_verify;"
 
 # 2. apply the baseline
-mysql -h 127.0.0.1 -uroot -p onlinebanking_verify < V1__baseline.sql
+mysql -h 127.0.0.1 -uroot -p onlinebanking_verify < "$BASELINE"
 
 # 3. build and start the app with schema validation
-cd UserFront
-mvn -DskipTests -Dmysql.version=5.1.49 package
-java -jar target/userFront-0.0.1-SNAPSHOT.jar \
+mvn -f UserFront/pom.xml -DskipTests -Dmysql.version=5.1.49 package
+java -jar UserFront/target/userFront-0.0.1-SNAPSHOT.jar \
   --spring.datasource.url="jdbc:mysql://127.0.0.1:3306/onlinebanking_verify?useSSL=false" \
   --spring.jpa.hibernate.ddl-auto=validate
 ```
