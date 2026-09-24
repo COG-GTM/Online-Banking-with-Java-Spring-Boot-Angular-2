@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import com.userFront.dao.PrimaryAccountDao;
 import com.userFront.dao.PrimaryTransactionDao;
@@ -211,8 +212,9 @@ public class MoneyMovementSmokeTest extends AbstractIntegrationTest {
 		assertEquals("987654321", saved.getAccountNumber());
 		assertEquals(username, saved.getUser().getUsername());
 
-		mockMvc.perform(get("/transfer/recipient").with(user(username))).andExpect(status().isOk())
-				.andExpect(view().name("recipient")).andExpect(model().attributeExists("recipientList"));
+		MvcResult listed = mockMvc.perform(get("/transfer/recipient").with(user(username))).andExpect(status().isOk())
+				.andExpect(view().name("recipient")).andExpect(model().attributeExists("recipientList")).andReturn();
+		assertEquals(Collections.singletonList(recipientName), recipientNames(listed));
 
 		// Delete is a GET today; COG-1155 converts it to a POST and updates this test.
 		mockMvc.perform(get("/transfer/recipient/delete").with(user(username)).param("recipientName", recipientName))
@@ -239,6 +241,36 @@ public class MoneyMovementSmokeTest extends AbstractIntegrationTest {
 		assertEquals("Finished", debit.getStatus());
 		assertEquals(175.00, debit.getAmount(), 0.001);
 		assertEquals(0, new BigDecimal("425.00").compareTo(debit.getAvailableBalance()));
+	}
+
+	@Test
+	public void transferToSomeoneElseDebitsTheSendingSavingsAccount() throws Exception {
+		deposit("Savings", "600.00");
+		String recipientName = "Payee" + System.nanoTime();
+		saveRecipient(recipientName);
+
+		mockMvc.perform(post("/transfer/toSomeoneElse").with(user(username)).param("recipientName", recipientName)
+				.param("accountType", "Savings").param("amount", "175.00")).andExpect(status().is3xxRedirection())
+				.andExpect(redirectedUrl("/userFront"));
+
+		assertEquals(0, new BigDecimal("425.00").compareTo(savingsBalance()));
+
+		SavingsTransaction debit = lastSavingsTransaction();
+		assertEquals("Transfer to recipient " + recipientName, debit.getDescription());
+		assertEquals("Transfer", debit.getType());
+		assertEquals("Finished", debit.getStatus());
+		assertEquals(175.00, debit.getAmount(), 0.001);
+		assertEquals(0, new BigDecimal("425.00").compareTo(debit.getAvailableBalance()));
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<String> recipientNames(MvcResult result) {
+		List<Recipient> recipients = (List<Recipient>) result.getModelAndView().getModel().get("recipientList");
+		List<String> names = new ArrayList<>();
+		for (Recipient recipient : recipients) {
+			names.add(recipient.getName());
+		}
+		return names;
 	}
 
 	private void deposit(String accountType, String amount) throws Exception {
