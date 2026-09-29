@@ -58,6 +58,16 @@ public class AmountValidatorTest {
 		AmountValidator.parse("1E+999999999");
 	}
 
+	@Test(timeout = 1000, expected = InvalidAmountException.class)
+	public void rejectsHugeNegativeExponent() {
+		AmountValidator.parse("1E-600000000");
+	}
+
+	@Test(timeout = 1000, expected = InvalidAmountException.class)
+	public void rejectsHugeNegativeExponentWithTrailingZeros() {
+		AmountValidator.parse("100E-600000000");
+	}
+
 	@Test(expected = InvalidAmountException.class)
 	public void rejectsSubCentPrecision() {
 		AmountValidator.parse("0.001");
