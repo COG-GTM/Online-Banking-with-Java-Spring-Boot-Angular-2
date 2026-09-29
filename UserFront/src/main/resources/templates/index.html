@@ -12,6 +12,8 @@
 					and secret.</div>
 				<div class="bg-danger" th:if="${param.logout}">You have been
 					logged out.</div>
+				<div class="bg-danger" th:if="${param.disabled}">Your session has
+					ended because your account is disabled.</div>
 					
 				<form class="form-signin" th:action="@{/index}" method="post">
 					<h2 class="form-signin-heading">Please sign in</h2>
