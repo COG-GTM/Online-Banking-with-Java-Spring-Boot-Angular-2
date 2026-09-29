@@ -10,16 +10,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.DecimalMin;
+
+import org.hibernate.annotations.Check;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
+@Check(constraints = "account_balance >= 0")
 public class SavingsAccount {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private int accountNumber;
+	@DecimalMin("0.00")
 	private BigDecimal accountBalance;
 
 	@OneToMany(mappedBy = "savingsAccount", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
