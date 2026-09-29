@@ -30,6 +30,7 @@ public class User implements UserDetails{
     @Column(name = "userId", nullable = false, updatable = false)
     private Long userId;
     private String username;
+    @JsonIgnore
     private String password;
     private String firstName;
     private String lastName;
