@@ -2,6 +2,7 @@ package com.userFront.domain;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import jakarta.persistence.Column;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,13 +15,14 @@ import javax.persistence.ManyToOne;
 public class PrimaryTransaction {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private Date date;
 	private String description;
 	private String type;
 	private String status;
 	private double amount;
+	@Column(precision = 19, scale = 2)
 	private BigDecimal availableBalance;
 	
 	@ManyToOne
