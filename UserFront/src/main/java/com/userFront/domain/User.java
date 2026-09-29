@@ -5,15 +5,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,10 +26,11 @@ import com.userFront.domain.security.UserRole;
 public class User implements UserDetails{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "userId", nullable = false, updatable = false)
     private Long userId;
     private String username;
+    @JsonIgnore
     private String password;
     private String firstName;
     private String lastName;
@@ -51,6 +52,7 @@ public class User implements UserDetails{
     private List<Appointment> appointmentList;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Recipient> recipientList;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -162,13 +164,10 @@ public class User implements UserDetails{
         return "User{" +
                 "userId=" + userId +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
-                ", appointmentList=" + appointmentList +
-                ", recipientList=" + recipientList +
                 ", userRoles=" + userRoles +
                 '}';
     }

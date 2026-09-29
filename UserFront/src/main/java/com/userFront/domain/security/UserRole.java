@@ -2,14 +2,14 @@ package com.userFront.domain.security;
 
 import com.userFront.domain.User;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 
 @Entity
 @Table(name="user_role")
 public class UserRole {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long userRoleId;
 
     public UserRole(User user, Role role) {
