@@ -74,12 +74,16 @@
 						<label for="username" class="cols-sm-2 control-label">Username</label><span
 							class="bg-danger pull-right" th:if="${usernameExists}">Username
 							already exists</span>
+						<span class="bg-danger pull-right" th:if="${usernameInvalid}">Username
+							must be 3-32 characters: letters, digits, '.', '_' or '-'</span>
 						<div class="cols-sm-10">
 							<div class="input-group">
 								<span class="input-group-addon"><i class="fa fa-users fa"
 									aria-hidden="true"></i></span> <input type="text" class="form-control"
 									th:value="${user.username}" id="username" name="username"
 									roleId="username" placeholder="Enter your Username"
+									pattern="[A-Za-z0-9._\-]{3,32}"
+									title="3-32 characters: letters, digits, '.', '_' or '-'"
 									required="required" />
 							</div>
 						</div>
