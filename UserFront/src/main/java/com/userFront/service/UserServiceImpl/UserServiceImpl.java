@@ -6,6 +6,9 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +37,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
+
+	@Autowired
+	private SessionRegistry sessionRegistry;
 
 	public void save(User user) {
 		userDao.save(user);
@@ -108,9 +114,19 @@ public class UserServiceImpl implements UserService {
 	public void disableUser(String username) {
 		User user = findByUsername(username);
 		user.setEnabled(false);
-		System.out.println(user.isEnabled());
 		userDao.save(user);
-		System.out.println(username + " is disabled.");
+		expireSessions(username);
+		LOG.info("User {} is disabled.", username);
+	}
+
+	private void expireSessions(String username) {
+		for (Object principal : sessionRegistry.getAllPrincipals()) {
+			if (principal instanceof UserDetails && username.equals(((UserDetails) principal).getUsername())) {
+				for (SessionInformation session : sessionRegistry.getAllSessions(principal, false)) {
+					session.expireNow();
+				}
+			}
+		}
 	}
 
 	public List<User> findUserList() {
