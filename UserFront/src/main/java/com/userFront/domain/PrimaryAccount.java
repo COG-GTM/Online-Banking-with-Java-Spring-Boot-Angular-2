@@ -12,14 +12,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
 
 @Entity
 public class PrimaryAccount {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private int accountNumber;
+	@Column(precision = 19, scale = 2)
 	private BigDecimal accountBalance;
 
 	@OneToMany(mappedBy = "primaryAccount", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
