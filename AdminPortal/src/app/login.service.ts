@@ -25,7 +25,7 @@ export class LoginService {
 
   logout() {
      let url = 'http://localhost:8080/logout';
-     return this.http.get(url, { withCredentials: true });
+     return this.http.post(url, null, { withCredentials: true });
    }
 
 }
