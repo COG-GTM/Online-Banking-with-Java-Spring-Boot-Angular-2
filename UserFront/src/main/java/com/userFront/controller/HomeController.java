@@ -4,7 +4,12 @@ import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,6 +21,7 @@ import com.userFront.domain.PrimaryAccount;
 import com.userFront.domain.SavingsAccount;
 import com.userFront.domain.User;
 import com.userFront.domain.security.UserRole;
+import com.userFront.security.SignupRateLimiter;
 import com.userFront.service.UserService;
 
 @Controller
@@ -26,6 +32,9 @@ public class HomeController {
 
 	@Autowired
 	private RoleDao roleDao;
+
+	@Autowired
+	private SignupRateLimiter signupRateLimiter;
 
 	@RequestMapping("/")
 	public String home() {
@@ -47,27 +56,31 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
-	public String signupPost(@ModelAttribute("user") User user, Model model) {
+	public String signupPost(@ModelAttribute("user") User user, Model model, HttpServletRequest request,
+			HttpServletResponse response) {
+
+		if (!signupRateLimiter.tryAcquire(request.getRemoteAddr())) {
+			response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+			model.addAttribute("signupRateLimited", true);
+			return "signup";
+		}
 
 		if (userService.checkUserExists(user.getUsername(), user.getEmail())) {
-
-			if (userService.checkEmailExists(user.getEmail())) {
-				model.addAttribute("emailExists", true);
-			}
-
-			if (userService.checkUsernameExists(user.getUsername())) {
-				model.addAttribute("usernameExists", true);
-			}
-
+			model.addAttribute("signupUnavailable", true);
 			return "signup";
-		} else {
-			Set<UserRole> userRoles = new HashSet<>();
-			userRoles.add(new UserRole(user, roleDao.findByName("ROLE_USER")));
-
-			userService.createUser(user, userRoles);
-
-			return "redirect:/";
 		}
+
+		Set<UserRole> userRoles = new HashSet<>();
+		userRoles.add(new UserRole(user, roleDao.findByName("ROLE_USER")));
+
+		try {
+			userService.createUser(user, userRoles);
+		} catch (DataIntegrityViolationException e) {
+			model.addAttribute("signupUnavailable", true);
+			return "signup";
+		}
+
+		return "redirect:/";
 	}
 
 	@RequestMapping("/userFront")
