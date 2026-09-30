@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { LoginService } from '../login.service';
 import { Router } from '@angular/router';
 
 @Component({
+  standalone: false,
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent {
 
   loggedIn: boolean;
 
@@ -21,7 +22,7 @@ export class NavbarComponent implements OnInit {
 
 	logout(){
 		this.loginService.logout().subscribe(
-			res => {
+			() => {
 				localStorage.setItem('PortalAdminHasLoggedIn', '');
 			},
 			err => console.log(err)
@@ -38,7 +39,5 @@ export class NavbarComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
-  }
 
 }
