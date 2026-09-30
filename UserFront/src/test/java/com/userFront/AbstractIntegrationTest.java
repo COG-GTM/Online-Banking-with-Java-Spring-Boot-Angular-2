@@ -1,5 +1,10 @@
 package com.userFront;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -38,10 +43,12 @@ public abstract class AbstractIntegrationTest {
 
 	public static final String DEFAULT_MYSQL_IMAGE = "mysql:8.0";
 
+	/** Docker Engine 25+ rejects the API 1.32 that Testcontainers 1.19.x requests by default. */
+	private static final String PREFERRED_DOCKER_API_VERSION = "1.44";
+
 	static {
-		// Testcontainers 1.19.x pins docker-java to API 1.32, which Docker Engine 25+ rejects.
 		if (System.getProperty("api.version") == null && System.getenv("DOCKER_API_VERSION") == null) {
-			System.setProperty("api.version", "1.44");
+			System.setProperty("api.version", dockerApiVersion());
 		}
 	}
 
@@ -58,6 +65,44 @@ public abstract class AbstractIntegrationTest {
 
 	@Autowired
 	protected MockMvc mockMvc;
+
+	/**
+	 * {@value #PREFERRED_DOCKER_API_VERSION}, capped at the daemon's maximum API version (as
+	 * reported by the {@code docker} CLI) so older engines such as Docker 24 (API 1.43) still work.
+	 */
+	private static String dockerApiVersion() {
+		try {
+			Process process = new ProcessBuilder("docker", "version", "--format", "{{.Server.APIVersion}}")
+					.redirectErrorStream(true)
+					.start();
+			if (!process.waitFor(10, TimeUnit.SECONDS)) {
+				process.destroyForcibly();
+				return PREFERRED_DOCKER_API_VERSION;
+			}
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+				String serverMax = reader.readLine();
+				if (process.exitValue() == 0 && serverMax != null && serverMax.trim().matches("\\d+\\.\\d+")) {
+					return compareApiVersions(serverMax.trim(), PREFERRED_DOCKER_API_VERSION) < 0
+							? serverMax.trim()
+							: PREFERRED_DOCKER_API_VERSION;
+				}
+			}
+		}
+		catch (IOException e) {
+			// No docker CLI on the PATH: fall back to the preferred version.
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
+		return PREFERRED_DOCKER_API_VERSION;
+	}
+
+	private static int compareApiVersions(String a, String b) {
+		String[] x = a.split("\\.");
+		String[] y = b.split("\\.");
+		int major = Integer.compare(Integer.parseInt(x[0]), Integer.parseInt(y[0]));
+		return major != 0 ? major : Integer.compare(Integer.parseInt(x[1]), Integer.parseInt(y[1]));
+	}
 
 	public static class DataSourceInitializer
 			implements ApplicationContextInitializer<ConfigurableApplicationContext> {
