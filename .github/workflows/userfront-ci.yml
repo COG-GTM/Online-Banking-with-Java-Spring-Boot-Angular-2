@@ -1,0 +1,63 @@
+name: UserFront CI
+
+on:
+  pull_request:
+  push:
+    branches: [master, main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  userfront-verify:
+    name: UserFront · mvn verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Keep in sync with <java.version> in UserFront/pom.xml (1.8 today).
+      - name: Set up JDK 8
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '8'
+          cache: maven
+          cache-dependency-path: UserFront/pom.xml
+
+      - name: mvn verify
+        run: mvn -B -f UserFront/pom.xml verify
+
+      - name: Upload surefire reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: userfront-surefire-reports
+          path: |
+            UserFront/target/surefire-reports/
+            UserFront/target/failsafe-reports/
+          if-no-files-found: ignore
+
+  adminportal-build:
+    name: AdminPortal · ng build (non-blocking)
+    runs-on: ubuntu-latest
+    # Angular CLI 1.1.2 / Angular 4 needs legacy Node 12.
+    continue-on-error: true
+    defaults:
+      run:
+        working-directory: AdminPortal
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node 12
+        uses: actions/setup-node@v4
+        with:
+          node-version: '12'
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
+
+      - name: Build
+        run: npm run build
