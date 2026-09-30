@@ -6,7 +6,8 @@ import { ActivatedRoute, Params } from '@angular/router';
 @Component({
   selector: 'app-savings-transaction',
   templateUrl: './savings-transaction.component.html',
-  styleUrls: ['./savings-transaction.component.css']
+  styleUrls: ['./savings-transaction.component.css'],
+  standalone: false
 })
 export class SavingsTransactionComponent implements OnInit {
 
@@ -24,8 +25,8 @@ export class SavingsTransactionComponent implements OnInit {
 	getSavingsTransactionList() {
 		this.userService.getSavingsTransactionList(this.username).subscribe(
 			res => {
-				console.log(JSON.parse(JSON.stringify(res))._body);
-        		this.savingsTransactionList = JSON.parse(JSON.parse(JSON.stringify(res))._body);
+				console.log(res);
+        		this.savingsTransactionList = res as Object[];
       		},
       		error => console.log(error)
 		)
