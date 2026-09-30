@@ -53,7 +53,8 @@ import com.userFront.golden.JsonParseEquivalence;
  * <p>Responses are compared with {@link JsonParseEquivalence} against the committed
  * {@code golden/boot15/*.json} fixtures; regenerate them with {@code -Dgolden.update=true}. The
  * fixtures hold the response bodies as served, restricted to the {@value #PREFIX}* rows this class
- * seeds (other smoke tests share the JVM, context and database) and pretty-printed. Generated ids
+ * seeds (other smoke tests share the JVM, context and database), with transaction and appointment
+ * rows sorted by date (the queries have no ORDER BY), and pretty-printed. Generated ids
  * are compared for presence and type only; everything else, including account numbers, balances,
  * dates and the exposed password hash, is seeded with fixed values.
  *
