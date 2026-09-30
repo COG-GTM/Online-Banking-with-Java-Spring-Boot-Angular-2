@@ -33,9 +33,8 @@ npm-debug.log
 testem.log
 /typings
 
-# e2e
-/e2e/*.js
-/e2e/*.map
+# Angular CLI cache
+/.angular/cache
 
 # System Files
 .DS_Store
