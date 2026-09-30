@@ -1,20 +1,23 @@
 import { Injectable } from '@angular/core';
-import {Http, Headers} from '@angular/http';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
+import { environment } from '../environments/environment';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AppointmentService {
 
-  constructor (private http:Http){}
+  private readonly baseUrl = environment.apiBaseUrl;
 
-  getAppointmentList() {
-    let url = "http://localhost:8080/api/appointment/all";
-    return this.http.get(url, { withCredentials: true });
+  constructor(private http: HttpClient) {}
+
+  getAppointmentList(): Observable<any[]> {
+    const url = `${this.baseUrl}/api/appointment/all`;
+    return this.http.get<any[]>(url, { withCredentials: true });
   }
 
-  confirmAppointment(id: number) {
-    let url = "http://localhost:8080/api/appointment/"+id+"/confirm";
-    return this.http.get(url, { withCredentials: true });
+  confirmAppointment(id: number): Observable<void> {
+    const url = `${this.baseUrl}/api/appointment/${id}/confirm`;
+    return this.http.get<void>(url, { withCredentials: true });
   }
-
 }

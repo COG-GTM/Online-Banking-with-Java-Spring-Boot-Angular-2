@@ -1,11 +1,26 @@
-/* tslint:disable:no-unused-variable */
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
-import { TestBed, async } from '@angular/core/testing';
 import { AppointmentComponent } from './appointment.component';
 
-describe('Component: Appointment', () => {
-  it('should create an instance', () => {
-    let component = new AppointmentComponent();
+describe('AppointmentComponent', () => {
+  let component: AppointmentComponent;
+  let fixture: ComponentFixture<AppointmentComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [AppointmentComponent],
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(AppointmentComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should be created', () => {
     expect(component).toBeTruthy();
   });
 });
