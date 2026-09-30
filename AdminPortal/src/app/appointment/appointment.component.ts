@@ -5,11 +5,12 @@ import {AppointmentService} from '../appointment.service';
 @Component({
   selector: 'app-appointment',
   templateUrl: './appointment.component.html',
-  styleUrls: ['./appointment.component.css']
+  styleUrls: ['./appointment.component.css'],
+  standalone: false
 })
 export class AppointmentComponent implements OnInit {
 
-  appointmentList: Object[];
+  appointmentList: any[];
 
 	constructor(private appointmentService: AppointmentService) {
 		this.getAppointmentList();
@@ -18,7 +19,7 @@ export class AppointmentComponent implements OnInit {
 	getAppointmentList() {
 		this.appointmentService.getAppointmentList().subscribe(
 			res => {
-        		this.appointmentList = JSON.parse(JSON.parse(JSON.stringify(res))._body);
+        		this.appointmentList = res;
       		},
       		error => console.log(error)
 		)
