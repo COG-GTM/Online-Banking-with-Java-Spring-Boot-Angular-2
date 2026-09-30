@@ -1,33 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import {AppointmentService} from '../appointment.service';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
+import { AppointmentService } from '../appointment.service';
 
 @Component({
   selector: 'app-appointment',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './appointment.component.html',
   styleUrls: ['./appointment.component.css']
 })
-export class AppointmentComponent implements OnInit {
+export class AppointmentComponent {
 
-  appointmentList: Object[];
+  appointmentList: any[] = [];
 
-	constructor(private appointmentService: AppointmentService) {
-		this.getAppointmentList();
-	}
+  constructor(private appointmentService: AppointmentService) {
+    this.getAppointmentList();
+  }
 
-	getAppointmentList() {
-		this.appointmentService.getAppointmentList().subscribe(
-			res => {
-        		this.appointmentList = JSON.parse(JSON.parse(JSON.stringify(res))._body);
-      		},
-      		error => console.log(error)
-		)
-	}	
+  getAppointmentList(): void {
+    this.appointmentService.getAppointmentList().subscribe({
+      next: (res) => this.appointmentList = res,
+      error: (error) => console.log(error)
+    });
+  }
 
-	confirmAppointment(id: number) {
-  		this.appointmentService.confirmAppointment(id).subscribe();
-  		location.reload();
-  	}
-
-ngOnInit() {}
+  confirmAppointment(id: number): void {
+    this.appointmentService.confirmAppointment(id).subscribe({
+      complete: () => location.reload()
+    });
+  }
 }
