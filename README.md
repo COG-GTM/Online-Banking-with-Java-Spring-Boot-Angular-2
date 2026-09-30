@@ -29,9 +29,9 @@ User-Front reads its database credentials from environment variables:
 | Variable      | Required | Default | Purpose                                   |
 |---------------|----------|---------|-------------------------------------------|
 | `DB_USER`     | no       | `root`  | MySQL user (`spring.datasource.username`) |
-| `DB_PASSWORD` | yes      | none    | MySQL password (`spring.datasource.password`) |
+| `DB_PASSWORD` | yes*     | none    | MySQL password (`spring.datasource.password`) |
 
-Startup fails immediately if `DB_PASSWORD` is not set.
+\* Required unless `spring.datasource.password` is supplied some other way (e.g. the `local` profile below). Startup fails immediately if no datasource password is configured.
 
 ```
 cd UserFront
