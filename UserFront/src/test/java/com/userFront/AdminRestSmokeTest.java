@@ -11,7 +11,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -177,14 +179,16 @@ public class AdminRestSmokeTest extends AbstractIntegrationTest {
 	public void primaryTransactionsMatchBoot15Fixture() throws Exception {
 		JsonNode transactions = getJsonAsAdmin("/api/user/primary/transaction?username=" + ALICE);
 
-		GoldenFixtures.assertMatches(GoldenFixtures.BOOT15, "user-primary-transaction", transactions, EQUIVALENCE);
+		GoldenFixtures.assertMatches(GoldenFixtures.BOOT15, "user-primary-transaction", sortedByDate(transactions),
+				EQUIVALENCE);
 	}
 
 	@Test
 	public void savingsTransactionsMatchBoot15Fixture() throws Exception {
 		JsonNode transactions = getJsonAsAdmin("/api/user/savings/transaction?username=" + ALICE);
 
-		GoldenFixtures.assertMatches(GoldenFixtures.BOOT15, "user-savings-transaction", transactions, EQUIVALENCE);
+		GoldenFixtures.assertMatches(GoldenFixtures.BOOT15, "user-savings-transaction", sortedByDate(transactions),
+				EQUIVALENCE);
 	}
 
 	@Test
@@ -192,13 +196,13 @@ public class AdminRestSmokeTest extends AbstractIntegrationTest {
 		JsonNode appointments = getJsonAsAdmin("/api/appointment/all");
 		assertTrue(appointments.isArray());
 
-		ArrayNode seeded = JsonNodeFactory.instance.arrayNode();
+		List<JsonNode> seeded = new ArrayList<>();
 		for (JsonNode appointment : appointments) {
 			if (appointment.path("user").path("username").asText().startsWith(PREFIX)) {
 				seeded.add(appointment);
 			}
 		}
-		GoldenFixtures.assertMatches(GoldenFixtures.BOOT15, "appointment-all", seeded, EQUIVALENCE);
+		GoldenFixtures.assertMatches(GoldenFixtures.BOOT15, "appointment-all", sortedByDate(seeded), EQUIVALENCE);
 	}
 
 	@Test
@@ -237,6 +241,14 @@ public class AdminRestSmokeTest extends AbstractIntegrationTest {
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 				.andReturn().getResponse().getContentAsString();
 		return JsonParseEquivalence.parse(body);
+	}
+
+	/** The endpoints query without ORDER BY, so rows are compared in date order rather than as returned. */
+	private static ArrayNode sortedByDate(Iterable<JsonNode> rows) {
+		List<JsonNode> sorted = new ArrayList<>();
+		rows.forEach(sorted::add);
+		sorted.sort(Comparator.comparing(row -> JsonParseEquivalence.parseInstant(row.get("date"))));
+		return JsonNodeFactory.instance.arrayNode().addAll(sorted);
 	}
 
 	private static ArrayNode onlyUsers(JsonNode users, String... usernames) {
