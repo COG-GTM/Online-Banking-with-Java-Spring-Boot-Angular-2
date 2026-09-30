@@ -1,0 +1,27 @@
+[ {
+  "id" : 1,
+  "date" : 1497521730000,
+  "description" : "Deposit to Primary Account",
+  "type" : "Account",
+  "status" : "Finished",
+  "amount" : 2000.0,
+  "availableBalance" : 2000.00,
+  "primaryAccount" : {
+    "id" : 1,
+    "accountNumber" : 91145001,
+    "accountBalance" : 1500.00
+  }
+}, {
+  "id" : 2,
+  "date" : 1497603600000,
+  "description" : "Transfer to recipient adminsmoke-landlord",
+  "type" : "Transfer",
+  "status" : "Finished",
+  "amount" : 500.0,
+  "availableBalance" : 1500.00,
+  "primaryAccount" : {
+    "id" : 1,
+    "accountNumber" : 91145001,
+    "accountBalance" : 1500.00
+  }
+} ]
