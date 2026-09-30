@@ -18,14 +18,21 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.util.AopTestUtils;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.userFront.dao.PrimaryAccountDao;
 import com.userFront.dao.RoleDao;
+import com.userFront.dao.SavingsAccountDao;
 import com.userFront.dao.UserDao;
+import com.userFront.domain.PrimaryAccount;
+import com.userFront.domain.SavingsAccount;
 import com.userFront.domain.User;
 import com.userFront.domain.security.Role;
 import com.userFront.domain.security.UserRole;
+import com.userFront.service.AccountService;
 
 /**
  * Regression contract for signup, form login, logout and remember-me as they behave on
@@ -45,6 +52,15 @@ public class AuthSmokeTest extends AbstractIntegrationTest {
     private RoleDao roleDao;
 
     @Autowired
+    private PrimaryAccountDao primaryAccountDao;
+
+    @Autowired
+    private SavingsAccountDao savingsAccountDao;
+
+    @Autowired
+    private AccountService accountService;
+
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     @PersistenceContext
@@ -57,6 +73,28 @@ public class AuthSmokeTest extends AbstractIntegrationTest {
             role.setRoleId(1);
             role.setName("ROLE_USER");
             roleDao.save(role);
+        }
+        advanceAccountNumberPastExistingAccounts();
+    }
+
+    /**
+     * Signup numbers accounts from a static counter in {@code AccountServiceImpl} that ignores rows already in
+     * the database (COG-1179), so rows committed by other suites in this JVM can make signup generate a
+     * duplicate number and fail. Moving the counter past the highest existing number keeps this class
+     * independent of test order.
+     */
+    private void advanceAccountNumberPastExistingAccounts() {
+        int highest = 0;
+        for (PrimaryAccount account : primaryAccountDao.findAll()) {
+            highest = Math.max(highest, account.getAccountNumber());
+        }
+        for (SavingsAccount account : savingsAccountDao.findAll()) {
+            highest = Math.max(highest, account.getAccountNumber());
+        }
+        Object target = AopTestUtils.getUltimateTargetObject(accountService);
+        Integer next = (Integer) ReflectionTestUtils.getField(target, "nextAccountNumber");
+        if (next < highest) {
+            ReflectionTestUtils.setField(target, "nextAccountNumber", highest);
         }
     }
 
