@@ -60,6 +60,29 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- 1.19.7 is the last Testcontainers line supporting Java 8; the Boot 1.5 BOM does not manage it. -->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>mysql</artifactId>
+			<version>1.19.7</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- JUnit 4 support (org.testcontainers.containers.GenericContainer as a @Rule/@ClassRule) ships in the core
+		     artifact; there is no separate org.testcontainers:junit module on Maven Central. -->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers</artifactId>
+			<version>1.19.7</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
