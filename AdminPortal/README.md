@@ -1,28 +1,29 @@
 # AdminPortal
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.1.2.
+Angular admin UI for the Online Banking backend (`../UserFront`). Built with Angular CLI 20.3
+(standalone components, zoneless change detection, `HttpClient` with `withFetch()`).
 
-## Development server
+## Requirements
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+- Node.js `^20.19.0`, `^22.12.0` or `>=24.0.0` — required by Angular 20. With nvm: `nvm install 22 && nvm use 22`.
+- npm 10+ (bundled with Node 22).
 
-## Code scaffolding
+The backend is expected at `http://localhost:8080` (Spring form login at `/index`, session cookie,
+`/api/user/**`, `/api/appointment/**`, `/logout`). Its CORS filter allows `http://localhost:4200`.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|module`.
+## Commands
 
-## Build
+| Command | Description |
+| --- | --- |
+| `npm install` | Install dependencies. |
+| `npm start` | Dev server on http://localhost:4200 (`ng serve`). |
+| `npm run build` | Production build into `dist/admin-portal`. |
+| `npm run lint` | ESLint via angular-eslint (`ng lint`). |
+| `npm test -- --watch=false` | Unit tests with the CLI's Vitest runner (jsdom, headless). |
+| `npx playwright install chromium` | One-time download of the browser used by the e2e tests. |
+| `npm run e2e` (`npx playwright test`) | Playwright e2e tests. Starts `ng serve` on port 4200 automatically and mocks the backend with `page.route`, so no backend is needed. |
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+## Notes
 
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+- Bootstrap 3 CSS/JS and jQuery are served from `src/assets` via the `styles`/`scripts` arrays in `angular.json`.
+- Login state is kept in `localStorage` (`PortalAdminHasLoggedIn`); authentication itself is the backend session cookie (`withCredentials: true` on every request).
