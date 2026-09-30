@@ -3,6 +3,9 @@ package com.userFront;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.runner.RunWith;
@@ -70,10 +73,16 @@ public abstract class AbstractIntegrationTest {
 	/**
 	 * {@value #PREFERRED_DOCKER_API_VERSION}, capped at the daemon's maximum API version (as
 	 * reported by the {@code docker} CLI) so older engines such as Docker 24 (API 1.43) still work.
+	 * Without {@code DOCKER_HOST} the CLI is pinned to the {@code default} context, i.e. the local
+	 * socket Testcontainers falls back to, rather than whatever context the CLI has selected.
 	 */
 	private static String dockerApiVersion() {
+		List<String> command = new ArrayList<>(Arrays.asList("docker", "version", "--format", "{{.Server.APIVersion}}"));
+		if (System.getenv("DOCKER_HOST") == null) {
+			command.addAll(1, Arrays.asList("--context", "default"));
+		}
 		try {
-			Process process = new ProcessBuilder("docker", "version", "--format", "{{.Server.APIVersion}}")
+			Process process = new ProcessBuilder(command)
 					.redirectErrorStream(true)
 					.start();
 			if (!process.waitFor(10, TimeUnit.SECONDS)) {
