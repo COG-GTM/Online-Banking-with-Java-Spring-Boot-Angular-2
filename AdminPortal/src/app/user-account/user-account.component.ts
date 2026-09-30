@@ -4,12 +4,13 @@ import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-user-account',
+  standalone: false,
   templateUrl: './user-account.component.html',
   styleUrls: ['./user-account.component.css']
 })
 export class UserAccountComponent implements OnInit {
 
-  	userList: Object[];
+  	userList: object[];
 	
 	constructor(private userService: UserService, private router: Router) {
 		this.getUsers();
@@ -18,7 +19,7 @@ export class UserAccountComponent implements OnInit {
 	getUsers() {
 		this.userService.getUsers().subscribe(
 			res => {
-        		this.userList = JSON.parse(JSON.parse(JSON.stringify(res))._body);
+        		this.userList = res as object[];
       		},
       		error => console.log(error)
 		)
