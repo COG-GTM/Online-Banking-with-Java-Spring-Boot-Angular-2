@@ -5,7 +5,8 @@ import { ActivatedRoute, Params } from '@angular/router';
 @Component({
   selector: 'app-primary-transaction',
   templateUrl: './primary-transaction.component.html',
-  styleUrls: ['./primary-transaction.component.css']
+  styleUrls: ['./primary-transaction.component.css'],
+  standalone: false
 })
 export class PrimaryTransactionComponent implements OnInit {
 
@@ -23,8 +24,8 @@ export class PrimaryTransactionComponent implements OnInit {
 	getPrimaryTransactionList() {
 		this.userService.getPrimaryTransactionList(this.username).subscribe(
 			res => {
-				console.log(JSON.parse(JSON.stringify(res))._body);
-        		this.primaryTransactionList = JSON.parse(JSON.parse(JSON.stringify(res))._body);
+				console.log(res);
+        		this.primaryTransactionList = res;
       		},
       		error => console.log(error)
 		)
