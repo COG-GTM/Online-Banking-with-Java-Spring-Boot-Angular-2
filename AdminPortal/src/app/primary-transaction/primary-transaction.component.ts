@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {UserService} from '../user.service';
 import { ActivatedRoute, Params } from '@angular/router';
 
 @Component({
+  standalone: false,
   selector: 'app-primary-transaction',
   templateUrl: './primary-transaction.component.html',
   styleUrls: ['./primary-transaction.component.css']
 })
-export class PrimaryTransactionComponent implements OnInit {
+export class PrimaryTransactionComponent {
 
   username:string;
-	primaryTransactionList: Object[];
+	primaryTransactionList: object[];
 
 	constructor(private route: ActivatedRoute, private userService: UserService) {
 		this.route.params.forEach((params: Params) => {
@@ -23,13 +24,11 @@ export class PrimaryTransactionComponent implements OnInit {
 	getPrimaryTransactionList() {
 		this.userService.getPrimaryTransactionList(this.username).subscribe(
 			res => {
-				console.log(JSON.parse(JSON.stringify(res))._body);
-        		this.primaryTransactionList = JSON.parse(JSON.parse(JSON.stringify(res))._body);
+        		this.primaryTransactionList = res;
       		},
       		error => console.log(error)
 		)
 	}
 
-	ngOnInit() {}
 
 }
