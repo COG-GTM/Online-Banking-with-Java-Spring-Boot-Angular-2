@@ -7,9 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.userFront.domain.PrimaryAccount;
@@ -29,7 +30,7 @@ public class TransferController {
 	@Autowired
 	private UserService userService;
 
-	@RequestMapping(value = "/betweenAccounts", method = RequestMethod.GET)
+	@GetMapping("/betweenAccounts")
 	public String betweenAccounts(Model model) {
 		model.addAttribute("transferFrom", "");
 		model.addAttribute("transferTo", "");
@@ -38,7 +39,7 @@ public class TransferController {
 		return "betweenAccounts";
 	}
 
-	@RequestMapping(value = "/betweenAccounts", method = RequestMethod.POST)
+	@PostMapping("/betweenAccounts")
 	public String betweenAccountsPost(@ModelAttribute("transferFrom") String transferFrom,
 			@ModelAttribute("transferTo") String transferTo, @ModelAttribute("amount") String amount,
 			Principal principal) throws Exception {
@@ -50,7 +51,7 @@ public class TransferController {
 		return "redirect:/userFront";
 	}
 
-	@RequestMapping(value = "/recipient", method = RequestMethod.GET)
+	@GetMapping("/recipient")
 	public String recipient(Model model, Principal principal) {
 		List<Recipient> recipientList = transactionService.findRecipientList(principal);
 
@@ -62,7 +63,7 @@ public class TransferController {
 		return "recipient";
 	}
 
-	@RequestMapping(value = "/recipient/save", method = RequestMethod.POST)
+	@PostMapping("/recipient/save")
 	public String recipientPost(@ModelAttribute("recipient") Recipient recipient, Principal principal) {
 
 		User user = userService.findByUsername(principal.getName());
@@ -72,7 +73,7 @@ public class TransferController {
 		return "redirect:/transfer/recipient";
 	}
 
-	@RequestMapping(value = "/recipient/edit", method = RequestMethod.GET)
+	@GetMapping("/recipient/edit")
 	public String recipientEdit(@RequestParam(value = "recipientName") String recipientName, Model model,
 			Principal principal) {
 
@@ -85,7 +86,7 @@ public class TransferController {
 		return "recipient";
 	}
 
-	@RequestMapping(value = "/recipient/delete", method = RequestMethod.GET)
+	@PostMapping("/recipient/delete")
 	@Transactional
 	public String recipientDelete(@RequestParam(value = "recipientName") String recipientName, Model model,
 			Principal principal) {
@@ -101,7 +102,7 @@ public class TransferController {
 		return "recipient";
 	}
 
-	@RequestMapping(value = "/toSomeoneElse", method = RequestMethod.GET)
+	@GetMapping("/toSomeoneElse")
 	public String toSomeoneElse(Model model, Principal principal) {
 		List<Recipient> recipientList = transactionService.findRecipientList(principal);
 
@@ -111,7 +112,7 @@ public class TransferController {
 		return "toSomeoneElse";
 	}
 
-	@RequestMapping(value = "/toSomeoneElse", method = RequestMethod.POST)
+	@PostMapping("/toSomeoneElse")
 	public String toSomeoneElsePost(@ModelAttribute("recipientName") String recipientName,
 			@ModelAttribute("accountType") String accountType, @ModelAttribute("amount") String amount,
 			Principal principal) {
