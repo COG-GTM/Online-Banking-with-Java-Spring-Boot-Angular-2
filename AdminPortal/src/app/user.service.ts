@@ -24,12 +24,21 @@ export class UserService {
 
    enableUser (username: string) {
      let url = "http://localhost:8080/api/user/"+username+"/enable";
-     return this.http.get(url, { withCredentials: true });
+     return this.http.post(url, null, { headers: this.xsrfHeaders(), withCredentials: true });
    }
 
    disableUser (username: string) {
      let url = "http://localhost:8080/api/user/"+username+"/disable";
-     return this.http.get(url, { withCredentials: true });
+     return this.http.post(url, null, { headers: this.xsrfHeaders(), withCredentials: true });
+   }
+
+   private xsrfHeaders(): Headers {
+     const headers = new Headers();
+     const match = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]*)/);
+     if (match) {
+       headers.append('X-XSRF-TOKEN', decodeURIComponent(match[1]));
+     }
+     return headers;
    }
 
 }
