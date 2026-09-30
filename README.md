@@ -21,3 +21,21 @@ It is mainly used by Admin and it involves User Account and Appointment modules.
 
 **Back-end:** Java 8, Spring Boot, Spring Data, Spring Security, Hibernate, MySQL, Maven, Log4j
 
+
+## Configuration
+
+User-Front reads its database credentials from environment variables:
+
+| Variable      | Required | Default | Purpose                                   |
+|---------------|----------|---------|-------------------------------------------|
+| `DB_USER`     | no       | `root`  | MySQL user (`spring.datasource.username`) |
+| `DB_PASSWORD` | yes*     | none    | MySQL password (`spring.datasource.password`) |
+
+\* Required unless `spring.datasource.password` is supplied some other way (e.g. the `local` profile below). Startup fails immediately if no datasource password is configured.
+
+```
+cd UserFront
+DB_PASSWORD=<your-password> mvn spring-boot:run
+```
+
+For local development you can instead copy `UserFront/application-local.properties.example` to `UserFront/application-local.properties` (git-ignored), fill in your credentials, and run from `UserFront/` with `SPRING_PROFILES_ACTIVE=local`.

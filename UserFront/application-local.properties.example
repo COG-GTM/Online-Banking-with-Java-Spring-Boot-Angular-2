@@ -1,0 +1,7 @@
+# Local development overrides.
+# Copy to application-local.properties (git-ignored) in this directory and start the app
+# from here with the "local" profile, e.g.:
+#   SPRING_PROFILES_ACTIVE=local mvn spring-boot:run
+spring.datasource.url = jdbc:mysql://localhost:3306/onlinebanking
+spring.datasource.username = root
+spring.datasource.password = change-me
