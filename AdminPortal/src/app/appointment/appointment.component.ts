@@ -1,33 +1,35 @@
-import { Component, OnInit } from '@angular/core';
-import {AppointmentService} from '../appointment.service';
+import { Component, inject, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
 
+import { Appointment } from '../models';
+import { AppointmentService } from '../appointment.service';
 
 @Component({
   selector: 'app-appointment',
+  imports: [DatePipe],
   templateUrl: './appointment.component.html',
-  styleUrls: ['./appointment.component.css']
+  styleUrl: './appointment.component.css',
 })
-export class AppointmentComponent implements OnInit {
+export class AppointmentComponent {
+  private readonly appointmentService = inject(AppointmentService);
 
-  appointmentList: Object[];
+  readonly appointmentList = signal<Appointment[]>([]);
 
-	constructor(private appointmentService: AppointmentService) {
-		this.getAppointmentList();
-	}
+  constructor() {
+    this.getAppointmentList();
+  }
 
-	getAppointmentList() {
-		this.appointmentService.getAppointmentList().subscribe(
-			res => {
-        		this.appointmentList = JSON.parse(JSON.parse(JSON.stringify(res))._body);
-      		},
-      		error => console.log(error)
-		)
-	}	
+  getAppointmentList(): void {
+    this.appointmentService.getAppointmentList().subscribe({
+      next: (appointments) => this.appointmentList.set(appointments),
+      error: (error) => console.log(error),
+    });
+  }
 
-	confirmAppointment(id: number) {
-  		this.appointmentService.confirmAppointment(id).subscribe();
-  		location.reload();
-  	}
-
-ngOnInit() {}
+  confirmAppointment(id: number): void {
+    this.appointmentService.confirmAppointment(id).subscribe({
+      complete: () => this.getAppointmentList(),
+      error: (error) => console.log(error),
+    });
+  }
 }
