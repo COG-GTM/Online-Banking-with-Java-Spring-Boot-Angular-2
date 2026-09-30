@@ -15,11 +15,11 @@ jobs:
     name: UserFront · mvn verify
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # Keep in sync with <java.version> in UserFront/pom.xml (1.8 today).
       - name: Set up JDK 8
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '8'
@@ -31,7 +31,7 @@ jobs:
 
       - name: Upload surefire reports
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: userfront-surefire-reports
           path: |
@@ -48,10 +48,10 @@ jobs:
       run:
         working-directory: AdminPortal
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Node 12
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '12'
 
