@@ -1,11 +1,18 @@
 /* tslint:disable:no-unused-variable */
 
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
+import { UserService } from '../user.service';
 import { SavingsTransactionComponent } from './savings-transaction.component';
 
 describe('Component: SavingsTransaction', () => {
   it('should create an instance', () => {
-    let component = new SavingsTransactionComponent();
+    TestBed.configureTestingModule({
+      providers: [SavingsTransactionComponent, UserService, provideHttpClient(), provideHttpClientTesting(), provideRouter([])]
+    });
+    let component = TestBed.inject(SavingsTransactionComponent);
     expect(component).toBeTruthy();
   });
 });
