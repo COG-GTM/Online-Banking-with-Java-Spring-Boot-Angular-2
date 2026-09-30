@@ -23,8 +23,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 
 import com.userFront.dao.PrimaryAccountDao;
 import com.userFront.dao.PrimaryTransactionDao;
@@ -51,9 +51,6 @@ public class MoneyMovementSmokeTest extends AbstractIntegrationTest {
 	private static final AtomicInteger SEQ = new AtomicInteger();
 
 	@Autowired
-	private MockMvc mockMvc;
-
-	@Autowired
 	private UserService userService;
 
 	@Autowired
@@ -76,13 +73,13 @@ public class MoneyMovementSmokeTest extends AbstractIntegrationTest {
 	@Before
 	public void createUser() {
 		int n = SEQ.incrementAndGet();
-		username = "smoke" + System.nanoTime() + n;
+		username = "txsmoke-" + System.nanoTime() + "-" + n;
 
 		User user = new User();
 		user.setUsername(username);
 		user.setPassword("password");
 		user.setFirstName("Smoke");
-		user.setLastName("Test");
+		user.setLastName("TxSmoke");
 		user.setEmail(username + "@example.com");
 		user.setPhone("5551234567");
 
@@ -199,16 +196,16 @@ public class MoneyMovementSmokeTest extends AbstractIntegrationTest {
 
 	@Test
 	public void recipientLifecycleSavesListsAndDeletes() throws Exception {
-		String recipientName = "Payee" + System.nanoTime();
+		String recipientName = "txsmoke-payee-" + System.nanoTime();
 
 		mockMvc.perform(post("/transfer/recipient/save").with(user(username)).param("name", recipientName)
-				.param("email", "payee@example.com").param("phone", "5559876543").param("accountNumber", "987654321")
+				.param("email", "txsmoke-payee@example.com").param("phone", "5559876543").param("accountNumber", "987654321")
 				.param("description", "Rent")).andExpect(status().is3xxRedirection())
 				.andExpect(redirectedUrl("/transfer/recipient"));
 
 		Recipient saved = recipientDao.findByName(recipientName);
 		assertNotNull(saved);
-		assertEquals("payee@example.com", saved.getEmail());
+		assertEquals("txsmoke-payee@example.com", saved.getEmail());
 		assertEquals("987654321", saved.getAccountNumber());
 		assertEquals(username, saved.getUser().getUsername());
 
@@ -216,9 +213,7 @@ public class MoneyMovementSmokeTest extends AbstractIntegrationTest {
 				.andExpect(view().name("recipient")).andExpect(model().attributeExists("recipientList")).andReturn();
 		assertEquals(Collections.singletonList(recipientName), recipientNames(listed));
 
-		// Delete is a GET today; COG-1155 converts it to a POST and updates this test.
-		mockMvc.perform(get("/transfer/recipient/delete").with(user(username)).param("recipientName", recipientName))
-				.andExpect(status().isOk()).andExpect(view().name("recipient"));
+		deleteRecipient(recipientName).andExpect(status().isOk()).andExpect(view().name("recipient"));
 
 		assertNull(recipientDao.findByName(recipientName));
 	}
@@ -226,7 +221,7 @@ public class MoneyMovementSmokeTest extends AbstractIntegrationTest {
 	@Test
 	public void transferToSomeoneElseDebitsTheSendingAccount() throws Exception {
 		deposit("Primary", "600.00");
-		String recipientName = "Payee" + System.nanoTime();
+		String recipientName = "txsmoke-payee-" + System.nanoTime();
 		saveRecipient(recipientName);
 
 		mockMvc.perform(post("/transfer/toSomeoneElse").with(user(username)).param("recipientName", recipientName)
@@ -246,7 +241,7 @@ public class MoneyMovementSmokeTest extends AbstractIntegrationTest {
 	@Test
 	public void transferToSomeoneElseDebitsTheSendingSavingsAccount() throws Exception {
 		deposit("Savings", "600.00");
-		String recipientName = "Payee" + System.nanoTime();
+		String recipientName = "txsmoke-payee-" + System.nanoTime();
 		saveRecipient(recipientName);
 
 		mockMvc.perform(post("/transfer/toSomeoneElse").with(user(username)).param("recipientName", recipientName)
@@ -273,6 +268,11 @@ public class MoneyMovementSmokeTest extends AbstractIntegrationTest {
 		return names;
 	}
 
+	/** Delete is a GET today; COG-1155 converts it to a POST. */
+	private ResultActions deleteRecipient(String recipientName) throws Exception {
+		return mockMvc.perform(get("/transfer/recipient/delete").with(user(username)).param("recipientName", recipientName));
+	}
+
 	private void deposit(String accountType, String amount) throws Exception {
 		mockMvc.perform(post("/account/deposit").with(user(username)).param("accountType", accountType).param("amount",
 				amount)).andExpect(status().is3xxRedirection());
@@ -280,7 +280,7 @@ public class MoneyMovementSmokeTest extends AbstractIntegrationTest {
 
 	private void saveRecipient(String recipientName) throws Exception {
 		mockMvc.perform(post("/transfer/recipient/save").with(user(username)).param("name", recipientName)
-				.param("email", "payee@example.com").param("phone", "5559876543").param("accountNumber", "987654321")
+				.param("email", "txsmoke-payee@example.com").param("phone", "5559876543").param("accountNumber", "987654321")
 				.param("description", "Rent")).andExpect(status().is3xxRedirection());
 	}
 
