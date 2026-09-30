@@ -22,6 +22,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<!-- 5.1.42 (the Boot 1.5 default) cannot connect to MySQL 8 (query_cache_size removed); 5.1.49 is the last 5.1 patch. -->
+		<mysql.version>5.1.49</mysql.version>
 	</properties>
 
 	<dependencies>
@@ -58,6 +60,29 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- 1.19.7 is the last Testcontainers line supporting Java 8; the Boot 1.5 BOM does not manage it. -->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>mysql</artifactId>
+			<version>1.19.7</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- JUnit 4 support (org.testcontainers.containers.GenericContainer as a @Rule/@ClassRule) ships in the core
+		     artifact; there is no separate org.testcontainers:junit module on Maven Central. -->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers</artifactId>
+			<version>1.19.7</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
