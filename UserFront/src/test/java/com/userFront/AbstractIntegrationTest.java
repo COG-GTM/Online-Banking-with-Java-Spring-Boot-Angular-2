@@ -27,10 +27,12 @@ import org.testcontainers.utility.DockerImageName;
  * ({@code spring-boot-testcontainers} / {@code @ServiceConnection} only exist from Boot 3.1).
  * The schema is created from the JPA entities with {@code spring.jpa.hibernate.ddl-auto=update}.
  *
- * <p>The image defaults to {@value #DEFAULT_MYSQL_IMAGE}, the assumed production major version,
- * and can be overridden with {@code -Dtest.mysql.image=mysql:5.7}. The server is started with
- * {@code mysql_native_password} because the Boot 1.5 stack ships Connector/J 5.1, which cannot
- * speak {@code caching_sha2_password}.
+ * <p>The image defaults to {@value #DEFAULT_MYSQL_IMAGE} and can be overridden with
+ * {@code -Dtest.mysql.image=...}. It stays on MySQL 5.7 because the Boot 1.5 BOM ships
+ * Connector/J 5.1.42, which cannot connect to MySQL 8 ({@code Unknown system variable
+ * 'query_cache_size'}) or authenticate with {@code caching_sha2_password}; move to the production
+ * major version (8.0) together with the Connector/J upgrade. {@code useSSL=false} is appended to
+ * the JDBC URL because current JDK 8 builds disable the TLSv1/1.1 that Connector/J 5.1 negotiates.
  *
  * <p>Subclasses get an autoconfigured {@link MockMvc} (with the Spring Security filter chain)
  * as {@link #mockMvc}.
@@ -41,7 +43,7 @@ import org.testcontainers.utility.DockerImageName;
 @ContextConfiguration(initializers = AbstractIntegrationTest.DataSourceInitializer.class)
 public abstract class AbstractIntegrationTest {
 
-	public static final String DEFAULT_MYSQL_IMAGE = "mysql:8.0";
+	public static final String DEFAULT_MYSQL_IMAGE = "mysql:5.7.44";
 
 	/** Docker Engine 25+ rejects the API 1.32 that Testcontainers 1.19.x requests by default. */
 	private static final String PREFERRED_DOCKER_API_VERSION = "1.44";
@@ -56,8 +58,7 @@ public abstract class AbstractIntegrationTest {
 			DockerImageName.parse(System.getProperty("test.mysql.image", DEFAULT_MYSQL_IMAGE))
 					.asCompatibleSubstituteFor("mysql"))
 			.withDatabaseName("onlinebanking")
-			.withUrlParam("useSSL", "false")
-			.withCommand("--default-authentication-plugin=mysql_native_password");
+			.withUrlParam("useSSL", "false");
 
 	static {
 		MYSQL.start();

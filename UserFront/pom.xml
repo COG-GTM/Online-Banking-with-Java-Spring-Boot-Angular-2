@@ -22,8 +22,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<!-- 5.1.42 (the Boot 1.5 default) cannot connect to MySQL 8 (query_cache_size removed); 5.1.49 is the last 5.1 patch. -->
-		<mysql.version>5.1.49</mysql.version>
 	</properties>
 
 	<dependencies>
