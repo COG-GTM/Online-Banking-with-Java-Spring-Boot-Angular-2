@@ -22,6 +22,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<!-- jackson-bom 2.12.7.20221012 pins jackson-databind 2.12.7.1 (CVE-2022-42003) -->
+		<jackson.version>2.12.7.20221012</jackson.version>
 	</properties>
 
 	<dependencies>
