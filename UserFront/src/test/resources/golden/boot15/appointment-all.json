@@ -1,0 +1,74 @@
+[ {
+  "id" : 1,
+  "date" : 1498921200000,
+  "location" : "Chicago branch",
+  "description" : "Mortgage consultation",
+  "confirmed" : false,
+  "user" : {
+    "userId" : 1,
+    "username" : "adminsmoke-alice",
+    "password" : "adminsmoke-fixed-password-hash",
+    "firstName" : "Alice",
+    "lastName" : "Admin-Smoke",
+    "email" : "adminsmoke-alice@example.com",
+    "phone" : "5550001001",
+    "enabled" : true,
+    "primaryAccount" : {
+      "id" : 1,
+      "accountNumber" : 91145001,
+      "accountBalance" : 1500.00
+    },
+    "savingsAccount" : {
+      "id" : 1,
+      "accountNumber" : 91145002,
+      "accountBalance" : 250.75
+    },
+    "recipientList" : [ {
+      "id" : 1,
+      "name" : "adminsmoke-landlord",
+      "email" : "adminsmoke-landlord@example.com",
+      "phone" : "5550002001",
+      "accountNumber" : "99887766",
+      "description" : "Rent"
+    } ],
+    "authorities" : [ {
+      "authority" : "ROLE_USER"
+    } ],
+    "accountNonExpired" : true,
+    "accountNonLocked" : true,
+    "credentialsNonExpired" : true
+  }
+}, {
+  "id" : 2,
+  "date" : 1499013000000,
+  "location" : "New York branch",
+  "description" : "Open a savings account",
+  "confirmed" : true,
+  "user" : {
+    "userId" : 2,
+    "username" : "adminsmoke-bob",
+    "password" : "adminsmoke-fixed-password-hash",
+    "firstName" : "Bob",
+    "lastName" : "Admin-Smoke",
+    "email" : "adminsmoke-bob@example.com",
+    "phone" : "5550001002",
+    "enabled" : true,
+    "primaryAccount" : {
+      "id" : 2,
+      "accountNumber" : 91145003,
+      "accountBalance" : 0.00
+    },
+    "savingsAccount" : {
+      "id" : 2,
+      "accountNumber" : 91145004,
+      "accountBalance" : 0.00
+    },
+    "recipientList" : [ ],
+    "authorities" : [ {
+      "authority" : "ROLE_USER"
+    } ],
+    "accountNonExpired" : true,
+    "accountNonLocked" : true,
+    "credentialsNonExpired" : true
+  }
+} ]

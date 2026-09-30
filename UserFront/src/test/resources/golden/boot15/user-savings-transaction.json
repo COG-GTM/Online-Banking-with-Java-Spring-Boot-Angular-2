@@ -1,0 +1,14 @@
+[ {
+  "id" : 1,
+  "date" : 1497709800000,
+  "description" : "Deposit to savings Account",
+  "type" : "Account",
+  "status" : "Finished",
+  "amount" : 250.75,
+  "availableBalance" : 250.75,
+  "savingsAccount" : {
+    "id" : 1,
+    "accountNumber" : 91145002,
+    "accountBalance" : 250.75
+  }
+} ]
