@@ -18,7 +18,7 @@ export class UserAccountComponent implements OnInit {
 	getUsers() {
 		this.userService.getUsers().subscribe(
 			res => {
-        		this.userList = JSON.parse(JSON.parse(JSON.stringify(res))._body);
+        		this.userList = res.json();
       		},
       		error => console.log(error)
 		)
@@ -33,13 +33,24 @@ export class UserAccountComponent implements OnInit {
   	}	
 
   	enableUser(username: string) {
-  		this.userService.enableUser(username).subscribe();
-  		location.reload();
+  		this.userService.enableUser(username).subscribe(
+  			() => this.setEnabled(username, true),
+  			error => console.log(error)
+  		);
   	}
 
   	disableUser(username: string) {
-  		this.userService.disableUser(username).subscribe();
-  		location.reload();
+  		this.userService.disableUser(username).subscribe(
+  			() => this.setEnabled(username, false),
+  			error => console.log(error)
+  		);
+  	}
+
+  	private setEnabled(username: string, enabled: boolean) {
+  		const user = this.userList.find(u => u['username'] === username);
+  		if (user) {
+  			user['enabled'] = enabled;
+  		}
   	}
 
 
