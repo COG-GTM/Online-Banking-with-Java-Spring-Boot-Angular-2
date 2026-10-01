@@ -7,8 +7,8 @@ export class UserService {
 
   constructor (private http:Http){}
 
-  getUsers() {
-    let url = "http://localhost:8080/api/user/all";
+  getUsers(page: number = 0, size: number = 50) {
+    let url = "http://localhost:8080/api/user/all?page="+page+"&size="+size;
     return this.http.get(url, { withCredentials: true });
   }
 
