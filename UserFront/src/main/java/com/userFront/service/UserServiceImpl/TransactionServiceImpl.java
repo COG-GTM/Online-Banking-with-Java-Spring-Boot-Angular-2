@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.userFront.dao.PrimaryAccountDao;
 import com.userFront.dao.PrimaryTransactionDao;
@@ -24,6 +25,7 @@ import com.userFront.service.TransactionService;
 import com.userFront.service.UserService;
 
 @Service
+@Transactional
 public class TransactionServiceImpl implements TransactionService {
 
 	@Autowired
