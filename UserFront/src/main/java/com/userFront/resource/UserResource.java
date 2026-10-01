@@ -2,7 +2,10 @@ package com.userFront.resource;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,13 +36,27 @@ public class UserResource {
     }
 
     @RequestMapping(value = "/user/primary/transaction", method = RequestMethod.GET)
-    public List<PrimaryTransaction> getPrimaryTransactionList(@RequestParam("username") String username) {
-        return transactionService.findPrimaryTransactionList(username);
+    public List<PrimaryTransaction> getPrimaryTransactionList(@RequestParam("username") String username,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "" + TransactionService.DEFAULT_PAGE_SIZE) int size,
+            HttpServletResponse response) {
+        return withPageHeaders(transactionService.findPrimaryTransactionPage(username, page, size), response);
     }
 
     @RequestMapping(value = "/user/savings/transaction", method = RequestMethod.GET)
-    public List<SavingsTransaction> getSavingsTransactionList(@RequestParam("username") String username) {
-        return transactionService.findSavingsTransactionList(username);
+    public List<SavingsTransaction> getSavingsTransactionList(@RequestParam("username") String username,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "" + TransactionService.DEFAULT_PAGE_SIZE) int size,
+            HttpServletResponse response) {
+        return withPageHeaders(transactionService.findSavingsTransactionPage(username, page, size), response);
+    }
+
+    private static <T> List<T> withPageHeaders(Page<T> page, HttpServletResponse response) {
+        response.setHeader("X-Total-Count", String.valueOf(page.getTotalElements()));
+        response.setHeader("X-Total-Pages", String.valueOf(page.getTotalPages()));
+        response.setHeader("X-Page", String.valueOf(page.getNumber()));
+        response.setHeader("X-Page-Size", String.valueOf(page.getSize()));
+        return page.getContent();
     }
 
     @RequestMapping("/user/{username}/enable")

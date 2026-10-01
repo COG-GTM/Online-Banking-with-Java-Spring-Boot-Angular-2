@@ -11,6 +11,9 @@ export class PrimaryTransactionComponent implements OnInit {
 
   username:string;
 	primaryTransactionList: Object[];
+	page: number = 0;
+	totalPages: number = 0;
+	totalCount: number = 0;
 
 	constructor(private route: ActivatedRoute, private userService: UserService) {
 		this.route.params.forEach((params: Params) => {
@@ -21,13 +24,22 @@ export class PrimaryTransactionComponent implements OnInit {
 	}
 
 	getPrimaryTransactionList() {
-		this.userService.getPrimaryTransactionList(this.username).subscribe(
+		this.userService.getPrimaryTransactionList(this.username, this.page).subscribe(
 			res => {
-				console.log(JSON.parse(JSON.stringify(res))._body);
-        		this.primaryTransactionList = JSON.parse(JSON.parse(JSON.stringify(res))._body);
+        		this.primaryTransactionList = res.json();
+        		this.totalPages = Number(res.headers.get('X-Total-Pages')) || 0;
+        		this.totalCount = Number(res.headers.get('X-Total-Count')) || 0;
       		},
       		error => console.log(error)
 		)
+	}
+
+	goToPage(page: number) {
+		if (page < 0 || page >= this.totalPages) {
+			return;
+		}
+		this.page = page;
+		this.getPrimaryTransactionList();
 	}
 
 	ngOnInit() {}
