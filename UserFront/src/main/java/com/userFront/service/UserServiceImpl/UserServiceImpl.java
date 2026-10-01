@@ -35,10 +35,6 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 
-	public void save(User user) {
-		userDao.save(user);
-	}
-
 	public User findByUsername(String username) {
 		return userDao.findByUsername(username);
 	}
