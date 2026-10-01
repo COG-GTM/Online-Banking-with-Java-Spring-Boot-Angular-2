@@ -8,11 +8,16 @@ import com.userFront.domain.PrimaryTransaction;
 import com.userFront.domain.Recipient;
 import com.userFront.domain.SavingsAccount;
 import com.userFront.domain.SavingsTransaction;
+import com.userFront.domain.User;
 
 public interface TransactionService {
 	List<PrimaryTransaction> findPrimaryTransactionList(String username);
 
 	List<SavingsTransaction> findSavingsTransactionList(String username);
+
+	List<PrimaryTransaction> findPrimaryTransactionList(User user);
+
+	List<SavingsTransaction> findSavingsTransactionList(User user);
 
 	void savePrimaryDepositTransaction(PrimaryTransaction primaryTransaction);
 
