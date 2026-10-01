@@ -28,5 +28,13 @@
 			<td [hidden]="!user.enabled"><a (click)="disableUser(user.username)" style="cursor: pointer;">Disable</a></td>
 		</tr>
 	</tbody>
-</table>   
+</table>
+
+<nav *ngIf="totalPages > 1">
+	<ul class="pager">
+		<li [class.disabled]="page === 0"><a (click)="goToPage(page - 1)" style="cursor: pointer;">Previous</a></li>
+		<li>Page {{page + 1}} of {{totalPages}} ({{totalUsers}} users)</li>
+		<li [class.disabled]="page + 1 >= totalPages"><a (click)="goToPage(page + 1)" style="cursor: pointer;">Next</a></li>
+	</ul>
+</nav>   
 

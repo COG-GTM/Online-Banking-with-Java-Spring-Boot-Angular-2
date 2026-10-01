@@ -1,7 +1,9 @@
 package com.userFront.service;
 
-import java.util.List;
 import java.util.Set;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.userFront.domain.User;
 import com.userFront.domain.security.UserRole;
@@ -19,7 +21,7 @@ public interface UserService {
 	User createUser(User user, Set<UserRole> userRoles);
 	User saveUser(User user);
 	
-	List<User> findUserList();
+	Page<User> findUserList(Pageable pageable);
 
     void enableUser (String username);
 
