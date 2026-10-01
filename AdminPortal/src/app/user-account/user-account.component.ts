@@ -33,13 +33,17 @@ export class UserAccountComponent implements OnInit {
   	}	
 
   	enableUser(username: string) {
-  		this.userService.enableUser(username).subscribe();
-  		location.reload();
+  		this.userService.enableUser(username).subscribe(
+  			res => this.getUsers(),
+  			error => console.log(error)
+  		);
   	}
 
   	disableUser(username: string) {
-  		this.userService.disableUser(username).subscribe();
-  		location.reload();
+  		this.userService.disableUser(username).subscribe(
+  			res => this.getUsers(),
+  			error => console.log(error)
+  		);
   	}
 
 
