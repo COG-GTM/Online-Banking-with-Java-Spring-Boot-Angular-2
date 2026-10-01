@@ -12,13 +12,13 @@ export class UserService {
     return this.http.get(url, { withCredentials: true });
   }
 
-   getPrimaryTransactionList(username: string) {
-     let url = "http://localhost:8080/api/user/primary/transaction?username="+username;
+   getPrimaryTransactionList(username: string, page: number = 0) {
+     let url = "http://localhost:8080/api/user/primary/transaction?username="+username+"&page="+page;
     return this.http.get(url, { withCredentials: true });
    }
 
-   getSavingsTransactionList(username: string) {
-     let url = "http://localhost:8080/api/user/savings/transaction?username="+username;
+   getSavingsTransactionList(username: string, page: number = 0) {
+     let url = "http://localhost:8080/api/user/savings/transaction?username="+username+"&page="+page;
     return this.http.get(url, { withCredentials: true });
    }
 

@@ -21,4 +21,16 @@
 			<td>{{savingsTransaction.availableBalance}}</td>
 		</tr>
 	</tbody>
-</table>   
+</table>
+
+<nav *ngIf="totalPages > 1">
+	<ul class="pager">
+		<li class="previous" [class.disabled]="page === 0">
+			<a href="javascript:void(0)" (click)="goToPage(page - 1)">&larr; Newer</a>
+		</li>
+		<li><span>Page {{page + 1}} of {{totalPages}} ({{totalCount}} transactions)</span></li>
+		<li class="next" [class.disabled]="page >= totalPages - 1">
+			<a href="javascript:void(0)" (click)="goToPage(page + 1)">Older &rarr;</a>
+		</li>
+	</ul>
+</nav>
