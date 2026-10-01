@@ -1,13 +1,15 @@
 package com.userFront.service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.userFront.domain.Appointment;
+import com.userFront.domain.AppointmentSummary;
 
 public interface AppointmentService {
 	Appointment createAppointment(Appointment appointment);
 
-    List<Appointment> findAll();
+    Page<AppointmentSummary> findAllSummaries(Pageable pageable);
 
     Appointment findAppointment(Long id);
 

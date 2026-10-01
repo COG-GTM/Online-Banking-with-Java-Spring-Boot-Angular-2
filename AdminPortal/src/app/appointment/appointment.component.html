@@ -22,4 +22,10 @@
 			<!-- <td [hidden]="!user.enabled"><a (click)="disableUser(user.username)" style="cursor: pointer;">Disable</a></td> -->
 		</tr>
 	</tbody>
-</table>   
+</table>
+
+<ul class="pager" [hidden]="totalCount <= pageSize">
+	<li class="previous" [class.disabled]="page === 0"><a (click)="previousPage()" style="cursor: pointer;">&larr; Newer</a></li>
+	<li>Page {{page + 1}} of {{pageCount()}} ({{totalCount}} appointments)</li>
+	<li class="next" [class.disabled]="page + 1 >= pageCount()"><a (click)="nextPage()" style="cursor: pointer;">Older &rarr;</a></li>
+</ul>

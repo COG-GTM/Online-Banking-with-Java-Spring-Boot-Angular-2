@@ -7,8 +7,8 @@ export class AppointmentService {
 
   constructor (private http:Http){}
 
-  getAppointmentList() {
-    let url = "http://localhost:8080/api/appointment/all";
+  getAppointmentList(page: number, size: number) {
+    let url = "http://localhost:8080/api/appointment/all?page="+page+"&size="+size;
     return this.http.get(url, { withCredentials: true });
   }
 
