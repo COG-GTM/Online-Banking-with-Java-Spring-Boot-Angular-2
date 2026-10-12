@@ -22,6 +22,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<tomcat.version>9.0.98</tomcat.version>
 	</properties>
 
 	<dependencies>
@@ -67,6 +68,10 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<!-- CVE-2024-56337: Tomcat's case-sensitivity check needs the JDK canonical-path cache off on Java 8/11 -->
+					<jvmArguments>-Dsun.io.useCanonCaches=false</jvmArguments>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
