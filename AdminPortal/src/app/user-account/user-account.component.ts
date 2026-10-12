@@ -18,7 +18,7 @@ export class UserAccountComponent implements OnInit {
 	getUsers() {
 		this.userService.getUsers().subscribe(
 			res => {
-        		this.userList = JSON.parse(JSON.parse(JSON.stringify(res))._body);
+        		this.userList = res;
       		},
       		error => console.log(error)
 		)
