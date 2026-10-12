@@ -1,25 +1,25 @@
 import { Injectable } from '@angular/core';
-import {Http, Headers} from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 
 
 @Injectable()
 export class UserService {
 
-  constructor (private http:Http){}
+  constructor (private http: HttpClient){}
 
   getUsers() {
     let url = "http://localhost:8080/api/user/all";
-    return this.http.get(url, { withCredentials: true });
+    return this.http.get<any[]>(url, { withCredentials: true });
   }
 
    getPrimaryTransactionList(username: string) {
      let url = "http://localhost:8080/api/user/primary/transaction?username="+username;
-    return this.http.get(url, { withCredentials: true });
+    return this.http.get<any[]>(url, { withCredentials: true });
    }
 
    getSavingsTransactionList(username: string) {
      let url = "http://localhost:8080/api/user/savings/transaction?username="+username;
-    return this.http.get(url, { withCredentials: true });
+    return this.http.get<any[]>(url, { withCredentials: true });
    }
 
    enableUser (username: string) {
