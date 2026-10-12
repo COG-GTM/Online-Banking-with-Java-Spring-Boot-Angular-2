@@ -4,15 +4,16 @@
 	<thead>
 		<tr>
 			<th>Post Date</th>
-                <th>Description</th>
-                <th>Type</th>
-                <th>Status</th>
-                <th>Amount</th>
-                <th>Available Balance</th>
+			<th>Description</th>
+			<th>Type</th>
+			<th>Status</th>
+			<th>Amount</th>
+			<th>Available Balance</th>
 		</tr>
 	</thead>
 	<tbody>
-		<tr *ngFor="let primaryTransaction of primaryTransactionList">
+		@for (primaryTransaction of primaryTransactionList(); track primaryTransaction.id) {
+		<tr>
 			<td>{{primaryTransaction.date | date: 'MM/dd/yyyy'}} </td>
 			<td>{{primaryTransaction.description}}</td>
 			<td>{{primaryTransaction.type}}</td>
@@ -20,5 +21,6 @@
 			<td>{{primaryTransaction.amount}}</td>
 			<td>{{primaryTransaction.availableBalance}}</td>
 		</tr>
+		}
 	</tbody>
-</table>   
+</table>
