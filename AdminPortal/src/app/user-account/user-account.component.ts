@@ -5,7 +5,8 @@ import { UserService } from '../user.service';
 @Component({
   selector: 'app-user-account',
   templateUrl: './user-account.component.html',
-  styleUrls: ['./user-account.component.css']
+  styleUrls: ['./user-account.component.css'],
+  standalone: false
 })
 export class UserAccountComponent implements OnInit {
 
@@ -18,7 +19,7 @@ export class UserAccountComponent implements OnInit {
 	getUsers() {
 		this.userService.getUsers().subscribe(
 			res => {
-        		this.userList = JSON.parse(JSON.parse(JSON.stringify(res))._body);
+        		this.userList = res;
       		},
       		error => console.log(error)
 		)
