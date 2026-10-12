@@ -2,19 +2,15 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/spec",
-    "module": "commonjs",
-    "target": "es5",
-    "baseUrl": "",
     "types": [
-      "jasmine",
-      "node"
+      "vitest/globals"
     ]
   },
-  "files": [
-    "test.ts"
-  ],
   "include": [
     "**/*.spec.ts",
     "**/*.d.ts"
+  ],
+  "files": [
+    "app/app.module.ts"
   ]
 }
