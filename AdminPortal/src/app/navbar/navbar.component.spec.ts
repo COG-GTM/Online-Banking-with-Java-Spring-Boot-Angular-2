@@ -1,14 +1,21 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { FormsModule } from '@angular/forms';
+import { provideRouter } from '@angular/router';
 
 import { NavbarComponent } from './navbar.component';
+import { LoginService } from '../login.service';
 
 describe('NavbarComponent', () => {
   let component: NavbarComponent;
   let fixture: ComponentFixture<NavbarComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NavbarComponent ]
+      declarations: [ NavbarComponent ],
+      imports: [ FormsModule ],
+      providers: [ LoginService, provideHttpClient(), provideHttpClientTesting(), provideRouter([]) ]
     })
     .compileComponents();
   }));
@@ -19,7 +26,7 @@ describe('NavbarComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should be created', () => {
+  it('should create an instance', () => {
     expect(component).toBeTruthy();
   });
 });
