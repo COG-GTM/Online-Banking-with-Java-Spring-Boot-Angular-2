@@ -23,7 +23,9 @@ export class LoginService {
 
   logout() {
      let url = 'http://localhost:8080/logout';
-     return this.http.post(url, null, { withCredentials: true });
+     // Login rotates the CSRF token, so fetch the current XSRF-TOKEN cookie before posting.
+     return this.http.get('http://localhost:8080/api/csrf', { withCredentials: true })
+       .mergeMap(() => this.http.post(url, null, { withCredentials: true }));
    }
 
 }
