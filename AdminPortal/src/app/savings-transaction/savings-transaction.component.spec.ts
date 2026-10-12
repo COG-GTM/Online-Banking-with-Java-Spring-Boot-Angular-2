@@ -6,12 +6,13 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { SavingsTransactionComponent } from './savings-transaction.component';
+import { UserService } from '../user.service';
 
 describe('Component: SavingsTransaction', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [SavingsTransactionComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [UserService, provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
       schemas: [NO_ERRORS_SCHEMA]
     });
   });

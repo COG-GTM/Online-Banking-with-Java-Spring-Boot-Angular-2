@@ -5,6 +5,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 
 import { NavbarComponent } from './navbar.component';
+import { LoginService } from '../login.service';
 
 describe('NavbarComponent', () => {
   let component: NavbarComponent;
@@ -13,7 +14,7 @@ describe('NavbarComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ NavbarComponent ],
-      providers: [ provideHttpClient(), provideHttpClientTesting(), provideRouter([]) ],
+      providers: [ LoginService, provideHttpClient(), provideHttpClientTesting(), provideRouter([]) ],
       schemas: [ NO_ERRORS_SCHEMA ]
     })
     .compileComponents();

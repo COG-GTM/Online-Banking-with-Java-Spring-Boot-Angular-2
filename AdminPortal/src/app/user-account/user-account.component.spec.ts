@@ -5,6 +5,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 
 import { UserAccountComponent } from './user-account.component';
+import { UserService } from '../user.service';
 
 describe('UserAccountComponent', () => {
   let component: UserAccountComponent;
@@ -13,7 +14,7 @@ describe('UserAccountComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ UserAccountComponent ],
-      providers: [ provideHttpClient(), provideHttpClientTesting(), provideRouter([]) ],
+      providers: [ UserService, provideHttpClient(), provideHttpClientTesting(), provideRouter([]) ],
       schemas: [ NO_ERRORS_SCHEMA ]
     })
     .compileComponents();
