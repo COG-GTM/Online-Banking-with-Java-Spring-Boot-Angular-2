@@ -1,49 +1,51 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { User } from '../models';
 import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-user-account',
   templateUrl: './user-account.component.html',
-  styleUrls: ['./user-account.component.css']
+  styleUrl: './user-account.component.css',
 })
-export class UserAccountComponent implements OnInit {
+export class UserAccountComponent {
+  private readonly userService = inject(UserService);
+  private readonly router = inject(Router);
 
-  	userList: Object[];
-	
-	constructor(private userService: UserService, private router: Router) {
-		this.getUsers();
-	}
+  protected readonly userList = signal<User[]>([]);
 
-	getUsers() {
-		this.userService.getUsers().subscribe(
-			res => {
-        		this.userList = JSON.parse(JSON.parse(JSON.stringify(res))._body);
-      		},
-      		error => console.log(error)
-		)
-	}
-
-	onSelectPrimary(username: string) {
-    	this.router.navigate(['/primaryTransaction', username]);
-  	}	
-
-  	onSelectSavings(username: string) {
-    	this.router.navigate(['/savingsTransaction', username]);
-  	}	
-
-  	enableUser(username: string) {
-  		this.userService.enableUser(username).subscribe();
-  		location.reload();
-  	}
-
-  	disableUser(username: string) {
-  		this.userService.disableUser(username).subscribe();
-  		location.reload();
-  	}
-
-
-  ngOnInit() {
+  constructor() {
+    this.getUsers();
   }
 
+  getUsers(): void {
+    this.userService.getUsers().subscribe({
+      next: (users) => this.userList.set(users),
+      error: (err) => console.log(err),
+    });
+  }
+
+  onSelectPrimary(username: string): void {
+    this.router.navigate(['/primaryTransaction', username]);
+  }
+
+  onSelectSavings(username: string): void {
+    this.router.navigate(['/savingsTransaction', username]);
+  }
+
+  enableUser(username: string): void {
+    this.refreshAfter(this.userService.enableUser(username));
+  }
+
+  disableUser(username: string): void {
+    this.refreshAfter(this.userService.disableUser(username));
+  }
+
+  private refreshAfter(request: Observable<unknown>): void {
+    request.subscribe({
+      next: () => this.getUsers(),
+      error: (err) => console.log(err),
+    });
+  }
 }

@@ -1,35 +1,43 @@
-import { Injectable } from '@angular/core';
-import {Http, Headers} from '@angular/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from '../environments/environment';
+import { Transaction, User } from './models';
 
-
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class UserService {
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = `${environment.apiUrl}/api/user`;
 
-  constructor (private http:Http){}
-
-  getUsers() {
-    let url = "http://localhost:8080/api/user/all";
-    return this.http.get(url, { withCredentials: true });
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.baseUrl}/all`, { withCredentials: true });
   }
 
-   getPrimaryTransactionList(username: string) {
-     let url = "http://localhost:8080/api/user/primary/transaction?username="+username;
-    return this.http.get(url, { withCredentials: true });
-   }
+  getPrimaryTransactionList(username: string): Observable<Transaction[]> {
+    return this.http.get<Transaction[]>(`${this.baseUrl}/primary/transaction`, {
+      params: new HttpParams().set('username', username),
+      withCredentials: true,
+    });
+  }
 
-   getSavingsTransactionList(username: string) {
-     let url = "http://localhost:8080/api/user/savings/transaction?username="+username;
-    return this.http.get(url, { withCredentials: true });
-   }
+  getSavingsTransactionList(username: string): Observable<Transaction[]> {
+    return this.http.get<Transaction[]>(`${this.baseUrl}/savings/transaction`, {
+      params: new HttpParams().set('username', username),
+      withCredentials: true,
+    });
+  }
 
-   enableUser (username: string) {
-     let url = "http://localhost:8080/api/user/"+username+"/enable";
-     return this.http.get(url, { withCredentials: true });
-   }
+  enableUser(username: string): Observable<string> {
+    return this.http.get(`${this.baseUrl}/${encodeURIComponent(username)}/enable`, {
+      withCredentials: true,
+      responseType: 'text',
+    });
+  }
 
-   disableUser (username: string) {
-     let url = "http://localhost:8080/api/user/"+username+"/disable";
-     return this.http.get(url, { withCredentials: true });
-   }
-
+  disableUser(username: string): Observable<string> {
+    return this.http.get(`${this.baseUrl}/${encodeURIComponent(username)}/disable`, {
+      withCredentials: true,
+      responseType: 'text',
+    });
+  }
 }

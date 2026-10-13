@@ -1,35 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import {UserService} from '../user.service';
-import { ActivatedRoute, Params } from '@angular/router';
-
+import { DatePipe } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
+import { catchError, map, of, switchMap } from 'rxjs';
+import { Transaction } from '../models';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-savings-transaction',
+  imports: [DatePipe],
   templateUrl: './savings-transaction.component.html',
-  styleUrls: ['./savings-transaction.component.css']
+  styleUrl: './savings-transaction.component.css',
 })
-export class SavingsTransactionComponent implements OnInit {
+export class SavingsTransactionComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly userService = inject(UserService);
 
-  username:string;
-	savingsTransactionList: Object[];
-
-	constructor(private route: ActivatedRoute, private userService: UserService) {
-		this.route.params.forEach((params: Params) => {
-     		this.username = params['username'];
-		});
-
-		this.getSavingsTransactionList();
-	}
-
-	getSavingsTransactionList() {
-		this.userService.getSavingsTransactionList(this.username).subscribe(
-			res => {
-				console.log(JSON.parse(JSON.stringify(res))._body);
-        		this.savingsTransactionList = JSON.parse(JSON.parse(JSON.stringify(res))._body);
-      		},
-      		error => console.log(error)
-		)
-	}
-
-	ngOnInit() {}
+  protected readonly savingsTransactionList = toSignal(
+    this.route.paramMap.pipe(
+      map((params) => params.get('username') ?? ''),
+      switchMap((username) =>
+        this.userService.getSavingsTransactionList(username).pipe(
+          catchError((err) => {
+            console.log(err);
+            return of<Transaction[]>([]);
+          }),
+        ),
+      ),
+    ),
+    { initialValue: [] as Transaction[] },
+  );
 }
