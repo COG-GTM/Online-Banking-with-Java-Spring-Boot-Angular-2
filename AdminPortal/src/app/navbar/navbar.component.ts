@@ -1,44 +1,28 @@
-import { Component, OnInit } from '@angular/core';
-import { LoginService } from '../login.service';
-import { Router } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { LOGGED_IN_KEY, LoginService } from '../login.service';
 
 @Component({
   selector: 'app-navbar',
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']
+  styleUrl: './navbar.component.css',
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent {
+  private readonly loginService = inject(LoginService);
 
-  loggedIn: boolean;
+  protected readonly loggedIn = this.loginService.isLoggedIn();
 
-	constructor(private loginService: LoginService, private router : Router) {
-		if(localStorage.getItem('PortalAdminHasLoggedIn') == '') {
-			this.loggedIn = false;
-		} else {
-			this.loggedIn = true;
-		}
-	}
-
-	logout(){
-		this.loginService.logout().subscribe(
-			res => {
-				localStorage.setItem('PortalAdminHasLoggedIn', '');
-			},
-			err => console.log(err)
-			);
-		location.reload();
-		this.router.navigate(['/login']);
-	}
-
-	getDisplay() {
-    if(!this.loggedIn){
-      return "none";
-    } else {
-      return "";
-    }
+  logout(): void {
+    this.loginService.logout().subscribe({
+      next: () => {
+        localStorage.setItem(LOGGED_IN_KEY, '');
+        location.assign('/login');
+      },
+      error: (err) => {
+        console.log(err);
+        alert('Logout failed. Please try again.');
+      },
+    });
   }
-
-  ngOnInit() {
-  }
-
 }

@@ -1,26 +1,33 @@
-import { Injectable } from '@angular/core';
-import {Http, Headers} from '@angular/http';
-import {Observable}     from 'rxjs/Observable';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from '../environments/environment';
 
-@Injectable()
+export const LOGGED_IN_KEY = 'PortalAdminHasLoggedIn';
+
+@Injectable({ providedIn: 'root' })
 export class LoginService {
+  private readonly http = inject(HttpClient);
 
-  constructor (private http: Http) {}
-
-  sendCredential(username: string, password: string) {
-    let url = 'http://localhost:8080/index';
-    let params = 'username='+username+'&password='+password;
-    let headers = new Headers(
-    {
-      'Content-Type': 'application/x-www-form-urlencoded'
-      // 'Access-Control-Allow-Credentials' : true
+  sendCredential(username: string, password: string): Observable<string> {
+    const body = new HttpParams().set('username', username).set('password', password);
+    const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+    return this.http.post(`${environment.apiUrl}/index`, body.toString(), {
+      headers,
+      withCredentials: true,
+      responseType: 'text',
     });
-    return this.http.post(url, params, {headers: headers, withCredentials : true});
   }
 
-  logout() {
-     let url = 'http://localhost:8080/logout';
-     return this.http.get(url, { withCredentials: true });
-   }
+  logout(): Observable<string> {
+    return this.http.get(`${environment.apiUrl}/logout`, {
+      withCredentials: true,
+      responseType: 'text',
+    });
+  }
 
+  isLoggedIn(): boolean {
+    const value = localStorage.getItem(LOGGED_IN_KEY);
+    return value !== null && value !== '';
+  }
 }

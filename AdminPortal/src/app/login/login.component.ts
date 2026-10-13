@@ -1,37 +1,28 @@
-import { Component, OnInit } from '@angular/core';
-import {Observable}  from 'rxjs/Observable';
-import {LoginService} from '../login.service';
+import { Component, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { LOGGED_IN_KEY, LoginService } from '../login.service';
 
 @Component({
   selector: 'app-login',
+  imports: [FormsModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrl: './login.component.css',
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
+  private readonly loginService = inject(LoginService);
 
-  loggedIn: boolean;
-  username: string;
-  password: string;
+  protected readonly loggedIn = signal(this.loginService.isLoggedIn());
+  protected username = '';
+  protected password = '';
 
-	constructor (private loginService: LoginService) {
-    if(localStorage.getItem('PortalAdminHasLoggedIn') == '' || localStorage.getItem('PortalAdminHasLoggedIn') == null) {
-      this.loggedIn = false;
-    } else {
-      this.loggedIn = true;
-    }
-  }
-  
-  onSubmit() {
-  	this.loginService.sendCredential(this.username, this.password).subscribe(
-      res => {
-        this.loggedIn=true;
-        localStorage.setItem('PortalAdminHasLoggedIn', 'true');
+  onSubmit(): void {
+    this.loginService.sendCredential(this.username, this.password).subscribe({
+      next: () => {
+        this.loggedIn.set(true);
+        localStorage.setItem(LOGGED_IN_KEY, 'true');
         location.reload();
       },
-      err => console.log(err)
-    );
+      error: (err) => console.log(err),
+    });
   }
-
-  ngOnInit() {}
-
 }
