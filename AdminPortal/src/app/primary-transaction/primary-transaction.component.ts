@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { catchError, map, of, startWith, switchMap } from 'rxjs';
 import { Transaction } from '../models';
 import { UserService } from '../user.service';
 
@@ -25,6 +25,7 @@ export class PrimaryTransactionComponent {
             console.log(err);
             return of<Transaction[]>([]);
           }),
+          startWith<Transaction[]>([]),
         ),
       ),
     ),

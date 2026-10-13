@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { LOGGED_IN_KEY, LoginService } from '../login.service';
 import { NavbarComponent } from './navbar.component';
 
@@ -48,6 +48,25 @@ describe('NavbarComponent', () => {
     expect(loginService.logout).toHaveBeenCalled();
     expect(localStorage.getItem(LOGGED_IN_KEY)).toBe('');
     expect(assign).toHaveBeenCalledWith('/login');
+    vi.unstubAllGlobals();
+  });
+
+  it('keeps the logged-in flag and stays on the page when logout fails', () => {
+    loginService.isLoggedIn.mockReturnValue(true);
+    loginService.logout.mockReturnValueOnce(throwError(() => new Error('network')));
+    localStorage.setItem(LOGGED_IN_KEY, 'true');
+    const assign = vi.fn();
+    const alert = vi.fn();
+    vi.stubGlobal('location', { ...window.location, assign });
+    vi.stubGlobal('alert', alert);
+    const fixture = TestBed.configureTestingModule({
+      imports: [NavbarComponent],
+      providers: [provideRouter([]), { provide: LoginService, useValue: loginService }],
+    }).createComponent(NavbarComponent);
+    fixture.componentInstance.logout();
+    expect(localStorage.getItem(LOGGED_IN_KEY)).toBe('true');
+    expect(assign).not.toHaveBeenCalled();
+    expect(alert).toHaveBeenCalled();
     vi.unstubAllGlobals();
   });
 });

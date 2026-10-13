@@ -1,6 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { finalize } from 'rxjs';
 import { LOGGED_IN_KEY, LoginService } from '../login.service';
 
 @Component({
@@ -15,14 +14,15 @@ export class NavbarComponent {
   protected readonly loggedIn = this.loginService.isLoggedIn();
 
   logout(): void {
-    this.loginService
-      .logout()
-      .pipe(
-        finalize(() => {
-          localStorage.setItem(LOGGED_IN_KEY, '');
-          location.assign('/login');
-        }),
-      )
-      .subscribe({ error: (err) => console.log(err) });
+    this.loginService.logout().subscribe({
+      next: () => {
+        localStorage.setItem(LOGGED_IN_KEY, '');
+        location.assign('/login');
+      },
+      error: (err) => {
+        console.log(err);
+        alert('Logout failed. Please try again.');
+      },
+    });
   }
 }

@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
+import { Transaction } from '../models';
 import { UserService } from '../user.service';
 import { PrimaryTransactionComponent } from './primary-transaction.component';
 
@@ -39,5 +40,17 @@ describe('PrimaryTransactionComponent', () => {
     expect(text).toContain('Primary Account Transaction List');
     expect(text).toContain('Deposit');
     expect(text).toContain('06/15/2017');
+  });
+
+  it('clears the previous account transactions while the next username loads', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/primary/jdoe', PrimaryTransactionComponent);
+    expect(harness.routeNativeElement?.textContent).toContain('Deposit');
+
+    const pending = new Subject<Transaction[]>();
+    userService.getPrimaryTransactionList.mockReturnValueOnce(pending);
+    await harness.navigateByUrl('/primary/asmith', PrimaryTransactionComponent);
+    expect(userService.getPrimaryTransactionList).toHaveBeenLastCalledWith('asmith');
+    expect(harness.routeNativeElement?.textContent).not.toContain('Deposit');
   });
 });
