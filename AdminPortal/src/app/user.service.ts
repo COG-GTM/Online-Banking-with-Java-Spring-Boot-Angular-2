@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Http, Headers} from '@angular/http';
+import { xsrfOptions } from './xsrf';
 
 
 @Injectable()
@@ -24,12 +25,12 @@ export class UserService {
 
    enableUser (username: string) {
      let url = "http://localhost:8080/api/user/"+username+"/enable";
-     return this.http.get(url, { withCredentials: true });
+     return this.http.get(url, xsrfOptions());
    }
 
    disableUser (username: string) {
      let url = "http://localhost:8080/api/user/"+username+"/disable";
-     return this.http.get(url, { withCredentials: true });
+     return this.http.get(url, xsrfOptions());
    }
 
 }
