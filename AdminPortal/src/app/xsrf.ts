@@ -10,7 +10,11 @@ export function readXsrfToken(cookieString: string = document.cookie): string | 
       continue;
     }
     if (part.substring(0, separator).trim() === XSRF_COOKIE_NAME) {
-      return decodeURIComponent(part.substring(separator + 1).trim());
+      try {
+        return decodeURIComponent(part.substring(separator + 1).trim());
+      } catch (e) {
+        return null;
+      }
     }
   }
   return null;

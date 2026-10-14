@@ -11,6 +11,11 @@ describe('xsrf', () => {
     expect(readXsrfToken('')).toBeNull();
   });
 
+  it('returns null for a malformed percent-encoded cookie', () => {
+    expect(readXsrfToken('XSRF-TOKEN=abc%ZZ')).toBeNull();
+    expect(withXsrfHeader(new Headers(), 'XSRF-TOKEN=abc%ZZ').has(XSRF_HEADER_NAME)).toBe(false);
+  });
+
   it('sets X-XSRF-TOKEN when the cookie is present', () => {
     const headers = withXsrfHeader(new Headers({'Content-Type': 'application/x-www-form-urlencoded'}), 'XSRF-TOKEN=t1');
     expect(headers.get(XSRF_HEADER_NAME)).toBe('t1');
