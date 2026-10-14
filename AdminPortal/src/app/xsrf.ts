@@ -8,7 +8,12 @@ export function readXsrfToken(cookieString: string = document.cookie): string {
   for (const cookie of cookieString.split(';')) {
     const trimmed = cookie.trim();
     if (trimmed.indexOf(prefix) === 0) {
-      return decodeURIComponent(trimmed.substring(prefix.length));
+      const value = trimmed.substring(prefix.length);
+      try {
+        return decodeURIComponent(value);
+      } catch (e) {
+        return value;
+      }
     }
   }
   return null;

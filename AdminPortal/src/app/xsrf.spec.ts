@@ -6,6 +6,10 @@ describe('xsrf helper', () => {
     expect(readXsrfToken('JSESSIONID=abc; XSRF-TOKEN=a%2Bb%3D; other=1')).toBe('a+b=');
   });
 
+  it('returns the raw value when the cookie has a malformed escape', () => {
+    expect(readXsrfToken('XSRF-TOKEN=bad%')).toBe('bad%');
+  });
+
   it('returns null when the cookie is absent', () => {
     expect(readXsrfToken('JSESSIONID=abc; NOT-XSRF-TOKEN=x')).toBeNull();
     expect(readXsrfToken('')).toBeNull();
