@@ -6,6 +6,7 @@
 <div class="container main">
     <div class="row">
         <div class="col-md-6">
+            <div th:if="${errorMessage}" id="transactionError" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
             <form th:action="@{/transfer/betweenAccounts}" method="post">
                 <div class="form-group" >
                     <label for="transferFrom">1. Please select the account you would like to transfer From:</label>
@@ -28,9 +29,10 @@
                 </div>
 
                 <div class="form-group">
-                    <label>3. Please specify the amount you would like to transfer: </label>
+                    <label for="amount">3. Please specify the amount you would like to transfer: </label>
                     <span class="input-group-addon">Amount $</span>
-                    <input th:value="${amount}" type="text" name="amount" id="amount" class="form-control" aria-label="Amount (to the nearest dollar)"/>
+                    <input th:value="${amount}" type="text" name="amount" id="amount" class="form-control" aria-describedby="amountHelp" inputmode="decimal" required="required"/>
+                    <p id="amountHelp" class="help-block">Enter an amount greater than zero with at most two decimal places, for example 25.00.</p>
                 </div>
 
                 <input type="hidden"
@@ -48,6 +50,7 @@
 
 
 <div th:replace="common/header :: body-bottom-scripts"/>
+<script th:if="${errorMessage}">document.getElementById('amount').focus();</script>
 
 </body>
 </html>
