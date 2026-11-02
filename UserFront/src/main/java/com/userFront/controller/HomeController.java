@@ -7,6 +7,8 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,6 +18,7 @@ import com.userFront.domain.PrimaryAccount;
 import com.userFront.domain.SavingsAccount;
 import com.userFront.domain.User;
 import com.userFront.domain.security.UserRole;
+import com.userFront.dto.SignupForm;
 import com.userFront.service.UserService;
 
 @Controller
@@ -26,6 +29,11 @@ public class HomeController {
 
 	@Autowired
 	private RoleDao roleDao;
+
+	@InitBinder("user")
+	public void initSignupBinder(WebDataBinder binder) {
+		binder.setAllowedFields("firstName", "lastName", "phone", "email", "username", "password");
+	}
 
 	@RequestMapping("/")
 	public String home() {
@@ -39,15 +47,14 @@ public class HomeController {
 
 	@RequestMapping(value = "/signup", method = RequestMethod.GET)
 	public String signup(Model model) {
-		User user = new User();
-
-		model.addAttribute("user", user);
+		model.addAttribute("user", new SignupForm());
 
 		return "signup";
 	}
 
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
-	public String signupPost(@ModelAttribute("user") User user, Model model) {
+	public String signupPost(@ModelAttribute("user") SignupForm signupForm, Model model) {
+		User user = signupForm.toUser();
 
 		if (userService.checkUserExists(user.getUsername(), user.getEmail())) {
 
