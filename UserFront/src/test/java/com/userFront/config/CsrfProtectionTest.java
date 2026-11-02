@@ -15,7 +15,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import static org.mockito.Mockito.when;
+import java.util.Arrays;
+import java.util.Collections;
 import javax.servlet.http.Cookie;
+import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.web.servlet.MvcResult;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -172,6 +179,28 @@ public class CsrfProtectionTest {
         mockMvc.perform(post("/logout")).andExpect(status().isForbidden());
 
         mockMvc.perform(post("/logout").with(csrf()))
+                .andExpect(redirectedUrl("/index?logout"));
+    }
+
+    @Test
+    public void loginRotatesXsrfCookieSoImmediateLogoutSucceeds() throws Exception {
+        when(userSecurityService.loadUserByUsername("admin")).thenReturn(
+                new User("admin", new BCryptPasswordEncoder(4).encode("pw"), Collections.emptyList()));
+
+        Cookie preLogin = mockMvc.perform(get("/api/csrf")).andReturn().getResponse().getCookie("XSRF-TOKEN");
+        MvcResult login = mockMvc.perform(post("/index").param("username", "admin").param("password", "pw")
+                        .cookie(preLogin).header("X-XSRF-TOKEN", preLogin.getValue()))
+                .andExpect(redirectedUrl("/userFront"))
+                .andReturn();
+
+        Cookie rotated = Arrays.stream(login.getResponse().getCookies())
+                .filter(c -> "XSRF-TOKEN".equals(c.getName()) && !c.getValue().isEmpty())
+                .reduce((first, last) -> last).orElse(null);
+        assertNotNull(rotated);
+        assertFalse(rotated.getValue().equals(preLogin.getValue()));
+
+        mockMvc.perform(post("/logout").session((MockHttpSession) login.getRequest().getSession(false))
+                        .cookie(rotated).header("X-XSRF-TOKEN", rotated.getValue()))
                 .andExpect(redirectedUrl("/index?logout"));
     }
 
