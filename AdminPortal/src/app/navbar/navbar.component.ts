@@ -23,11 +23,11 @@ export class NavbarComponent implements OnInit {
 		this.loginService.logout().subscribe(
 			res => {
 				localStorage.setItem('PortalAdminHasLoggedIn', '');
+				location.reload();
+				this.router.navigate(['/login']);
 			},
 			err => console.log(err)
 			);
-		location.reload();
-		this.router.navigate(['/login']);
 	}
 
 	getDisplay() {
