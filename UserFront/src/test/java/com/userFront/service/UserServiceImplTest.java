@@ -90,4 +90,25 @@ public class UserServiceImplTest {
 		assertSame(serverRole, saved.getUserRoles().iterator().next());
 		assertTrue(saved.isEnabled());
 	}
+
+	@Test
+	public void createUserKeepsRolesWhenSetIsAliased() {
+		when(userDao.save(any(User.class))).thenAnswer(new Answer<User>() {
+			@Override
+			public User answer(InvocationOnMock invocation) {
+				return (User) invocation.getArguments()[0];
+			}
+		});
+
+		User user = new User();
+		user.setUsername("alice");
+		user.setPassword("secret");
+		UserRole serverRole = new UserRole(user, role(1, "ROLE_USER"));
+		user.getUserRoles().add(serverRole);
+
+		User saved = userService.createUser(user, user.getUserRoles());
+
+		assertEquals(1, saved.getUserRoles().size());
+		assertSame(serverRole, saved.getUserRoles().iterator().next());
+	}
 }

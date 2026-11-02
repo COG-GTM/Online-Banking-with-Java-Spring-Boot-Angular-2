@@ -1,5 +1,6 @@
 package com.userFront.service.UserServiceImpl;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -64,8 +65,9 @@ public class UserServiceImpl implements UserService {
 				roleDao.save(ur.getRole());
 			}
 
+			Set<UserRole> assignedRoles = new HashSet<>(userRoles);
 			user.getUserRoles().clear();
-			user.getUserRoles().addAll(userRoles);
+			user.getUserRoles().addAll(assignedRoles);
 			user.setEnabled(true);
 			user.setRecipientList(null);
 			user.setAppointmentList(null);
