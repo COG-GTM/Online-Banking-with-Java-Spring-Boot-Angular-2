@@ -59,6 +59,8 @@
 						<label for="email" class="cols-sm-2 control-label">Your
 							Email</label><span class="bg-danger pull-right" th:if="${emailExists}">Email
 							already exists</span>
+						<span class="bg-danger pull-right" th:if="${usernameInvalid}">Username
+							must be 3-32 characters: letters, digits, '.', '_' or '-'</span>
 						<div class="cols-sm-10">
 							<div class="input-group">
 								<span class="input-group-addon"><i
@@ -80,6 +82,8 @@
 									aria-hidden="true"></i></span> <input type="text" class="form-control"
 									th:value="${user.username}" id="username" name="username"
 									roleId="username" placeholder="Enter your Username"
+									pattern="[A-Za-z0-9_.\-]{3,32}"
+									title="3-32 characters: letters, digits, '.', '_' or '-'"
 									required="required" />
 							</div>
 						</div>

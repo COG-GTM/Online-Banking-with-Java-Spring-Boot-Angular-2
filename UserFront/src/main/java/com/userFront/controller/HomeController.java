@@ -3,6 +3,7 @@ package com.userFront.controller;
 import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,8 @@ import com.userFront.service.UserService;
 
 @Controller
 public class HomeController {
+
+	static final Pattern USERNAME_PATTERN = Pattern.compile("^[A-Za-z0-9_.-]{3,32}$");
 
 	@Autowired
 	private UserService userService;
@@ -49,6 +52,11 @@ public class HomeController {
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	public String signupPost(@ModelAttribute("user") User user, Model model) {
 
+		if (!isValidUsername(user.getUsername())) {
+			model.addAttribute("usernameInvalid", true);
+			return "signup";
+		}
+
 		if (userService.checkUserExists(user.getUsername(), user.getEmail())) {
 
 			if (userService.checkEmailExists(user.getEmail())) {
@@ -68,6 +76,10 @@ public class HomeController {
 
 			return "redirect:/";
 		}
+	}
+
+	static boolean isValidUsername(String username) {
+		return username != null && USERNAME_PATTERN.matcher(username).matches();
 	}
 
 	@RequestMapping("/userFront")

@@ -13,8 +13,8 @@ export class AppointmentService {
   }
 
   confirmAppointment(id: number) {
-    let url = "http://localhost:8080/api/appointment/"+id+"/confirm";
-    return this.http.get(url, { withCredentials: true });
+    let url = "http://localhost:8080/api/appointment/"+encodeURIComponent(String(id))+"/confirm";
+    return this.http.post(url, null, { withCredentials: true });
   }
 
 }
