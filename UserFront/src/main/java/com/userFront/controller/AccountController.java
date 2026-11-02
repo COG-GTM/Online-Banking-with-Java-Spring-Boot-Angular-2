@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.userFront.domain.PrimaryAccount;
 import com.userFront.domain.PrimaryTransaction;
@@ -16,6 +17,7 @@ import com.userFront.domain.SavingsAccount;
 import com.userFront.domain.SavingsTransaction;
 import com.userFront.domain.User;
 import com.userFront.service.AccountService;
+import com.userFront.service.InvalidTransactionException;
 import com.userFront.service.TransactionService;
 import com.userFront.service.UserService;
 
@@ -69,8 +71,14 @@ public class AccountController {
 
 	@RequestMapping(value = "/deposit", method = RequestMethod.POST)
 	public String depositPOST(@ModelAttribute("amount") String amount,
-			@ModelAttribute("accountType") String accountType, Principal principal) {
-		accountService.deposit(accountType, Double.parseDouble(amount), principal);
+			@ModelAttribute("accountType") String accountType, Principal principal,
+			RedirectAttributes redirectAttributes) {
+		try {
+			accountService.deposit(accountType, amount, principal);
+		} catch (InvalidTransactionException e) {
+			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+			return "redirect:/account/deposit";
+		}
 
 		return "redirect:/userFront";
 	}
@@ -85,8 +93,14 @@ public class AccountController {
 
 	@RequestMapping(value = "/withdraw", method = RequestMethod.POST)
 	public String withdrawPOST(@ModelAttribute("amount") String amount,
-			@ModelAttribute("accountType") String accountType, Principal principal) {
-		accountService.withdraw(accountType, Double.parseDouble(amount), principal);
+			@ModelAttribute("accountType") String accountType, Principal principal,
+			RedirectAttributes redirectAttributes) {
+		try {
+			accountService.withdraw(accountType, amount, principal);
+		} catch (InvalidTransactionException e) {
+			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+			return "redirect:/account/withdraw";
+		}
 
 		return "redirect:/userFront";
 	}

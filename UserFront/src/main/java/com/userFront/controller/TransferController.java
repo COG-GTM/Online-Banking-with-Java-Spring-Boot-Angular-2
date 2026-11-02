@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.userFront.domain.PrimaryAccount;
 import com.userFront.domain.Recipient;
 import com.userFront.domain.SavingsAccount;
 import com.userFront.domain.User;
+import com.userFront.service.InvalidTransactionException;
 import com.userFront.service.TransactionService;
 import com.userFront.service.UserService;
 
@@ -41,11 +43,16 @@ public class TransferController {
 	@RequestMapping(value = "/betweenAccounts", method = RequestMethod.POST)
 	public String betweenAccountsPost(@ModelAttribute("transferFrom") String transferFrom,
 			@ModelAttribute("transferTo") String transferTo, @ModelAttribute("amount") String amount,
-			Principal principal) throws Exception {
+			Principal principal, RedirectAttributes redirectAttributes) {
 		User user = userService.findByUsername(principal.getName());
 		PrimaryAccount primaryAccount = user.getPrimaryAccount();
 		SavingsAccount savingsAccount = user.getSavingsAccount();
-		transactionService.betweenAccountsTransfer(transferFrom, transferTo, amount, primaryAccount, savingsAccount);
+		try {
+			transactionService.betweenAccountsTransfer(transferFrom, transferTo, amount, primaryAccount, savingsAccount);
+		} catch (InvalidTransactionException e) {
+			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+			return "redirect:/transfer/betweenAccounts";
+		}
 
 		return "redirect:/userFront";
 	}
@@ -114,11 +121,16 @@ public class TransferController {
 	@RequestMapping(value = "/toSomeoneElse", method = RequestMethod.POST)
 	public String toSomeoneElsePost(@ModelAttribute("recipientName") String recipientName,
 			@ModelAttribute("accountType") String accountType, @ModelAttribute("amount") String amount,
-			Principal principal) {
+			Principal principal, RedirectAttributes redirectAttributes) {
 		User user = userService.findByUsername(principal.getName());
-		Recipient recipient = transactionService.findRecipientByName(recipientName);
-		transactionService.toSomeoneElseTransfer(recipient, accountType, amount, user.getPrimaryAccount(),
-				user.getSavingsAccount());
+		Recipient recipient = transactionService.findRecipientByNameForUser(recipientName, user.getUsername());
+		try {
+			transactionService.toSomeoneElseTransfer(recipient, accountType, amount, user.getPrimaryAccount(),
+					user.getSavingsAccount());
+		} catch (InvalidTransactionException e) {
+			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+			return "redirect:/transfer/toSomeoneElse";
+		}
 
 		return "redirect:/userFront";
 	}
