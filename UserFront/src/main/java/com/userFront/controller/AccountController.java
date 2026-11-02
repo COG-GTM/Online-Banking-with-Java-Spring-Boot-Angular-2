@@ -3,6 +3,8 @@ package com.userFront.controller;
 import java.security.Principal;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,8 +18,10 @@ import com.userFront.domain.SavingsAccount;
 import com.userFront.domain.SavingsTransaction;
 import com.userFront.domain.User;
 import com.userFront.service.AccountService;
+import com.userFront.service.MoneyAmounts;
 import com.userFront.service.TransactionService;
 import com.userFront.service.UserService;
+import com.userFront.service.exception.TransactionRejectedException;
 
 @Controller
 @RequestMapping("/account")
@@ -69,8 +73,13 @@ public class AccountController {
 
 	@RequestMapping(value = "/deposit", method = RequestMethod.POST)
 	public String depositPOST(@ModelAttribute("amount") String amount,
-			@ModelAttribute("accountType") String accountType, Principal principal) {
-		accountService.deposit(accountType, Double.parseDouble(amount), principal);
+			@ModelAttribute("accountType") String accountType, Principal principal, Model model,
+			HttpServletResponse response) {
+		try {
+			accountService.deposit(accountType, MoneyAmounts.parse(amount), principal);
+		} catch (TransactionRejectedException e) {
+			return rejected(e, "deposit", model, response);
+		}
 
 		return "redirect:/userFront";
 	}
@@ -85,9 +94,20 @@ public class AccountController {
 
 	@RequestMapping(value = "/withdraw", method = RequestMethod.POST)
 	public String withdrawPOST(@ModelAttribute("amount") String amount,
-			@ModelAttribute("accountType") String accountType, Principal principal) {
-		accountService.withdraw(accountType, Double.parseDouble(amount), principal);
+			@ModelAttribute("accountType") String accountType, Principal principal, Model model,
+			HttpServletResponse response) {
+		try {
+			accountService.withdraw(accountType, MoneyAmounts.parse(amount), principal);
+		} catch (TransactionRejectedException e) {
+			return rejected(e, "withdraw", model, response);
+		}
 
 		return "redirect:/userFront";
+	}
+
+	private String rejected(TransactionRejectedException e, String view, Model model, HttpServletResponse response) {
+		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		model.addAttribute("errorMessage", e.getMessage());
+		return view;
 	}
 }
