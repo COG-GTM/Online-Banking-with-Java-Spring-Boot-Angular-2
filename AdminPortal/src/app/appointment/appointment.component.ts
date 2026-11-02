@@ -25,8 +25,10 @@ export class AppointmentComponent implements OnInit {
 	}	
 
 	confirmAppointment(id: number) {
-  		this.appointmentService.confirmAppointment(id).subscribe();
-  		location.reload();
+  		this.appointmentService.confirmAppointment(id).subscribe(
+  			res => location.reload(),
+  			error => console.log(error)
+  		);
   	}
 
 ngOnInit() {}
