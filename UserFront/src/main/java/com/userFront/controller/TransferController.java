@@ -16,6 +16,7 @@ import com.userFront.domain.PrimaryAccount;
 import com.userFront.domain.Recipient;
 import com.userFront.domain.SavingsAccount;
 import com.userFront.domain.User;
+import com.userFront.exception.RecipientNotFoundException;
 import com.userFront.service.TransactionService;
 import com.userFront.service.UserService;
 
@@ -66,6 +67,9 @@ public class TransferController {
 	public String recipientPost(@ModelAttribute("recipient") Recipient recipient, Principal principal) {
 
 		User user = userService.findByUsername(principal.getName());
+		if (recipient.getId() != null && transactionService.findRecipientByIdAndUser(recipient.getId(), user) == null) {
+			throw new RecipientNotFoundException();
+		}
 		recipient.setUser(user);
 		transactionService.saveRecipient(recipient);
 
@@ -76,7 +80,11 @@ public class TransferController {
 	public String recipientEdit(@RequestParam(value = "recipientName") String recipientName, Model model,
 			Principal principal) {
 
-		Recipient recipient = transactionService.findRecipientByName(recipientName);
+		User user = userService.findByUsername(principal.getName());
+		Recipient recipient = transactionService.findRecipientByName(recipientName, user);
+		if (recipient == null) {
+			throw new RecipientNotFoundException();
+		}
 		List<Recipient> recipientList = transactionService.findRecipientList(principal);
 
 		model.addAttribute("recipientList", recipientList);
@@ -90,7 +98,10 @@ public class TransferController {
 	public String recipientDelete(@RequestParam(value = "recipientName") String recipientName, Model model,
 			Principal principal) {
 
-		transactionService.deleteRecipientByName(recipientName);
+		User user = userService.findByUsername(principal.getName());
+		if (transactionService.deleteRecipientByName(recipientName, user) == 0) {
+			throw new RecipientNotFoundException();
+		}
 
 		List<Recipient> recipientList = transactionService.findRecipientList(principal);
 
@@ -116,7 +127,10 @@ public class TransferController {
 			@ModelAttribute("accountType") String accountType, @ModelAttribute("amount") String amount,
 			Principal principal) {
 		User user = userService.findByUsername(principal.getName());
-		Recipient recipient = transactionService.findRecipientByName(recipientName);
+		Recipient recipient = transactionService.findRecipientByName(recipientName, user);
+		if (recipient == null) {
+			throw new RecipientNotFoundException();
+		}
 		transactionService.toSomeoneElseTransfer(recipient, accountType, amount, user.getPrimaryAccount(),
 				user.getSavingsAccount());
 
