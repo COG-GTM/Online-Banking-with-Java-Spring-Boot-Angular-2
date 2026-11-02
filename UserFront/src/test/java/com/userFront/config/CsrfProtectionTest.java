@@ -6,6 +6,7 @@ import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -14,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.security.Principal;
+import java.util.Collections;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.userFront.controller.AccountController;
 import com.userFront.controller.TransferController;
+import com.userFront.domain.Recipient;
 import com.userFront.resource.AppointmentResource;
 import com.userFront.resource.UserResource;
 import com.userFront.service.AccountService;
@@ -139,5 +142,25 @@ public class CsrfProtectionTest {
         mockMvc.perform(post("/logout").with(user("carol")).with(csrf()))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/index?logout"));
+    }
+
+    @Test
+    public void recipientSaveRejectsAnotherUsersRecipientId() throws Exception {
+        mockMvc.perform(post("/transfer/recipient/save").with(user("carol")).with(csrf())
+                .param("id", "99").param("name", "Bob"))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/transfer/recipient"));
+        verify(transactionService, never()).saveRecipient(any(Recipient.class));
+    }
+
+    @Test
+    public void recipientSaveAllowsEditingOwnRecipient() throws Exception {
+        Recipient own = new Recipient();
+        own.setId(5L);
+        when(transactionService.findRecipientList(any(Principal.class))).thenReturn(Collections.singletonList(own));
+        mockMvc.perform(post("/transfer/recipient/save").with(user("carol")).with(csrf())
+                .param("id", "5").param("name", "Bob"))
+                .andExpect(status().isFound());
+        verify(transactionService).saveRecipient(any(Recipient.class));
     }
 }

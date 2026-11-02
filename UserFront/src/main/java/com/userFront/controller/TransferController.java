@@ -65,6 +65,11 @@ public class TransferController {
 	@RequestMapping(value = "/recipient/save", method = RequestMethod.POST)
 	public String recipientPost(@ModelAttribute("recipient") Recipient recipient, Principal principal) {
 
+		if (recipient.getId() != null && transactionService.findRecipientList(principal).stream()
+				.noneMatch(owned -> recipient.getId().equals(owned.getId()))) {
+			return "redirect:/transfer/recipient";
+		}
+
 		User user = userService.findByUsername(principal.getName());
 		recipient.setUser(user);
 		transactionService.saveRecipient(recipient);
