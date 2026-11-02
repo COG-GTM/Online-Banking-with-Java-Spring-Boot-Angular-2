@@ -3,6 +3,7 @@ package com.userFront.config;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
@@ -22,6 +23,9 @@ public class DatasourceCredentialsPolicy implements EnvironmentPostProcessor, Or
 
     private static final List<String> PRIVILEGED_ACCOUNTS = Arrays.asList("root", "mysql.sys", "mysql.session", "admin");
 
+    private static final Pattern URL_CREDENTIALS = Pattern.compile(
+            "^jdbc:[^/]*//[^/?#]*@|[?&;(]\\s*(user|username|password)\\s*=", Pattern.CASE_INSENSITIVE);
+
     private static final List<String> IN_MEMORY_URL_PREFIXES = Arrays.asList("jdbc:h2:mem:", "jdbc:hsqldb:mem:", "jdbc:derby:memory:");
 
     @Override
@@ -29,6 +33,9 @@ public class DatasourceCredentialsPolicy implements EnvironmentPostProcessor, Or
         String url = resolve(environment, URL);
         if (url == null || isInMemory(url)) {
             return;
+        }
+        if (URL_CREDENTIALS.matcher(url).find()) {
+            throw new InsecureDatasourceCredentialsException(URL + " must not embed credentials; provide DB_USERNAME and DB_PASSWORD");
         }
         validate(resolve(environment, USERNAME), resolve(environment, PASSWORD));
     }

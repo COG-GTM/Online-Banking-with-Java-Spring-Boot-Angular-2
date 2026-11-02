@@ -63,6 +63,26 @@ public class DatasourceCredentialsPolicyTest {
         postProcess(MYSQL_URL, "${DB_USERNAME_NOT_SET}", "s3cr3t-Passw0rd");
     }
 
+    @Test(expected = InsecureDatasourceCredentialsException.class)
+    public void credentialsInUrlUserInfoAreRejected() {
+        postProcess("jdbc:mysql://root:s3cr3t@localhost:3306/onlinebanking", "onlinebanking_app", "s3cr3t-Passw0rd");
+    }
+
+    @Test(expected = InsecureDatasourceCredentialsException.class)
+    public void credentialsInUrlQueryAreRejected() {
+        postProcess(MYSQL_URL + "?useSSL=true&User=root&password=s3cr3t", "onlinebanking_app", "s3cr3t-Passw0rd");
+    }
+
+    @Test(expected = InsecureDatasourceCredentialsException.class)
+    public void credentialsInUrlAddressPropertiesAreRejected() {
+        postProcess("jdbc:mysql://address=(host=localhost)(port=3306)(user=root)/onlinebanking", "onlinebanking_app", "s3cr3t-Passw0rd");
+    }
+
+    @Test
+    public void urlWithNonCredentialParametersIsAccepted() {
+        postProcess(MYSQL_URL + "?useSSL=false&serverTimezone=UTC", "onlinebanking_app", "s3cr3t-Passw0rd");
+    }
+
     @Test
     public void leastPrivilegeAccountWithPasswordIsAccepted() {
         postProcess(MYSQL_URL, "onlinebanking_app", "s3cr3t-Passw0rd");
