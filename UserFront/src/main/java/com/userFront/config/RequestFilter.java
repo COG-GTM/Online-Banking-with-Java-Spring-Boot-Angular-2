@@ -1,12 +1,14 @@
 package com.userFront.config;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -16,7 +18,9 @@ import org.springframework.stereotype.Component;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class RequestFilter implements Filter {
 
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) {
+    @Override
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
+            throws IOException, ServletException {
         HttpServletResponse response = (HttpServletResponse) res;
         HttpServletRequest request = (HttpServletRequest) req;
 
@@ -27,11 +31,7 @@ public class RequestFilter implements Filter {
         response.setHeader("Access-Control-Allow-Credentials", "true");
 
         if (!(request.getMethod().equalsIgnoreCase("OPTIONS"))) {
-            try {
-                chain.doFilter(req, res);
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
+            chain.doFilter(req, res);
         } else {
             System.out.println("Pre-flight");
             response.setHeader("Access-Control-Allow-Methods", "POST,GET,DELETE");
@@ -42,9 +42,5 @@ public class RequestFilter implements Filter {
         }
 
     }
-
-    public void init(FilterConfig filterConfig) {}
-
-    public void destroy() {}
 
 }
