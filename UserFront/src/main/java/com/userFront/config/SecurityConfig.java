@@ -44,16 +44,14 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(UserSecurityService userSecurityService,
             BCryptPasswordEncoder passwordEncoder) {
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(userSecurityService);
-        authenticationProvider.setPasswordEncoder(passwordEncoder);
-        return new ProviderManager(authenticationProvider);
+        return new ProviderManager(daoAuthenticationProvider(userSecurityService, passwordEncoder));
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager,
-            UserSecurityService userSecurityService) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, UserSecurityService userSecurityService,
+            BCryptPasswordEncoder passwordEncoder) throws Exception {
         http
-                .authenticationManager(authenticationManager)
+                .authenticationProvider(daoAuthenticationProvider(userSecurityService, passwordEncoder))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC_MATCHERS).permitAll()
                         .anyRequest().authenticated())
@@ -71,6 +69,13 @@ public class SecurityConfig {
                         .permitAll())
                 .rememberMe(rememberMe -> rememberMe.userDetailsService(userSecurityService));
         return http.build();
+    }
+
+    private static DaoAuthenticationProvider daoAuthenticationProvider(UserSecurityService userSecurityService,
+            BCryptPasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userSecurityService);
+        provider.setPasswordEncoder(passwordEncoder);
+        return provider;
     }
 
 }
