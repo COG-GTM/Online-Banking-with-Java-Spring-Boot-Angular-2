@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpModule, XSRFStrategy, CookieXSRFStrategy } from '@angular/http';
 import { routing }  from './app.routing';
 
 
@@ -18,6 +18,11 @@ import { AppointmentComponent } from './appointment/appointment.component';
 import { AppointmentService } from './appointment.service';
 
 
+
+export function xsrfStrategyFactory() {
+  // Spring Security's CookieCsrfTokenRepository cookie and header names.
+  return new CookieXSRFStrategy('XSRF-TOKEN', 'X-XSRF-TOKEN');
+}
 
 @NgModule({
   declarations: [
@@ -38,7 +43,8 @@ import { AppointmentService } from './appointment.service';
   providers: [
     LoginService,
     UserService,
-    AppointmentService
+    AppointmentService,
+    { provide: XSRFStrategy, useFactory: xsrfStrategyFactory }
   ],
   bootstrap: [AppComponent]
 })

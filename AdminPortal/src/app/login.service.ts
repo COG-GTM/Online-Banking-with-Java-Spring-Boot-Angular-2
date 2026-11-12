@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Http, Headers} from '@angular/http';
 import {Observable}     from 'rxjs/Observable';
+import 'rxjs/add/operator/mergeMap';
 
 @Injectable()
 export class LoginService {
@@ -15,7 +16,10 @@ export class LoginService {
       'Content-Type': 'application/x-www-form-urlencoded'
       // 'Access-Control-Allow-Credentials' : true
     });
-    return this.http.post(url, params, {headers: headers, withCredentials : true});
+    // GET the login page first so the backend sets the XSRF-TOKEN cookie
+    // that Http sends back as the X-XSRF-TOKEN header on the login POST.
+    return this.http.get(url, { withCredentials: true })
+      .mergeMap(() => this.http.post(url, params, {headers: headers, withCredentials : true}));
   }
 
   logout() {
