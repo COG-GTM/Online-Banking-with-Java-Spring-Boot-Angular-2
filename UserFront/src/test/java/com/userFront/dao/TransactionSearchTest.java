@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -139,7 +140,7 @@ public class TransactionSearchTest {
 		return new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(value);
 	}
 
-	private static Date day(String value) throws ParseException {
-		return new SimpleDateFormat("yyyy-MM-dd").parse(value);
+	private static LocalDate day(String value) {
+		return LocalDate.parse(value);
 	}
 }

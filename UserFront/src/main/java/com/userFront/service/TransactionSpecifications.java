@@ -1,7 +1,8 @@
 package com.userFront.service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -81,14 +82,7 @@ public final class TransactionSpecifications {
 		return text.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
 	}
 
-	private static Date startOfDay(Date day, int plusDays) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(day);
-		calendar.set(Calendar.HOUR_OF_DAY, 0);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-		calendar.set(Calendar.MILLISECOND, 0);
-		calendar.add(Calendar.DAY_OF_MONTH, plusDays);
-		return calendar.getTime();
+	static Date startOfDay(LocalDate day, int plusDays) {
+		return Date.from(day.plusDays(plusDays).atStartOfDay(ZoneId.systemDefault()).toInstant());
 	}
 }

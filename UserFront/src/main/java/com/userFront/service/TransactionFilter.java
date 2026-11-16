@@ -1,6 +1,6 @@
 package com.userFront.service;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.StringUtils;
@@ -12,10 +12,10 @@ public class TransactionFilter {
 	public static final String TYPE_TRANSFER = "transfer";
 
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-	private Date from;
+	private LocalDate from;
 
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-	private Date to;
+	private LocalDate to;
 
 	private String type;
 	private Double minAmount;
@@ -27,19 +27,19 @@ public class TransactionFilter {
 				|| StringUtils.hasText(q);
 	}
 
-	public Date getFrom() {
+	public LocalDate getFrom() {
 		return from;
 	}
 
-	public void setFrom(Date from) {
+	public void setFrom(LocalDate from) {
 		this.from = from;
 	}
 
-	public Date getTo() {
+	public LocalDate getTo() {
 		return to;
 	}
 
-	public void setTo(Date to) {
+	public void setTo(LocalDate to) {
 		this.to = to;
 	}
 
