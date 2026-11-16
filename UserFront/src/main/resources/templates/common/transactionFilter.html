@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<body>
+
+<div th:fragment="filterForm(actionUrl)" class="panel panel-default transaction-filter">
+    <div class="panel-heading">
+        <strong><i class="fa fa-filter" aria-hidden="true"></i> Search transactions</strong>
+    </div>
+    <div class="panel-body">
+        <form method="get" th:action="@{${actionUrl}}" th:object="${filter}">
+            <div class="row">
+                <div class="form-group col-sm-6 col-md-2">
+                    <label for="from">From</label>
+                    <input type="date" class="form-control" id="from" th:field="*{from}" />
+                </div>
+                <div class="form-group col-sm-6 col-md-2">
+                    <label for="to">To</label>
+                    <input type="date" class="form-control" id="to" th:field="*{to}" />
+                </div>
+                <div class="form-group col-sm-4 col-md-2">
+                    <label for="type">Type</label>
+                    <select class="form-control" id="type" th:field="*{type}">
+                        <option value="">All types</option>
+                        <option value="deposit">Deposit</option>
+                        <option value="withdraw">Withdraw</option>
+                        <option value="transfer">Transfer</option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-4 col-md-2">
+                    <label for="minAmount">Min amount</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span>
+                        <input type="number" step="0.01" min="0" class="form-control" id="minAmount"
+                               th:field="*{minAmount}" />
+                    </div>
+                </div>
+                <div class="form-group col-sm-4 col-md-2">
+                    <label for="maxAmount">Max amount</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span>
+                        <input type="number" step="0.01" min="0" class="form-control" id="maxAmount"
+                               th:field="*{maxAmount}" />
+                    </div>
+                </div>
+                <div class="form-group col-sm-12 col-md-2">
+                    <label for="q">Description</label>
+                    <input type="text" class="form-control" id="q" placeholder="e.g. recipient"
+                           th:field="*{q}" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i> Filter</button>
+                    <a class="btn btn-link" th:href="@{${actionUrl}}" th:if="${filter.active}">Clear filters</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:fragment="emptyState(actionUrl)" class="well text-center transaction-empty">
+    <h4><i class="fa fa-search" aria-hidden="true"></i>
+        <span th:text="${filter.active} ? 'No transactions match these filters.' : 'No transactions yet.'">No transactions yet.</span>
+    </h4>
+    <p th:if="${filter.active}">Try a wider date range or amount, or
+        <a th:href="@{${actionUrl}}">clear filters</a> to see every transaction.</p>
+</div>
+
+</body>
+</html>

@@ -14,6 +14,10 @@ public interface TransactionService {
 
 	List<SavingsTransaction> findSavingsTransactionList(String username);
 
+	List<PrimaryTransaction> findPrimaryTransactionList(String username, TransactionFilter filter);
+
+	List<SavingsTransaction> findSavingsTransactionList(String username, TransactionFilter filter);
+
 	void savePrimaryDepositTransaction(PrimaryTransaction primaryTransaction);
 
 	void saveSavingsDepositTransaction(SavingsTransaction savingsTransaction);

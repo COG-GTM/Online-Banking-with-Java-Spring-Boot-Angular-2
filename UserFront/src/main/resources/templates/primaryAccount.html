@@ -39,7 +39,16 @@
 
     <!-- /.row -->
 
-    <div class="table-responsive">
+    <div th:replace="common/transactionFilter :: filterForm('/account/primaryAccount')"></div>
+
+    <p class="text-muted" th:if="${filter.active and !#lists.isEmpty(primaryTransactionList)}"
+       th:text="${#lists.size(primaryTransactionList)} + ' matching transaction(s)'">0 matching transaction(s)</p>
+
+    <div th:if="${#lists.isEmpty(primaryTransactionList)}">
+        <div th:replace="common/transactionFilter :: emptyState('/account/primaryAccount')"></div>
+    </div>
+
+    <div class="table-responsive" th:unless="${#lists.isEmpty(primaryTransactionList)}">
         <table id="example" class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
@@ -69,7 +78,7 @@
 <div th:replace="common/header :: body-bottom-scripts"/>
 <script>
     $(document).ready(function() {
-        $('#example').DataTable();
+        $('#example').DataTable({ searching: false });
     } );
 </script>
 </body>
