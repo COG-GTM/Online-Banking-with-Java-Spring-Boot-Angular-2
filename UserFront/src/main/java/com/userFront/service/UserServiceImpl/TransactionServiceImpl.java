@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.userFront.dao.PrimaryAccountDao;
@@ -20,11 +21,15 @@ import com.userFront.domain.Recipient;
 import com.userFront.domain.SavingsAccount;
 import com.userFront.domain.SavingsTransaction;
 import com.userFront.domain.User;
+import com.userFront.service.TransactionFilter;
 import com.userFront.service.TransactionService;
+import com.userFront.service.TransactionSpecifications;
 import com.userFront.service.UserService;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
+
+	private static final Sort BY_DATE = new Sort(Sort.Direction.ASC, "date", "id");
 
 	@Autowired
 	private UserService userService;
@@ -56,6 +61,20 @@ public class TransactionServiceImpl implements TransactionService {
 		List<SavingsTransaction> savingsTransactionList = user.getSavingsAccount().getSavingsTransactionList();
 
 		return savingsTransactionList;
+	}
+
+	public List<PrimaryTransaction> findPrimaryTransactionList(String username, TransactionFilter filter) {
+		User user = userService.findByUsername(username);
+		return primaryTransactionDao.findAll(
+				TransactionSpecifications.forAccount("primaryAccount", user.getPrimaryAccount(), filter),
+				BY_DATE);
+	}
+
+	public List<SavingsTransaction> findSavingsTransactionList(String username, TransactionFilter filter) {
+		User user = userService.findByUsername(username);
+		return savingsTransactionDao.findAll(
+				TransactionSpecifications.forAccount("savingsAccount", user.getSavingsAccount(), filter),
+				BY_DATE);
 	}
 
 	public void savePrimaryDepositTransaction(PrimaryTransaction primaryTransaction) {

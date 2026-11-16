@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,6 +17,7 @@ import com.userFront.domain.SavingsAccount;
 import com.userFront.domain.SavingsTransaction;
 import com.userFront.domain.User;
 import com.userFront.service.AccountService;
+import com.userFront.service.TransactionFilter;
 import com.userFront.service.TransactionService;
 import com.userFront.service.UserService;
 
@@ -33,9 +35,10 @@ public class AccountController {
 	private TransactionService transactionService;
 
 	@RequestMapping("/primaryAccount")
-	public String primaryAccount(Model model, Principal principal) {
+	public String primaryAccount(@ModelAttribute("filter") TransactionFilter filter, BindingResult filterErrors,
+			Model model, Principal principal) {
 		List<PrimaryTransaction> primaryTransactionList = transactionService
-				.findPrimaryTransactionList(principal.getName());
+				.findPrimaryTransactionList(principal.getName(), filter);
 
 		User user = userService.findByUsername(principal.getName());
 		PrimaryAccount primaryAccount = user.getPrimaryAccount();
@@ -47,9 +50,10 @@ public class AccountController {
 	}
 
 	@RequestMapping("/savingsAccount")
-	public String savingsAccount(Model model, Principal principal) {
+	public String savingsAccount(@ModelAttribute("filter") TransactionFilter filter, BindingResult filterErrors,
+			Model model, Principal principal) {
 		List<SavingsTransaction> savingsTransactionList = transactionService
-				.findSavingsTransactionList(principal.getName());
+				.findSavingsTransactionList(principal.getName(), filter);
 		User user = userService.findByUsername(principal.getName());
 		SavingsAccount savingsAccount = user.getSavingsAccount();
 
