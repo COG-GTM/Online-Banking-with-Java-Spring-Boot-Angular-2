@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.userFront.dao.PrimaryAccountDao;
 import com.userFront.dao.PrimaryTransactionDao;
@@ -20,6 +21,7 @@ import com.userFront.domain.Recipient;
 import com.userFront.domain.SavingsAccount;
 import com.userFront.domain.SavingsTransaction;
 import com.userFront.domain.User;
+import com.userFront.exception.RecipientNotFoundException;
 import com.userFront.service.TransactionService;
 import com.userFront.service.UserService;
 
@@ -109,16 +111,42 @@ public class TransactionServiceImpl implements TransactionService {
         return recipientList;
     }
 
-    public Recipient saveRecipient(Recipient recipient) {
+    public Recipient saveRecipient(Recipient form, Principal principal) {
+        User user = userService.findByUsername(principal.getName());
+        Recipient recipient;
+        if (form.getId() == null) {
+            recipient = new Recipient();
+            recipient.setUser(user);
+        } else {
+            recipient = recipientDao.findByIdAndUser(form.getId(), user);
+            if (recipient == null) {
+                throw new RecipientNotFoundException();
+            }
+        }
+        recipient.setName(form.getName());
+        recipient.setEmail(form.getEmail());
+        recipient.setPhone(form.getPhone());
+        recipient.setAccountNumber(form.getAccountNumber());
+        recipient.setDescription(form.getDescription());
         return recipientDao.save(recipient);
     }
 
-    public Recipient findRecipientByName(String recipientName) {
-        return recipientDao.findByName(recipientName);
+    public Recipient findRecipientByName(String recipientName, Principal principal) {
+        User user = userService.findByUsername(principal.getName());
+        Recipient recipient = recipientDao.findFirstByNameAndUserOrderByIdAsc(recipientName, user);
+        if (recipient == null) {
+            throw new RecipientNotFoundException();
+        }
+        return recipient;
     }
 
-    public void deleteRecipientByName(String recipientName) {
-        recipientDao.deleteByName(recipientName);
+    @Transactional
+    public void deleteRecipientByName(String recipientName, Principal principal) {
+        User user = userService.findByUsername(principal.getName());
+        Long deleted = recipientDao.deleteByNameAndUser(recipientName, user);
+        if (deleted == null || deleted == 0) {
+            throw new RecipientNotFoundException();
+        }
     }
     
     public void toSomeoneElseTransfer(Recipient recipient, String accountType, String amount, PrimaryAccount primaryAccount, SavingsAccount savingsAccount) {
