@@ -1,10 +1,14 @@
 # AdminPortal
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.1.2.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.1.2 and uses Angular 4.
+
+It is the admin UI of the Online Banking app. It has no backend of its own: it calls the UserFront Spring Boot API at `http://localhost:8080` (see [../docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md)), so start UserFront and its MySQL database first, as described in the [root README](../README.md).
+
+Use Node.js 12 and run `npm install` first. The Angular CLI is a local dev dependency, so run its commands with `npx ng ...` (or `npm start`, `npm run build`) instead of a global `ng`.
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Run `npx ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 ## Code scaffolding
 
@@ -12,11 +16,11 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+Run `npx ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
 
 ## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `npx ng test` to execute the unit tests via [Karma](https://karma-runner.github.io). The specs are the CLI-generated scaffolds and do not currently run with this toolchain.
 
 ## Running end-to-end tests
 
