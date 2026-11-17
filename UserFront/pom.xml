@@ -22,6 +22,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<!-- 5.1.42 (Boot 1.5.4 default) cannot negotiate TLSv1.2 with MySQL 5.7, so Java 8 fails the TLS handshake -->
+		<mysql.version>5.1.49</mysql.version>
 	</properties>
 
 	<dependencies>
