@@ -51,8 +51,10 @@ Re-render `architecture.png` and `architecture.svg` with `docs/diagrams/render.s
 ## Database
 
 - **MySQL**, database `onlinebanking` on `localhost:3306`, configured in
-  `UserFront/src/main/resources/application.properties` (user `root`, password
-  `avengers1993`, `MySQL5Dialect`, MySQL Connector/J 5.1 from the Spring Boot 1.5 BOM).
+  `UserFront/src/main/resources/application.properties` (`MySQL5Dialect`; MySQL
+  Connector/J 5.1.49, pinned in `UserFront/pom.xml` so it can use TLSv1.2 with MySQL 5.7 on Java 8).
+  Set the credentials with `SPRING_DATASOURCE_USERNAME` / `SPRING_DATASOURCE_PASSWORD`
+  instead of using the values committed in that file.
   Tested with MySQL 5.7.
 - Tables generated from the entities: `user`, `role`, `user_role`, `primary_account`,
   `savings_account`, `primary_transaction`, `savings_transaction`, `recipient`, `appointment`.

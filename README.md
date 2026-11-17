@@ -37,14 +37,16 @@ It is mainly used by Admin and it involves User Account and Appointment modules.
 
 ### 1. Database
 
-The backend connects to database `onlinebanking` as `root` / `avengers1993` (see `UserFront/src/main/resources/application.properties`). With Docker:
+The backend connects to database `onlinebanking` on `localhost:3306`. Don't rely on the credentials committed in `UserFront/src/main/resources/application.properties`. Pick your own password and pass it to both MySQL and the backend. With Docker:
 
 ```bash
-docker run -d --name onlinebanking-mysql -p 3306:3306 \
-  -e MYSQL_ROOT_PASSWORD=avengers1993 -e MYSQL_DATABASE=onlinebanking mysql:5.7
+export SPRING_DATASOURCE_USERNAME=root
+read -rsp "MySQL root password: " SPRING_DATASOURCE_PASSWORD && export SPRING_DATASOURCE_PASSWORD
+docker run -d --name onlinebanking-mysql -p 127.0.0.1:3306:3306 \
+  -e MYSQL_ROOT_PASSWORD="$SPRING_DATASOURCE_PASSWORD" -e MYSQL_DATABASE=onlinebanking mysql:5.7
 ```
 
-To use other credentials, override them at startup, e.g. `SPRING_DATASOURCE_PASSWORD=... mvn spring-boot:run`.
+Spring Boot reads `SPRING_DATASOURCE_USERNAME` / `SPRING_DATASOURCE_PASSWORD` from the environment, so run the next steps in the same shell.
 
 ### 2. User Frontend (backend, port 8080)
 
