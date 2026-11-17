@@ -1,0 +1,41 @@
+// Online Banking architecture. Editable source for architecture.png / architecture.svg.
+// Re-render with: ./render.sh   (needs Graphviz: apt-get install graphviz)
+digraph architecture {
+  graph [rankdir=TB, fontname="DejaVu Sans", fontsize=18, nodesep=0.45, ranksep=0.9,
+         pad=0.3, newrank=true];
+  node  [fontname="DejaVu Sans", fontsize=15, shape=box, style="rounded,filled", fillcolor=white, color="#555555", margin="0.18,0.10"];
+  edge  [fontname="DejaVu Sans", fontsize=13, color="#444444"];
+
+  customer [label="Customer\n(web browser)", shape=oval, fillcolor="#fff4d6"];
+  admin    [label="Bank admin\n(web browser)", shape=oval, fillcolor="#fff4d6"];
+
+  subgraph cluster_admin {
+    label="AdminPortal/  (Angular 4, Angular CLI 1.1.2)\nng serve on http://localhost:4200"; style="rounded,filled"; fillcolor="#e8f0fe"; color="#4a7bd0";
+    spa      [label="Single-page app\nroutes: login, userAccount,\nprimaryTransaction, savingsTransaction,\nappointment"];
+    services [label="LoginService / UserService /\nAppointmentService\n(@angular/http, withCredentials)\nbase URL hard-coded:\nhttp://localhost:8080"];
+    spa -> services;
+  }
+
+  subgraph cluster_userfront {
+    label="UserFront/  (Spring Boot 1.5.4, Java 8, embedded Tomcat)\nmvn spring-boot:run on http://localhost:8080"; style="rounded,filled"; fillcolor="#e6f4ea"; color="#3c8d4f";
+    filter   [label="RequestFilter\nCORS: allow origin localhost:4200,\ncredentials; answers OPTIONS"];
+    security [label="Spring Security (SecurityConfig)\nform login POST /index, GET /logout\nJSESSIONID session, BCrypt passwords\nCSRF disabled"];
+    mvc      [label="MVC controllers + Thymeleaf\nHome, Account, Transfer,\nAppointment, User\n(/, /index, /signup, /userFront,\n/account/**, /transfer/**, ...)"];
+    rest     [label="REST resources (JSON)\nUserResource  /api/user/**\nAppointmentResource  /api/appointment/**\n@PreAuthorize hasRole('ADMIN')"];
+    svc      [label="Services\nUserService, AccountService,\nTransactionService, AppointmentService,\nUserSecurityService"];
+    dao      [label="Spring Data JPA DAOs\n(Hibernate, ddl-auto=update)"];
+    filter -> security;
+    security -> mvc [label="ROLE_USER"];
+    security -> rest [label="ROLE_ADMIN"];
+    mvc -> svc; rest -> svc; svc -> dao;
+  }
+
+  db [label="MySQL 5.7  database: onlinebanking\nlocalhost:3306 (JDBC, mysql-connector 5.1)\n\nuser, role, user_role,\nprimary_account, savings_account,\nprimary_transaction, savings_transaction,\nrecipient, appointment", shape=cylinder, fillcolor="#fde7e9", color="#b0444f"];
+
+  customer -> filter   [label="HTML pages + form posts"];
+  admin    -> spa      [label="loads SPA"];
+  services -> filter   [label="XHR: POST /index, GET /logout,\nGET /api/... (session cookie)", color="#4a7bd0", fontcolor="#2d5aa8", penwidth=2];
+  dao      -> db       [label="SQL"];
+
+  { rank=same; customer; admin; }
+}
