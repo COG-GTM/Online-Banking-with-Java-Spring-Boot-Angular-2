@@ -102,10 +102,9 @@ public class TransferController {
 			Principal principal) {
 
 		User user = userService.findByUsername(principal.getName());
-		if (transactionService.findRecipientByNameAndUser(recipientName, user) == null) {
+		if (transactionService.deleteRecipientByNameAndUser(recipientName, user) == 0) {
 			throw new RecipientNotFoundException();
 		}
-		transactionService.deleteRecipientByNameAndUser(recipientName, user);
 
 		List<Recipient> recipientList = transactionService.findRecipientList(principal);
 

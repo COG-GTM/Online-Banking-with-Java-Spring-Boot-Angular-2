@@ -79,19 +79,19 @@ public class TransferControllerTest {
 
 	@Test
 	public void deletingRecipientNotOwnedByUserReturnsNotFound() throws Exception {
-		when(transactionService.findRecipientByNameAndUser("Landlord", bob)).thenReturn(null);
+		when(transactionService.deleteRecipientByNameAndUser("Landlord", bob)).thenReturn(0L);
 
 		mockMvc.perform(post("/transfer/recipient/delete")
 				.param("recipientName", "Landlord")
 				.principal(BOB_PRINCIPAL))
 				.andExpect(status().isNotFound());
 
-		verify(transactionService, never()).deleteRecipientByNameAndUser("Landlord", bob);
+		verify(transactionService).deleteRecipientByNameAndUser("Landlord", bob);
 	}
 
 	@Test
 	public void deletingOwnedRecipientDeletesIt() throws Exception {
-		when(transactionService.findRecipientByNameAndUser("Landlord", bob)).thenReturn(new Recipient());
+		when(transactionService.deleteRecipientByNameAndUser("Landlord", bob)).thenReturn(2L);
 		when(transactionService.findRecipientList(BOB_PRINCIPAL)).thenReturn(Collections.<Recipient>emptyList());
 
 		mockMvc.perform(post("/transfer/recipient/delete")
@@ -100,6 +100,7 @@ public class TransferControllerTest {
 				.andExpect(status().isOk());
 
 		verify(transactionService).deleteRecipientByNameAndUser("Landlord", bob);
+		verify(transactionService, never()).findRecipientByNameAndUser("Landlord", bob);
 	}
 
 	@Test

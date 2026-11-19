@@ -34,7 +34,7 @@ public interface TransactionService {
 
 	Recipient findRecipientByIdAndUser(Long id, User user);
 
-	void deleteRecipientByNameAndUser(String recipientName, User user);
+	long deleteRecipientByNameAndUser(String recipientName, User user);
 	
 	void toSomeoneElseTransfer(Recipient recipient, String accountType, String amount, PrimaryAccount primaryAccount, SavingsAccount savingsAccount);
 	
