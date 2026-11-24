@@ -63,5 +63,5 @@ export default async function globalSetup() {
     });
     data[project] = { admin, customer, toggled, appointment };
   }
-  writeFileSync(join(__dirname, '.run.json'), JSON.stringify(data, null, 2));
+  writeFileSync(join(__dirname, '.run.json'), JSON.stringify(data, null, 2), { mode: 0o600 });
 }
