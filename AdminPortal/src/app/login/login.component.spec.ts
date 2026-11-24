@@ -9,10 +9,9 @@ describe('LoginComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [FormsModule],
-      declarations: [LoginComponent],
-      providers: [{ provide: LoginService, useValue: {} }]
-    }).compileComponents();
+    imports: [FormsModule, LoginComponent],
+    providers: [{ provide: LoginService, useValue: {} }]
+}).compileComponents();
   }));
 
   afterEach(() => localStorage.removeItem('PortalAdminHasLoggedIn'));

@@ -10,10 +10,9 @@ describe('NavbarComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [NavbarComponent],
-      providers: [{ provide: LoginService, useValue: {} }]
-    }).compileComponents();
+    imports: [RouterTestingModule, NavbarComponent],
+    providers: [{ provide: LoginService, useValue: {} }]
+}).compileComponents();
   }));
 
   afterEach(() => localStorage.removeItem('PortalAdminHasLoggedIn'));

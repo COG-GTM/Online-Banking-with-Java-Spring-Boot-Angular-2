@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginService } from '../login.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
     selector: 'app-navbar',
     templateUrl: './navbar.component.html',
     styleUrls: ['./navbar.component.css'],
-    standalone: false
+    imports: [RouterLink, RouterLinkActive]
 })
 export class NavbarComponent implements OnInit {
 

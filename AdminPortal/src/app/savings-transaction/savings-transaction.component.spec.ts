@@ -11,11 +11,10 @@ describe('SavingsTransactionComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [SavingsTransactionComponent],
-      providers: [{ provide: UserService, useValue: { getSavingsTransactionList: () => of([{ date: 0, description: "Withdraw", type: "Account", status: "Finished", amount: 5, availableBalance: 95 }]) } }],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents();
+    imports: [RouterTestingModule, SavingsTransactionComponent],
+    providers: [{ provide: UserService, useValue: { getSavingsTransactionList: () => of([{ date: 0, description: "Withdraw", type: "Account", status: "Finished", amount: 5, availableBalance: 95 }]) } }],
+    schemas: [NO_ERRORS_SCHEMA]
+}).compileComponents();
   }));
 
   it('should render one row per item', () => {

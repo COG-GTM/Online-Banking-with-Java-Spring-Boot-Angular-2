@@ -11,11 +11,10 @@ describe('AppointmentComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [AppointmentComponent],
-      providers: [{ provide: AppointmentService, useValue: { getAppointmentList: () => of([{ id: 1, user: { username: "alice" }, date: 0, description: "Loan", confirmed: false }]) } }],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents();
+    imports: [RouterTestingModule, AppointmentComponent],
+    providers: [{ provide: AppointmentService, useValue: { getAppointmentList: () => of([{ id: 1, user: { username: "alice" }, date: 0, description: "Loan", confirmed: false }]) } }],
+    schemas: [NO_ERRORS_SCHEMA]
+}).compileComponents();
   }));
 
   it('should render one row per item', () => {

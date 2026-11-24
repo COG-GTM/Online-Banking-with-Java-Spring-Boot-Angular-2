@@ -11,11 +11,10 @@ describe('UserAccountComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [UserAccountComponent],
-      providers: [{ provide: UserService, useValue: { getUsers: () => of([{ username: "alice", firstName: "Alice", primaryAccount: { accountBalance: 10 }, savingsAccount: { accountBalance: 20 }, enabled: true }, { username: "bob", firstName: "Bob", primaryAccount: { accountBalance: 0 }, savingsAccount: { accountBalance: 0 }, enabled: false }]) } }],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents();
+    imports: [RouterTestingModule, UserAccountComponent],
+    providers: [{ provide: UserService, useValue: { getUsers: () => of([{ username: "alice", firstName: "Alice", primaryAccount: { accountBalance: 10 }, savingsAccount: { accountBalance: 20 }, enabled: true }, { username: "bob", firstName: "Bob", primaryAccount: { accountBalance: 0 }, savingsAccount: { accountBalance: 0 }, enabled: false }]) } }],
+    schemas: [NO_ERRORS_SCHEMA]
+}).compileComponents();
   }));
 
   it('should render one row per item', () => {

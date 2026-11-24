@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import {UserService} from '../user.service';
 import { ActivatedRoute, Params } from '@angular/router';
+import { DatePipe } from '@angular/common';
 
 
 @Component({
     selector: 'app-savings-transaction',
     templateUrl: './savings-transaction.component.html',
     styleUrls: ['./savings-transaction.component.css'],
-    standalone: false
+    imports: [DatePipe]
 })
 export class SavingsTransactionComponent implements OnInit {
 

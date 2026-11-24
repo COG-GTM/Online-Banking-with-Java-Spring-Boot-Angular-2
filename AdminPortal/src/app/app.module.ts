@@ -19,18 +19,14 @@ import { AppointmentService } from './appointment.service';
 
 
 
-@NgModule({ declarations: [
-        AppComponent,
-        NavbarComponent,
+@NgModule({ declarations: [AppComponent], bootstrap: [AppComponent], imports: [BrowserModule,
+        FormsModule,
+        routing, NavbarComponent,
         LoginComponent,
         UserAccountComponent,
         PrimaryTransactionComponent,
         SavingsTransactionComponent,
-        AppointmentComponent
-    ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
-        FormsModule,
-        routing], providers: [
+        AppointmentComponent], providers: [
         LoginService,
         UserService,
         AppointmentService,

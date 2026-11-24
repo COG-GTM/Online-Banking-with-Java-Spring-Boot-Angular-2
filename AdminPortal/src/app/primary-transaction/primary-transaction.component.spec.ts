@@ -11,11 +11,10 @@ describe('PrimaryTransactionComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [PrimaryTransactionComponent],
-      providers: [{ provide: UserService, useValue: { getPrimaryTransactionList: () => of([{ date: 0, description: "Deposit", type: "Account", status: "Finished", amount: 100, availableBalance: 100 }]) } }],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents();
+    imports: [RouterTestingModule, PrimaryTransactionComponent],
+    providers: [{ provide: UserService, useValue: { getPrimaryTransactionList: () => of([{ date: 0, description: "Deposit", type: "Account", status: "Finished", amount: 100, availableBalance: 100 }]) } }],
+    schemas: [NO_ERRORS_SCHEMA]
+}).compileComponents();
   }));
 
   it('should render one row per item', () => {

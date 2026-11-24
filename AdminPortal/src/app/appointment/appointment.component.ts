@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import {AppointmentService} from '../appointment.service';
+import { DatePipe } from '@angular/common';
 
 
 @Component({
     selector: 'app-appointment',
     templateUrl: './appointment.component.html',
     styleUrls: ['./appointment.component.css'],
-    standalone: false
+    imports: [DatePipe]
 })
 export class AppointmentComponent implements OnInit {
 
