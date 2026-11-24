@@ -1,8 +1,7 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
+import { of } from 'rxjs';
 
 import { PrimaryTransactionComponent } from './primary-transaction.component';
 import { UserService } from '../user.service';
@@ -14,7 +13,7 @@ describe('PrimaryTransactionComponent', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [PrimaryTransactionComponent],
-      providers: [{ provide: UserService, useValue: { getPrimaryTransactionList: () => Observable.of({ _body: JSON.stringify([{ date: 0, description: "Deposit", type: "Account", status: "Finished", amount: 100, availableBalance: 100 }]) }) } }],
+      providers: [{ provide: UserService, useValue: { getPrimaryTransactionList: () => of([{ date: 0, description: "Deposit", type: "Account", status: "Finished", amount: 100, availableBalance: 100 }]) } }],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
   }));
