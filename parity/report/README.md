@@ -27,13 +27,13 @@ Mismatches: none in UI. The two non-zero diffs are data, not rendering: both pro
 
 ```bash
 # MySQL 5.7 with the onlinebanking schema (password from UserFront application.properties)
-docker run -d --name obwa-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=<db password> -e MYSQL_DATABASE=onlinebanking mysql:5.7
+docker run -d --name obwa-mysql -p 127.0.0.1:3306:3306 -e MYSQL_ROOT_PASSWORD=<db password> -e MYSQL_DATABASE=onlinebanking mysql:5.7
 # Backend (Java 8)
 cd UserFront && mvn -DskipTests package && java -jar target/userFront-0.0.1-SNAPSHOT.jar \
   --spring.datasource.url='jdbc:mysql://127.0.0.1:3306/onlinebanking?useSSL=false' \
   --cors.allowed-origins=http://localhost:4200,http://localhost:4000
 # Baseline (Node 12): git worktree add ../obwa-baseline master
-cd ../obwa-baseline/AdminPortal && npm ci && npx ng serve --port 4000
+cd ../obwa-baseline/AdminPortal && npm install && npx ng serve --port 4000   # master has no lockfile
 # Upgraded (Node >= 20.19 / 22.12)
 cd AdminPortal && npm ci && npx ng serve --port 4200
 # Suite (needs the mysql client on PATH; PARITY_DB_* env vars override host/port/user/db/password)
