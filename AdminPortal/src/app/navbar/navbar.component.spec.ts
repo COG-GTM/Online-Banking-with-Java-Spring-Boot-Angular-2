@@ -1,25 +1,35 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { NavbarComponent } from './navbar.component';
+import { LoginService } from '../login.service';
 
 describe('NavbarComponent', () => {
   let component: NavbarComponent;
   let fixture: ComponentFixture<NavbarComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NavbarComponent ]
-    })
-    .compileComponents();
+    imports: [RouterTestingModule, NavbarComponent],
+    providers: [{ provide: LoginService, useValue: {} }]
+}).compileComponents();
   }));
 
-  beforeEach(() => {
+  afterEach(() => localStorage.removeItem('PortalAdminHasLoggedIn'));
+
+  it('should hide the menu links after logout', () => {
+    localStorage.setItem('PortalAdminHasLoggedIn', '');
     fixture = TestBed.createComponent(NavbarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    expect(component.getDisplay()).toBe('none');
   });
 
-  it('should be created', () => {
-    expect(component).toBeTruthy();
+  it('should show the menu links when logged in', () => {
+    localStorage.setItem('PortalAdminHasLoggedIn', 'true');
+    fixture = TestBed.createComponent(NavbarComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(component.getDisplay()).toBe('');
   });
 });

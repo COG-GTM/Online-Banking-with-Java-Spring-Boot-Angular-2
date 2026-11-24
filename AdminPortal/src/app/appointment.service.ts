@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import {Http, Headers} from '@angular/http';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 
 @Injectable()
 export class AppointmentService {
+  private http = inject(HttpClient);
 
-  constructor (private http:Http){}
 
   getAppointmentList() {
     let url = "http://localhost:8080/api/appointment/all";
@@ -14,7 +14,7 @@ export class AppointmentService {
 
   confirmAppointment(id: number) {
     let url = "http://localhost:8080/api/appointment/"+id+"/confirm";
-    return this.http.get(url, { withCredentials: true });
+    return this.http.get(url, { withCredentials: true, responseType: 'text' });
   }
 
 }

@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import {Http, Headers} from '@angular/http';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 
 @Injectable()
 export class UserService {
+  private http = inject(HttpClient);
 
-  constructor (private http:Http){}
 
   getUsers() {
     let url = "http://localhost:8080/api/user/all";
@@ -24,12 +24,12 @@ export class UserService {
 
    enableUser (username: string) {
      let url = "http://localhost:8080/api/user/"+username+"/enable";
-     return this.http.get(url, { withCredentials: true });
+     return this.http.get(url, { withCredentials: true, responseType: 'text' });
    }
 
    disableUser (username: string) {
      let url = "http://localhost:8080/api/user/"+username+"/disable";
-     return this.http.get(url, { withCredentials: true });
+     return this.http.get(url, { withCredentials: true, responseType: 'text' });
    }
 
 }

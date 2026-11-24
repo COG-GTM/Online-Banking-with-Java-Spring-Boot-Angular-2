@@ -1,23 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { LoginService } from '../login.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
-  selector: 'app-navbar',
-  templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']
+    selector: 'app-navbar',
+    templateUrl: './navbar.component.html',
+    styleUrls: ['./navbar.component.css'],
+    imports: [RouterLink, RouterLinkActive]
 })
 export class NavbarComponent implements OnInit {
+  private loginService = inject(LoginService);
+  private router = inject(Router);
 
-  loggedIn: boolean;
 
-	constructor(private loginService: LoginService, private router : Router) {
-		if(localStorage.getItem('PortalAdminHasLoggedIn') == '') {
-			this.loggedIn = false;
-		} else {
-			this.loggedIn = true;
-		}
-	}
+  loggedIn = signal(localStorage.getItem('PortalAdminHasLoggedIn') != '');
+
 
 	logout(){
 		this.loginService.logout().subscribe(
@@ -31,7 +28,7 @@ export class NavbarComponent implements OnInit {
 	}
 
 	getDisplay() {
-    if(!this.loggedIn){
+    if(!this.loggedIn()){
       return "none";
     } else {
       return "";

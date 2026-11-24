@@ -1,16 +1,18 @@
-/* tslint:disable:no-unused-variable */
+import { TestBed, inject } from '@angular/core/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
-import { TestBed, async, inject } from '@angular/core/testing';
 import { UserService } from './user.service';
+import { provideHttpClient } from '@angular/common/http';
 
-describe('Service: User', () => {
+describe('UserService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [UserService]
-    });
+    imports: [],
+    providers: [UserService, provideHttpClient(), provideHttpClientTesting()]
+});
   });
 
-  it('should ...', inject([UserService], (service: UserService) => {
+  it('should be created', inject([UserService], (service: UserService) => {
     expect(service).toBeTruthy();
   }));
 });

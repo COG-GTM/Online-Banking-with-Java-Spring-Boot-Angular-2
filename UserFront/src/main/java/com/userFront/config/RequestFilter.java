@@ -8,6 +8,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -16,11 +20,17 @@ import org.springframework.stereotype.Component;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class RequestFilter implements Filter {
 
+    @Value("${cors.allowed-origins:http://localhost:4200}")
+    private String[] allowedOrigins;
+
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) {
         HttpServletResponse response = (HttpServletResponse) res;
         HttpServletRequest request = (HttpServletRequest) req;
 
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");  //8081
+        List<String> origins = Arrays.asList(allowedOrigins);
+        String origin = request.getHeader("Origin");
+        response.setHeader("Access-Control-Allow-Origin", origin != null && origins.contains(origin) ? origin : origins.get(0));
+        response.setHeader("Vary", "Origin");
         response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
         response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
         response.setHeader("Access-Control-Max-Age", "3600");

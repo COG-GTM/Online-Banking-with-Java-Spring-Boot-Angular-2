@@ -1,13 +1,26 @@
-import './polyfills.ts';
+import { enableProdMode, provideZonelessChangeDetection } from '@angular/core';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
 
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
-import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
+import { LoginService } from './app/login.service';
+import { UserService } from './app/user.service';
+import { AppointmentService } from './app/appointment.service';
+import { appRoutes } from './app/app.routing';
+import { AppComponent } from './app/app.component';
 
 if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule);
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideZonelessChangeDetection(),
+    provideRouter(appRoutes),
+    provideHttpClient(),
+    LoginService,
+    UserService,
+    AppointmentService
+  ]
+});

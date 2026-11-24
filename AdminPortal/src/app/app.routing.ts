@@ -1,41 +1,29 @@
-import { ModuleWithProviders }  from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes } from '@angular/router';
 
-import { LoginComponent } from './login/login.component';
-import { UserAccountComponent } from './user-account/user-account.component';
-import { PrimaryTransactionComponent } from './primary-transaction/primary-transaction.component';
-import { SavingsTransactionComponent } from './savings-transaction/savings-transaction.component';
-import { AppointmentComponent } from './appointment/appointment.component';
-
-
-
-
-const appRoutes: Routes = [
+export const appRoutes: Routes = [
   {
     path: '',
     redirectTo: '/login',
     pathMatch: 'full'
   },
   {
-  	path: 'login',
-  	component: LoginComponent
+    path: 'login',
+    loadComponent: () => import('./login/login.component').then(m => m.LoginComponent)
   },
   {
     path: 'userAccount',
-    component: UserAccountComponent
+    loadComponent: () => import('./user-account/user-account.component').then(m => m.UserAccountComponent)
   },
   {
     path: 'primaryTransaction/:username',
-    component: PrimaryTransactionComponent
+    loadComponent: () => import('./primary-transaction/primary-transaction.component').then(m => m.PrimaryTransactionComponent)
   },
   {
     path: 'savingsTransaction/:username',
-    component: SavingsTransactionComponent
+    loadComponent: () => import('./savings-transaction/savings-transaction.component').then(m => m.SavingsTransactionComponent)
   },
   {
     path: 'appointment',
-    component: AppointmentComponent
+    loadComponent: () => import('./appointment/appointment.component').then(m => m.AppointmentComponent)
   }
 ];
-
-export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);
