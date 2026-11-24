@@ -12,7 +12,7 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
-Run `ng build` to build the project (production configuration by default; `ng build --configuration development` for a dev build). The deployable app is written to `dist/browser/`.
+Run `ng build --configuration production` for a production build (plain `ng build` is an unoptimized build with source maps). The deployable app is written to `dist/browser/`.
 
 ## Running unit tests
 

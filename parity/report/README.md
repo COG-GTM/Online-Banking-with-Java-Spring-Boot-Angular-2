@@ -32,7 +32,7 @@ docker run -d --name obwa-mysql -p 127.0.0.1:3306:3306 -e MYSQL_ROOT_PASSWORD=<d
 cd UserFront && mvn -DskipTests package && java -jar target/userFront-0.0.1-SNAPSHOT.jar \
   --spring.datasource.url='jdbc:mysql://127.0.0.1:3306/onlinebanking?useSSL=false' \
   --cors.allowed-origins=http://localhost:4200,http://localhost:4000
-# Baseline (Node 12): git worktree add ../obwa-baseline master
+# Baseline (Node 12): git worktree add ../obwa-baseline 260093a
 cd ../obwa-baseline/AdminPortal && npm install && npx ng serve --port 4000   # master has no lockfile
 # Upgraded (Node >= 20.19 / 22.12)
 cd AdminPortal && npm ci && npx ng serve --port 4200
