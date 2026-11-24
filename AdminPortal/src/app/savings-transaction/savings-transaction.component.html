@@ -12,7 +12,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (savingsTransaction of savingsTransactionList; track savingsTransaction) {
+    @for (savingsTransaction of savingsTransactionList(); track savingsTransaction) {
       <tr>
         <td>{{savingsTransaction.date | date: 'MM/dd/yyyy'}} </td>
         <td>{{savingsTransaction.description}}</td>

@@ -1,4 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import {UserService} from '../user.service';
 import { ActivatedRoute, Params } from '@angular/router';
 import { DatePipe } from '@angular/common';
@@ -13,28 +16,15 @@ import { DatePipe } from '@angular/common';
 export class SavingsTransactionComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private userService = inject(UserService);
+  private username = toSignal(this.route.params.pipe(map((params: Params) => params['username'] as string)), { requireSync: true });
+  savingsTransactionList = toSignal(
+    this.userService.getSavingsTransactionList(this.username()).pipe(
+      map(res => res as any[]),
+      catchError(error => { console.log(error); return of([]); })
+    ),
+    { initialValue: [] as any[] }
+  );
 
-
-  username:string;
-	savingsTransactionList: Object[];
-
-	constructor() {
-		this.route.params.forEach((params: Params) => {
-     		this.username = params['username'];
-		});
-
-		this.getSavingsTransactionList();
-	}
-
-	getSavingsTransactionList() {
-		this.userService.getSavingsTransactionList(this.username).subscribe(
-			res => {
-				console.log(res);
-        		this.savingsTransactionList = res as Object[];
-      		},
-      		error => console.log(error)
-		)
-	}
 
 	ngOnInit() {}
 }

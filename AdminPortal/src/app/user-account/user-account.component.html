@@ -15,7 +15,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (user of userList; track user) {
+    @for (user of userList(); track user) {
       <tr>
         <td>{{user.username}}</td>
         <td>{{user.firstName}}</td>

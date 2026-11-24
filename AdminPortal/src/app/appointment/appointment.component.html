@@ -12,7 +12,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (appointment of appointmentList; track appointment) {
+    @for (appointment of appointmentList(); track appointment) {
       <tr>
         <td>{{appointment.id}}</td>
         <td>{{appointment.user.username}}</td>

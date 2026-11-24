@@ -20,7 +20,7 @@ describe('LoginComponent', () => {
     localStorage.removeItem('PortalAdminHasLoggedIn');
     fixture = TestBed.createComponent(LoginComponent);
     fixture.detectChanges();
-    expect(fixture.componentInstance.loggedIn).toBe(false);
+    expect(fixture.componentInstance.loggedIn()).toBe(false);
     expect(fixture.nativeElement.querySelector('form').hidden).toBe(false);
   });
 
@@ -28,7 +28,7 @@ describe('LoginComponent', () => {
     localStorage.setItem('PortalAdminHasLoggedIn', 'true');
     fixture = TestBed.createComponent(LoginComponent);
     fixture.detectChanges();
-    expect(fixture.componentInstance.loggedIn).toBe(true);
+    expect(fixture.componentInstance.loggedIn()).toBe(true);
     expect(fixture.nativeElement.querySelector('form').hidden).toBe(true);
   });
 });

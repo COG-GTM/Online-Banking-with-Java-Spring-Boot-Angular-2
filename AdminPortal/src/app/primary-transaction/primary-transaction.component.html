@@ -12,7 +12,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (primaryTransaction of primaryTransactionList; track primaryTransaction) {
+    @for (primaryTransaction of primaryTransactionList(); track primaryTransaction) {
       <tr>
         <td>{{primaryTransaction.date | date: 'MM/dd/yyyy'}} </td>
         <td>{{primaryTransaction.description}}</td>
