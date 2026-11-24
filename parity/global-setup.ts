@@ -1,7 +1,7 @@
 import { request } from '@playwright/test';
 import { execFileSync } from 'child_process';
 import { randomBytes } from 'crypto';
-import { writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
 export const BACKEND = process.env.BACKEND_URL || 'http://localhost:8080';
@@ -14,7 +14,12 @@ function sql(statement: string) {
     '-u', process.env.PARITY_DB_USER || 'root',
     process.env.PARITY_DB_NAME || 'onlinebanking',
     '-e', statement,
-  ], { env: { ...process.env, MYSQL_PWD: process.env.PARITY_DB_PASSWORD || 'avengers1993' }, stdio: 'pipe' });
+  ], { env: { ...process.env, MYSQL_PWD: process.env.PARITY_DB_PASSWORD ?? backendDbPassword() }, stdio: 'pipe' });
+}
+
+function backendDbPassword(): string {
+  const props = readFileSync(join(__dirname, '..', 'UserFront', 'src', 'main', 'resources', 'application.properties'), 'utf8');
+  return props.match(/^spring\.datasource\.password\s*=\s*(.*)$/m)?.[1].trim() ?? '';
 }
 
 async function signup(username: string, password: string, first: string, last: string) {
