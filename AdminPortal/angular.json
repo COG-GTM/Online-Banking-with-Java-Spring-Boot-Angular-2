@@ -24,6 +24,7 @@
               "src/favicon.ico"
             ],
             "styles": [
+              "src/assets/css/bootstrap.min.css",
               "src/styles.css"
             ],
             "scripts": [],
@@ -86,6 +87,7 @@
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [],
             "styles": [
+              "src/assets/css/bootstrap.min.css",
               "src/styles.css"
             ],
             "assets": [
