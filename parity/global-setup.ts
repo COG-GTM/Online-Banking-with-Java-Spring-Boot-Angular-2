@@ -19,7 +19,7 @@ function sql(statement: string) {
 
 function backendDbPassword(): string {
   const props = readFileSync(join(__dirname, '..', 'UserFront', 'src', 'main', 'resources', 'application.properties'), 'utf8');
-  return props.match(/^spring\.datasource\.password\s*=\s*(.*)$/m)?.[1].trim() ?? '';
+  return props.match(/^spring\.datasource\.password[ \t]*=[ \t]*(.*)$/m)?.[1].trim() ?? '';
 }
 
 async function signup(username: string, password: string, first: string, last: string) {
