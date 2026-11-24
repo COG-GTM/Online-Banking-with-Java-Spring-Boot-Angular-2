@@ -1,14 +1,17 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { AppComponent } from './app.component';
+import { LoginService } from './login.service';
 
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [AppComponent],
-    schemas: [NO_ERRORS_SCHEMA]
-}).compileComponents();
+      imports: [AppComponent],
+      providers: [provideRouter([]), { provide: LoginService, useValue: {} }],
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
   }));
 
   it('should create the app', () => {
