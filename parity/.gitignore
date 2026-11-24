@@ -1,0 +1,4 @@
+node_modules/
+.run.json
+test-results/
+report/results.json
