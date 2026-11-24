@@ -2,13 +2,13 @@ import { TestBed, inject } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { AppointmentService } from './appointment.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('AppointmentService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
     imports: [],
-    providers: [AppointmentService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+    providers: [AppointmentService, provideHttpClient(), provideHttpClientTesting()]
 });
   });
 
