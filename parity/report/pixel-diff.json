@@ -1,0 +1,42 @@
+[
+  {
+    "name": "01-login.png",
+    "diff": 0,
+    "sizes": "1280x800 / 1280x800"
+  },
+  {
+    "name": "02-welcome.png",
+    "diff": 0,
+    "sizes": "1280x800 / 1280x800"
+  },
+  {
+    "name": "03-user-account.png",
+    "diff": 0,
+    "sizes": "1280x800 / 1280x800"
+  },
+  {
+    "name": "04-user-disabled.png",
+    "diff": 0.07,
+    "sizes": "1280x800 / 1280x800"
+  },
+  {
+    "name": "05-primary-transactions.png",
+    "diff": 0,
+    "sizes": "1280x800 / 1280x800"
+  },
+  {
+    "name": "06-savings-transactions.png",
+    "diff": 0,
+    "sizes": "1280x800 / 1280x800"
+  },
+  {
+    "name": "07-appointments.png",
+    "diff": 0.02,
+    "sizes": "1280x800 / 1280x800"
+  },
+  {
+    "name": "08-after-logout.png",
+    "diff": 0,
+    "sizes": "1280x800 / 1280x800"
+  }
+]
