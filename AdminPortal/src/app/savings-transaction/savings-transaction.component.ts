@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {UserService} from '../user.service';
 import { ActivatedRoute, Params } from '@angular/router';
 import { DatePipe } from '@angular/common';
@@ -11,11 +11,14 @@ import { DatePipe } from '@angular/common';
     imports: [DatePipe]
 })
 export class SavingsTransactionComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private userService = inject(UserService);
+
 
   username:string;
 	savingsTransactionList: Object[];
 
-	constructor(private route: ActivatedRoute, private userService: UserService) {
+	constructor() {
 		this.route.params.forEach((params: Params) => {
      		this.username = params['username'];
 		});

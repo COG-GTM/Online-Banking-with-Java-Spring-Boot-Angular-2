@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {LoginService} from '../login.service';
 import { FormsModule } from '@angular/forms';
 
@@ -9,12 +9,14 @@ import { FormsModule } from '@angular/forms';
     imports: [FormsModule]
 })
 export class LoginComponent implements OnInit {
+  private loginService = inject(LoginService);
+
 
   loggedIn: boolean;
   username: string;
   password: string;
 
-	constructor (private loginService: LoginService) {
+	constructor () {
     if(localStorage.getItem('PortalAdminHasLoggedIn') == '' || localStorage.getItem('PortalAdminHasLoggedIn') == null) {
       this.loggedIn = false;
     } else {

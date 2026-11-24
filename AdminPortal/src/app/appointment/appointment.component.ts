@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {AppointmentService} from '../appointment.service';
 import { DatePipe } from '@angular/common';
 
@@ -10,10 +10,12 @@ import { DatePipe } from '@angular/common';
     imports: [DatePipe]
 })
 export class AppointmentComponent implements OnInit {
+  private appointmentService = inject(AppointmentService);
+
 
   appointmentList: Object[];
 
-	constructor(private appointmentService: AppointmentService) {
+	constructor() {
 		this.getAppointmentList();
 	}
 

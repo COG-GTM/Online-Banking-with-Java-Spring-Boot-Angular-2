@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { LoginService } from '../login.service';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -9,10 +9,13 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
     imports: [RouterLink, RouterLinkActive]
 })
 export class NavbarComponent implements OnInit {
+  private loginService = inject(LoginService);
+  private router = inject(Router);
+
 
   loggedIn: boolean;
 
-	constructor(private loginService: LoginService, private router : Router) {
+	constructor() {
 		if(localStorage.getItem('PortalAdminHasLoggedIn') == '') {
 			this.loggedIn = false;
 		} else {

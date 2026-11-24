@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 
 @Injectable()
 export class AppointmentService {
+  private http = inject(HttpClient);
 
-  constructor (private http: HttpClient){}
 
   getAppointmentList() {
     let url = "http://localhost:8080/api/appointment/all";

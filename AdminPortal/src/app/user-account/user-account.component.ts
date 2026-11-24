@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '../user.service';
 
@@ -8,10 +8,13 @@ import { UserService } from '../user.service';
     styleUrls: ['./user-account.component.css']
 })
 export class UserAccountComponent implements OnInit {
+  	private userService = inject(UserService);
+  	private router = inject(Router);
+
 
   	userList: Object[];
 	
-	constructor(private userService: UserService, private router: Router) {
+	constructor() {
 		this.getUsers();
 	}
 
