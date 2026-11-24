@@ -3,9 +3,10 @@ import {AppointmentService} from '../appointment.service';
 
 
 @Component({
-  selector: 'app-appointment',
-  templateUrl: './appointment.component.html',
-  styleUrls: ['./appointment.component.css']
+    selector: 'app-appointment',
+    templateUrl: './appointment.component.html',
+    styleUrls: ['./appointment.component.css'],
+    standalone: false
 })
 export class AppointmentComponent implements OnInit {
 

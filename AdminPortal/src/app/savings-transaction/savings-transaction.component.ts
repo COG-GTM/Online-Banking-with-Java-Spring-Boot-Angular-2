@@ -4,9 +4,10 @@ import { ActivatedRoute, Params } from '@angular/router';
 
 
 @Component({
-  selector: 'app-savings-transaction',
-  templateUrl: './savings-transaction.component.html',
-  styleUrls: ['./savings-transaction.component.css']
+    selector: 'app-savings-transaction',
+    templateUrl: './savings-transaction.component.html',
+    styleUrls: ['./savings-transaction.component.css'],
+    standalone: false
 })
 export class SavingsTransactionComponent implements OnInit {
 

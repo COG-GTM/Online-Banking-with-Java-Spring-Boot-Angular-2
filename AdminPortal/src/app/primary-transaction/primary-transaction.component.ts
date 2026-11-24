@@ -3,9 +3,10 @@ import {UserService} from '../user.service';
 import { ActivatedRoute, Params } from '@angular/router';
 
 @Component({
-  selector: 'app-primary-transaction',
-  templateUrl: './primary-transaction.component.html',
-  styleUrls: ['./primary-transaction.component.css']
+    selector: 'app-primary-transaction',
+    templateUrl: './primary-transaction.component.html',
+    styleUrls: ['./primary-transaction.component.css'],
+    standalone: false
 })
 export class PrimaryTransactionComponent implements OnInit {
 
